@@ -288,6 +288,17 @@ vérifié, ruleset « Main » actif (`docs/exploitation.md`).
 l'ancien jeton `VERCEL_TOKEN` du 25 juin ; refaire, dans le nouveau dépôt, les
 mises à jour Dependabot fuse.js et Next 16.3 (ex-#64 et #61, qui cassaient une
 recherche et le lint).
+
+**Essai à faire à la première contribution extérieure : la preview d'un
+fork.** `vercel-deploy.yml` ne peut pas la construire (pas de secrets pour un
+fork, c'est voulu). Essayer l'intégration GitHub native de Vercel avec « Git
+Fork Protection » (Cateline autorise chaque PR), seulement pour les previews,
+sans doubler le déploiement de production fait par Actions
+(`git.deploymentEnabled` dans `vercel.json`). Vérifier d'abord que les
+variables Preview de Vercel n'ouvrent pas la base de production (branche Neon
+dédiée). Vérifier aussi si Hobby accepte, en public, les commits d'autres
+autrices (bloqués quand le dépôt était privé). Si l'essai marche :
+`CONTRIBUTING.md` et `docs/exploitation.md` à mettre à jour.
 **Restent publiques par choix** (contenu déjà sur le site) :
 les intervenantes du DevFest (`src/data/devfest.ts`), les crédits de
 `/tremplin`, les fondatrices ; les migrations SQL déjà appliquées gardent leurs

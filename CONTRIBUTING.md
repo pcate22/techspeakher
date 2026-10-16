@@ -53,13 +53,15 @@ Actions, et c'est Cateline, pour l'association, qui le déclenche.
 - **La CI de votre PR** démarre quand Cateline l'approuve : pour une
   contribution extérieure, GitHub attend son feu vert avant de lancer quoi que
   ce soit. Testez donc en local (commandes ci-dessus) avant de pousser.
-- **Pas de preview en ligne pour une contribution** : notre offre Vercel
-  (gratuite) ne construit que les commits de Cateline. Votre travail se vérifie
-  en local (`npm run dev`) et par la CI ; ajoutez des captures d'écran à la PR
-  quand un écran change.
+- **Preview en ligne d'une contribution : pas encore disponible, à tester.**
+  Nos déploiements passent par GitHub Actions, qui ne confie jamais nos secrets
+  au code d'un fork (c'est voulu). Une autre voie, l'intégration GitHub de
+  Vercel avec une autorisation par PR, sera essayée à la première contribution
+  extérieure. D'ici là, votre travail se vérifie en local (`npm run dev`) et par
+  la CI ; ajoutez des captures d'écran à la PR quand un écran change.
 - **Seule Cateline fusionne**, et toujours par un **commit de fusion** (le
-  squash et le rebase sont désactivés) : c'est ce commit, signé par elle, que
-  Vercel accepte de déployer. Votre travail garde votre nom dans l'historique.
+  squash et le rebase sont désactivés) : le commit déployé en production est
+  ainsi toujours signé par elle, ce que notre offre Vercel exige. Votre travail garde votre nom dans l'historique.
 - **Au merge sur `main`**, la **production** (techspeakher.fr) est déployée
   automatiquement.
 
