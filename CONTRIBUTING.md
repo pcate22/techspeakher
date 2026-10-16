@@ -18,23 +18,54 @@ un changement. En participant, vous acceptez le
 
 ## Installation
 
+Pour vous repérer d'abord : [`docs/README.md`](./docs/README.md) (où est
+quoi, quoi lire, glossaire).
+
 ```bash
 npm install
-cp .env.example .env.local   # renseigner les valeurs (voir docs/plateforme-setup.md)
-npm run dev
+npm run test                 # tous les tests, sans base de données
 ```
 
-La plupart des tests tournent **sans base de données** (mocks / pg-mem). Vous
-pouvez donc contribuer sans configurer Neon pour beaucoup de sujets.
+Pour voir le site avec des données fictives, suivez le
+[démarrage rapide du README](./README.md#démarrage-rapide) : un Postgres
+local et une commande suffisent, sans compte Neon.
 
-## Workflow
+## Le parcours d'une contributrice
 
-1. Créez une branche depuis `main` (`feat/…`, `fix/…`, `docs/…`).
-2. **TDD, en deux temps** : écrivez le test **avant** le code (rouge → vert → refactor), **puis cassez une fois** ce qu'il garde pour vérifier qu'il tombe. Le premier temps garantit qu'un test existe, le second qu'il sert. Les tests qui gardaient déjà le code que vous modifiez passent la même épreuve (`docs/principes-tests.md` §9).
-3. Faites passer la CI en local avant de pousser (voir ci-dessous).
-4. Ouvrez une Pull Request en remplissant le modèle proposé.
+La plupart du code est écrit par des sessions Claude, qui suivent les règles
+de [`CLAUDE.md`](./CLAUDE.md) (revues en série, tenue des docs de suivi).
+**Une humaine n'a pas à faire tout ça.** Ce qu'on vous demande :
 
-Rien ne merge en rouge. La CI vérifie : tests + type-check + lint + E2E.
+1. Forkez le dépôt et créez une branche depuis `main` (`feat/…`, `fix/…`,
+   `docs/…`).
+2. Faites votre changement. S'il change un comportement, ajoutez ou adaptez
+   un test ; si vous ne savez pas comment, dites-le dans la PR.
+3. Vérifiez en local que tout passe :
+
+   ```bash
+   npm run test         # Vitest (unit / composants)
+   npm run type-check   # TypeScript
+   npm run lint         # ESLint
+   ```
+
+4. Ouvrez une Pull Request : décrivez ce que vous changez et pourquoi, et
+   cochez la partie « Pour tout le monde » du modèle.
+
+Ensuite, côté association : on approuve le lancement de la CI (tests,
+type-check, lint, E2E), puis on fait relire la PR par une session Claude.
+Cette relecture passe les revues de `CLAUDE.md`, vérifie que les tests
+tombent bien quand on casse le code qu'ils protègent, et met à jour la dette
+et la roadmap. Les retours arrivent en commentaire de la PR. Une seule
+personne de l'association fusionne les PR, et rien ne fusionne en rouge.
+
+## Le parcours d'une session Claude
+
+Une session suit [`CLAUDE.md`](./CLAUDE.md) en entier : TDD en deux temps
+(écrire le test **avant** le code, **puis casser une fois** ce qu'il garde pour
+vérifier qu'il tombe, `docs/principes-tests.md` §9), les quatre revues avant
+PR (`docs/revue-avant-pr.md`), et la tenue de la dette et de la roadmap dans
+la PR (`docs/clore-une-session.md`). Rien ne merge en rouge. La CI vérifie :
+tests + type-check + lint + E2E.
 
 ```bash
 npm run test         # Vitest (unit / composants)
@@ -58,7 +89,7 @@ automatiques, via GitHub Actions.
 > ⚠️ Ce dépôt utilise **Next.js 16** (changements cassants). Lisez le guide
 > concerné dans `node_modules/next/dist/docs/` avant d'écrire du code
 > (voir [`AGENTS.md`](./AGENTS.md)). Les conventions détaillées sont dans
-> [`CLAUDE.md`](./CLAUDE.md).
+> [`CLAUDE.md`](./CLAUDE.md) ; celles qui suivent sont l'essentiel.
 
 - **Contenu statique** → `src/data/` (source unique, pas de hardcoding dans les
   pages). URLs et constantes → `src/constants/site.ts`. Tokens couleur →
@@ -75,6 +106,11 @@ automatiques, via GitHub Actions.
   pour les erreurs, `sr-only` pour les infos, `focus-visible` partout.
 - **Sécurité / RGPD** : secrets uniquement en variables d'environnement, jamais
   committés. Aucune donnée personnelle réelle dans le dépôt.
+- **Commentaires** : un commentaire dit **pourquoi** le code est ainsi, au
+  présent et en quelques lignes. Pas de date, pas de numéro de PR, pas de
+  récit de la façon dont le problème a été trouvé : ça va dans la description
+  de la PR ou dans un doc de conception. Les capitales sont pour les sigles
+  (RGPD, SQL), pas pour insister.
 
 ## Langue et ton
 
@@ -94,6 +130,7 @@ automatiques, via GitHub Actions.
 
 ## Où trouver de la doc
 
+- Page d'accueil des docs, glossaire : [`docs/README.md`](./docs/README.md)
 - Architecture : [`docs/architecture.md`](./docs/architecture.md)
 - Principes de conception UI : [`docs/principes-conception-ui.md`](./docs/principes-conception-ui.md)
 - Exploitation / mise en prod : [`docs/exploitation.md`](./docs/exploitation.md)

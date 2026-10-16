@@ -11,7 +11,8 @@
 > | ouvrir une pull request | **`docs/revue-avant-pr.md`** | quatre passes, **en agents parallèles** |
 > | clore une session | **`docs/clore-une-session.md`** | la dette et la roadmap repartent **à jour**, dans la PR de la session |
 >
-> **Comprendre le système** : `docs/architecture.md` (vue technique) ·
+> **Comprendre le système** : `docs/README.md` (accueil, index des docs, glossaire) ·
+> `docs/architecture.md` (vue technique) ·
 > `docs/conception-synchro-contacts.md` (qui écrit quoi : plateforme / Brevo /
 > HelloAsso) · `docs/audit-e2e-parcours-2026-08.md` (couverture des parcours) ·
 > `docs/audit-ux-agenda-2026-08.md` (l'agenda public à l'échelle : ce qui bloque,
@@ -63,6 +64,7 @@ e2e/             # Tests Playwright
 - **Server Actions** : l'identité vient de la **session** (jamais du client) ; ré-vérifier l'autorisation côté serveur (`session.user.isOrga`), valider les entrées (Zod, `src/lib/*-form.ts`), SQL **paramétré**.
 - **Annuaire public** : ne sérialiser que le DTO `PublicSpeaker` (pas de métadonnée interne). E-mail **jamais** exposé (relais).
 - **Accessibilité RGAA** : `aria-labelledby` sur les sections, `role="alert"` pour les erreurs, `sr-only` pour les infos (nouvelle fenêtre…), `focus-visible` partout.
+- **Commentaires** : le **pourquoi**, au présent, en quelques lignes. Ni date, ni numéro de PR, ni « revue du … », ni récit de la découverte : ça va dans le corps de la PR, la dette ou un doc de conception (le dépôt public n'a pas l'historique des PR, et `git blame` s'arrête au 16/10/2026). Capitales réservées aux sigles. Un commentaire qui raconte l'histoire, croisé en passant, se ramène à son pourquoi (comme la dette qu'on croise ; mesure et plan : `docs/audit-reprise-humaine.md` §4.5).
 
 ### Toucher à du code existant
 > Règle d'or : **rien ne repart dans l'état où on l'a trouvé** — ni le code autour, ni la dette de la zone, ni les tests qui la gardaient.
@@ -89,7 +91,7 @@ Méthode, précédents, et tenue du doc de dette dans les deux sens : `docs/dett
 
 ### Git
 - Merge sur `main` pour déployer. Commits en français, préfixés (`feat:`, `fix:`, `chore:`, `docs:`, `test:`).
-- **Revue avant PR (obligatoire)** — quatre passes, dans cet ordre, **lancées en agents autonomes parallèles** (autorisation permanente, rien à demander) :
+- **Revue avant PR (obligatoire pour une session)** — quatre passes, dans cet ordre, **lancées en agents autonomes parallèles** (autorisation permanente, rien à demander). Une contributrice humaine suit le parcours allégé de `CONTRIBUTING.md` ; la session qui relit sa PR passe alors ces quatre revues pour elle :
 
   | Passe | Question | Quand |
   |---|---|---|
