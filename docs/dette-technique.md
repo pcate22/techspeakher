@@ -1,5 +1,8 @@
 # Dette technique — Tech Speak'Her
 
+> **Session du 2026-10-16 — bascule vers le dépôt public** `pcate22/techspeakher` :
+> rien de nouveau en dette ; le ruleset de `main` est enfin appliqué.
+>
 > **Session du 2026-10-15 — les six rouges locaux sous Node 26.** SOLDÉ : le
 > P2 « six tests rouges en local sous Node 26 » (§ Tests). Deux causes,
 > vérifiées : le `localStorage` natif de Node ≥ 25 masquait celui de jsdom

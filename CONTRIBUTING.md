@@ -29,10 +29,12 @@ pouvez donc contribuer sans configurer Neon pour beaucoup de sujets.
 
 ## Workflow
 
-1. Créez une branche depuis `main` (`feat/…`, `fix/…`, `docs/…`).
+1. Faites une copie du dépôt (**fork**) sur votre compte GitHub, puis créez-y
+   une branche depuis `main` (`feat/…`, `fix/…`, `docs/…`).
 2. **TDD, en deux temps** : écrivez le test **avant** le code (rouge → vert → refactor), **puis cassez une fois** ce qu'il garde pour vérifier qu'il tombe. Le premier temps garantit qu'un test existe, le second qu'il sert. Les tests qui gardaient déjà le code que vous modifiez passent la même épreuve (`docs/principes-tests.md` §9).
 3. Faites passer la CI en local avant de pousser (voir ci-dessous).
-4. Ouvrez une Pull Request en remplissant le modèle proposé.
+4. Ouvrez une Pull Request vers `pcate22/techspeakher` en remplissant le modèle
+   proposé.
 
 Rien ne merge en rouge. La CI vérifie : tests + type-check + lint + E2E.
 
@@ -43,14 +45,24 @@ npm run lint         # ESLint
 npm run test:e2e     # Playwright (E2E, agnostiques aux données)
 ```
 
-## Déploiement (previews)
+## Relecture, fusion et déploiement
 
-Pas besoin de compte Vercel pour contribuer : les déploiements sont
-automatiques, via GitHub Actions.
+Pas besoin de compte Vercel pour contribuer : le déploiement passe par GitHub
+Actions, et c'est Cateline, pour l'association, qui le déclenche.
 
-- **À l'ouverture d'une PR** (et à chaque push) : une **preview** est déployée et
-  son URL apparaît dans la PR, pour tester son travail en ligne et le faire relire.
-- **Au merge sur `main`** : la **production** (techspeakher.fr) est déployée
+- **La CI de votre PR** démarre quand Cateline l'approuve : pour une
+  contribution extérieure, GitHub attend son feu vert avant de lancer quoi que
+  ce soit. Testez donc en local (commandes ci-dessus) avant de pousser.
+- **Preview en ligne d'une contribution : pas encore disponible, à tester.**
+  Nos déploiements passent par GitHub Actions, qui ne confie jamais nos secrets
+  au code d'un fork (c'est voulu). Une autre voie, l'intégration GitHub de
+  Vercel avec une autorisation par PR, sera essayée à la première contribution
+  extérieure. D'ici là, votre travail se vérifie en local (`npm run dev`) et par
+  la CI ; ajoutez des captures d'écran à la PR quand un écran change.
+- **Seule Cateline fusionne**, et toujours par un **commit de fusion** (le
+  squash et le rebase sont désactivés) : le commit déployé en production est
+  ainsi toujours signé par elle, ce que notre offre Vercel exige. Votre travail garde votre nom dans l'historique.
+- **Au merge sur `main`**, la **production** (techspeakher.fr) est déployée
   automatiquement.
 
 ## Conventions de code
