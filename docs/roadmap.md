@@ -4,7 +4,8 @@
 > la dette technique : `docs/dette-technique.md`. Pour l'étude d'import des
 > talks : `docs/faisabilite-import-talks.md`.
 >
-> Dernière mise à jour : **2026-10-15** (sections « Navigation connectée »,
+> Dernière mise à jour : **2026-10-16** (section « Reprise humaine du code »
+> seule) ; **2026-10-15** (sections « Navigation connectée »,
 > « Chantiers repris des PR fermées », « Adhésions HelloAsso », « Partenaires
 > par façon d'aider », « Header Nous rejoindre », « Landing partenaires »,
 > « Textes après l'AGE » et
@@ -21,6 +22,24 @@
 > déclenché. Aucune passation ne s'empile sur une autre : `CLAUDE.md` §Clore
 > une session. La **licence** est tranchée le 23/08 : voir la section dédiée
 > ci-dessous, qui ferme la piste « une autre communauté déploie la plateforme ».
+
+## Reprise humaine du code — audit LIVRÉ le 2026-10-16, plan en attente de validation
+
+Le dépôt est public depuis le 16/10 (`pcate22/techspeakher`). Le code restera
+écrit à 95 % par des sessions Claude, mais une bénévole doit pouvoir le lire,
+le lancer et proposer un changement sans passer par une session. L'audit
+chiffré et le plan sont dans `docs/audit-reprise-humaine.md`.
+
+Plan, une PR par livrable : **2** page d'accueil des docs, glossaire,
+démarrage local avec le décor, parcours humain dans `CONTRIBUTING.md` ;
+**3** découpage des quatre fichiers de plus de 1 000 lignes (une PR par
+fichier) ; **4** règle d'écriture des commentaires, garde, puis tri ;
+**5** archive de la dette soldée. Ordre recommandé : 2, 5, 3, 4.
+
+**Où reprendre** : rien n'est commencé. Cinq décisions attendent Cateline
+(audit §5 : ordre, revues d'une PR humaine, connexion locale sans compte
+tiers, rouverture de `tremplin-ateliers.ts`, archive de la dette). Une fois
+tranchées, ouvrir la PR 2.
 
 ## Navigation connectée — rail bureau, « Ma fiche » à un geste, une date sans ouvrir le talk — PR #382 OUVERTE le 2026-10-15
 
