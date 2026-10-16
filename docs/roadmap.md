@@ -4,7 +4,8 @@
 > la dette technique : `docs/dette-technique.md`. Pour l'étude d'import des
 > talks : `docs/faisabilite-import-talks.md`.
 >
-> Dernière mise à jour : **2026-10-15** (sections « Navigation connectée »,
+> Dernière mise à jour : **2026-10-16** (section « Licence » : passage en
+> public fait ; le 2026-10-15 pour les sections « Navigation connectée »,
 > « Chantiers repris des PR fermées », « Adhésions HelloAsso », « Partenaires
 > par façon d'aider », « Header Nous rejoindre », « Landing partenaires »,
 > « Textes après l'AGE » et
