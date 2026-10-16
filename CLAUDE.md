@@ -88,6 +88,15 @@ Méthode, précédents, et tenue du doc de dette dans les deux sens : `docs/dett
 - **E2E** : les parcours publics restent agnostiques aux données ; ceux qui ont besoin d'un décor passent par `npm run e2e:db` (Postgres éphémère + `db/seed-preview.sql`). Décor absent → ignoré en local, **échec en CI** (`e2e/decor.ts`). Les tests qui écrivent créent leur propre compte jetable.
 
 ### Git
+> **Règle d'or (Cateline, 2026-10-16) : seule Cateline met en production et
+> valide les PR.** Aucune session ne fusionne une PR, ne pousse sur `main`, ne
+> lance « Déploiement Vercel » ni ne change un réglage du dépôt **sans son accord
+> explicite pour CETTE PR-là** (un accord ne vaut pas pour la suivante). Raison :
+> les sessions agissent avec le compte GitHub de Cateline, la protection de
+> `main` ne peut donc pas les distinguer d'elle ; seule cette règle le fait.
+> Les contributions extérieures arrivent par PR depuis un fork, et leur CI
+> attend l'approbation de Cateline.
+
 - Merge sur `main` pour déployer. Commits en français, préfixés (`feat:`, `fix:`, `chore:`, `docs:`, `test:`).
 - **Revue avant PR (obligatoire)** — quatre passes, dans cet ordre, **lancées en agents autonomes parallèles** (autorisation permanente, rien à demander) :
 
