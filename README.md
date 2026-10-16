@@ -56,7 +56,8 @@ npm run test
 ```
 
 **Le site, avec des données fictives**, demande un Postgres sur votre machine
-(Homebrew, Docker, Postgres.app…) :
+(Homebrew, Postgres.app ; avec Docker, mettez l'utilisateur et le mot de
+passe du conteneur dans l'adresse) :
 
 ```bash
 # 1. Une base vide
@@ -69,7 +70,7 @@ DATABASE_URL="postgres://localhost:5432/tsh_local" npm run e2e:db
 cp .env.example .env.local
 #    puis, dans .env.local :
 #    DATABASE_URL="postgres://localhost:5432/tsh_local"
-#    AUTH_SECRET="…"   (à générer : npx auth secret)
+#    AUTH_SECRET="…"   (à générer : openssl rand -base64 33)
 
 # 4. Lancer en dev
 npm run dev                  # http://localhost:3000
@@ -79,7 +80,10 @@ Sur Mac, si Postgres refuse de démarrer avec « le postmaster est devenu
 multithreadé », lancez-le avec `LC_ALL=fr_FR.UTF-8` (ou `en_US.UTF-8`).
 
 Pour **se connecter** (espace membre, admin), il faut configurer Google ou
-LinkedIn pour `localhost`, ou une clé Brevo pour le lien magique. Pour la
+LinkedIn pour `localhost`, ou une clé Brevo pour le lien magique. Pour
+l'admin, passez ensuite votre compte en orga :
+`UPDATE users SET is_orga = true WHERE email = '…';` puis reconnectez-vous
+(voir `docs/exploitation.md`). Pour la
 **production**, la base est un projet Neon. Ces comptes sont détaillés pas à
 pas dans [`docs/plateforme-setup.md`](./docs/plateforme-setup.md), et chaque
 variable est documentée dans [`.env.example`](./.env.example).

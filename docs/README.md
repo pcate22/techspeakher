@@ -9,8 +9,8 @@ organisatrices et le Tremplin, qui accompagne des femmes vers leur première
 conférence.
 
 La plupart du code est écrit avec des sessions Claude (une IA), et beaucoup
-de docs sont écrits pour elles. Vous n'avez pas besoin de Claude pour lire,
-lancer ou modifier le code.
+de docs sont écrits pour elles. Lire, lancer et modifier le code se fait
+sans Claude.
 
 ## Par où commencer
 
@@ -32,7 +32,7 @@ lancer ou modifier le code.
 | une URL ou une adresse e-mail du site | `src/constants/site.ts` |
 | les couleurs | `src/app/globals.css` |
 | le schéma de la base | `db/schema.sql` ; chaque évolution a sa migration dans `db/migrations/` |
-| qui a le droit d'aller où | `src/proxy.ts`, puis `src/lib/auth-guards.ts` dans chaque page |
+| qui a le droit d'aller où | `src/auth.config.ts` (`refusDAcces`, appliqué par `src/proxy.ts`), puis `src/lib/auth-guards.ts` dans les pages et les Server Actions |
 | les tests | `src/__tests__/` (Vitest) et `e2e/` (Playwright) |
 
 ## Les trois niveaux de démarrage
@@ -43,8 +43,8 @@ lancer ou modifier le code.
   et une commande qui pose des personnes inventées. La recette est dans le
   [démarrage rapide du README](../README.md#démarrage-rapide).
 - **Se connecter** (espace membre, admin) : il faut configurer la connexion
-  Google ou LinkedIn pour `localhost`, ou une clé Brevo pour le lien magique.
-  Pas à pas : [`plateforme-setup.md`](./plateforme-setup.md) §3 et §4.
+  Google ou LinkedIn pour `localhost`, ou une clé Brevo pour le lien magique ;
+  pour l'admin, passer ensuite son compte en orga (README). Pas à pas : [`plateforme-setup.md`](./plateforme-setup.md) §3 et §4.
 
 ## Les docs, rangés par statut
 
@@ -52,7 +52,7 @@ lancer ou modifier le code.
 
 - [`architecture.md`](./architecture.md) : la carte technique.
 - [`exploitation.md`](./exploitation.md) : mise en production, base, e-mails, tâches courantes.
-- [`plateforme-setup.md`](./plateforme-setup.md) : les comptes à créer (Neon, Google, LinkedIn, Vercel).
+- [`plateforme-setup.md`](./plateforme-setup.md) : les comptes à créer (Neon, Google, LinkedIn, Vercel) ; les §1 à §5 sont à jour, la fin est un historique.
 - [`design-system.md`](./design-system.md) : les briques d'interface.
 - [`conception-synchro-contacts.md`](./conception-synchro-contacts.md) : qui écrit quoi entre la plateforme, Brevo et HelloAsso.
 - [`roadmap.md`](./roadmap.md) : ce qu'on fait ensuite.
@@ -94,7 +94,7 @@ font foi.
   `conception-lot-n4-reactions`, `conception-profil-et-a-faire`,
   `conception-technique-profil-et-a-faire`, `revue-conception-a-faire-2026-08`,
   `audit-ux-profil-orga-2026-08`, `audit-menu-compte`, `conception-cadence-rappels`,
-  `conception-relance-brouillons`.
+  `conception-relance-brouillons`, et la maquette `maquettes/profil-et-a-faire.html`.
 - *Espace des organisatrices* : `conception-tableau-de-bord-orga`,
   `conception-technique-tableaux-de-bord`, `conception-audit-orga-lot-a`.
 - *Contenus et recherche* : `conception-articles`, `implementation-articles`,
@@ -102,15 +102,15 @@ font foi.
 - *Comptes, RGPD, adhésions* : `conception-conservation-comptes`, `conception-adhesions-helloasso`.
 - *Revues et audits passés* : `revue-ux-rgaa`, `audit-e2e-parcours-2026-08`.
 
-Tous ces fichiers sont dans `docs/`, avec l'extension `.md`.
+Tous ces fichiers sont dans `docs/`, avec l'extension `.md` sauf la maquette.
 
 ## Glossaire
 
 | Mot | Sens |
 |---|---|
 | **Speakeuse** | Une femme qui prend la parole en conférence. Dans le code : une personne qui a une fiche dans l'annuaire. |
-| **Fiche** | Le profil public d'une speakeuse dans l'annuaire (`speaker_profiles`). Elle passe de `brouillon` à `en_attente` (relue par une orga) puis `publie`. |
-| **Membre** | Une personne connectée, avec son espace (`/mon-espace`). À ne pas confondre avec une adhérente de l'association. |
+| **Fiche** | Le profil public d'une speakeuse dans l'annuaire (`speaker_profiles`). Elle passe de `brouillon` à `en_attente` (relue par une orga) puis `publie` ; autres statuts dans `src/lib/profile-status.ts`. |
+| **Membre** | Une personne connectée, avec son espace (`/mon-espace`). Une adhérente, elle, a payé sa cotisation (voir Adhésion). |
 | **Adhésion** | La cotisation à l'association, payée sur HelloAsso et recopiée dans la plateforme (`user_memberships`). |
 | **Orga** | Une organisatrice : elle a accès à `/admin` (`users.is_orga`). |
 | **Coach** | Une personne qui accompagne les participantes du Tremplin (`users.is_coach`). |
@@ -119,25 +119,26 @@ Tous ces fichiers sont dans `docs/`, avec l'extension `.md`.
 | **Conférence, édition de conférence** | Un événement (DevFest Toulouse) et son passage d'une année donnée (DevFest Toulouse 2026). Tables `conferences` et `conference_editions`. |
 | **Tremplin** | Le dispositif d'accompagnement vers une première conférence : ateliers, finale devant un jury, récompenses. |
 | **Édition (du Tremplin)** | Un Tremplin lié à une conférence partenaire et une année. Page publique `/tremplin/[conf]/[annee]`. |
-| **Phase** | Les trois temps d'une édition : avant la soirée (CFP et pitch), la soirée et le jury (finale), après la soirée (montée sur scène). |
-| **Atelier** | Une séance d'une édition, en visio ou sur place, avec ses membres et leurs présences. |
+| **Phase** | Les trois temps d'une édition : avant la soirée (CFP et pitch), la soirée et le jury (finale), après la soirée (montée sur scène). Valeurs : `cfp_et_pitch`, `finale`, `montee_sur_scene`. |
+| **Atelier** | Une séance d'une édition, en visio ou sur place, avec les participantes qui y sont inscrites et leurs présences. |
 | **Participante, inscription** | Une femme inscrite à une édition (`tremplin_registrations`). |
-| **Talk pitché** | Le talk qu'une participante présente pendant le Tremplin. |
+| **Talk pitché** | Le talk qu'une participante présente pendant le Tremplin (`tremplin_registrations.talk_id`). |
 | **CFP** | *Call for papers* : l'appel à propositions d'une conférence. |
 | **Décor** | Le jeu de données fictives (`db/seed-preview.sql`) : des personnes inventées, pour les tests et pour découvrir le site en local. |
 | **Session Claude** | Une conversation avec l'IA Claude qui écrit du code dans ce dépôt. |
 
 ## À savoir en lisant le code
 
-- Les numéros `#123` ou « PR #123 » dans les docs et les commentaires
-  renvoient à l'**ancien dépôt**, privé. Le dépôt public commence par un seul
-  commit le 16/10/2026 : `git blame` ne remonte pas plus loin.
+- Les numéros de PR (`#123`, « PR #123 ») cités dans un texte écrit avant le
+  16/10/2026 renvoient à l'**ancien dépôt**, privé. Le dépôt public commence
+  par un seul commit ce jour-là, et `git blame` s'arrête à ce commit.
 - Les commentaires expliquent souvent le pourquoi en détail. Certains
   racontent aussi quand et comment un problème a été trouvé (une date,
-  « revue du … ») : c'est de l'histoire, le pourquoi suffit.
+  « revue du … ») ; ces passages sont de l'historique et peuvent se sauter.
+  Ils disparaissent au fil des modifications (règle « Commentaires » de
+  `CLAUDE.md`).
 - Les noms de fonctions mêlent français et anglais (`createEditionAction`,
-  `deplacerAtelierAction`). C'est connu et assumé : le glossaire aide à s'y
-  retrouver.
+  `deplacerAtelierAction`). Le glossaire donne le sens des mots français.
 - Next.js 16 diffère des versions précédentes : avant d'écrire du code qui
   touche au framework, lisez le guide concerné dans
   `node_modules/next/dist/docs/`.

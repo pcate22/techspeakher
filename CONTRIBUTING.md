@@ -28,13 +28,13 @@ npm run test                 # tous les tests, sans base de données
 
 Pour voir le site avec des données fictives, suivez le
 [démarrage rapide du README](./README.md#démarrage-rapide) : un Postgres
-local et une commande suffisent, sans compte Neon.
+local suffit, sans compte Neon.
 
 ## Le parcours d'une contributrice
 
 La plupart du code est écrit par des sessions Claude, qui suivent les règles
-de [`CLAUDE.md`](./CLAUDE.md) (revues en série, tenue des docs de suivi).
-**Une humaine n'a pas à faire tout ça.** Ce qu'on vous demande :
+de [`CLAUDE.md`](./CLAUDE.md) (quatre revues avant chaque PR, tenue des docs
+de suivi). Une contributrice humaine suit un parcours plus court :
 
 1. Forkez le dépôt et créez une branche depuis `main` (`feat/…`, `fix/…`,
    `docs/…`).
@@ -55,7 +55,8 @@ Ensuite, côté association : on approuve le lancement de la CI (tests,
 type-check, lint, E2E), puis on fait relire la PR par une session Claude.
 Cette relecture passe les revues de `CLAUDE.md`, vérifie que les tests
 tombent bien quand on casse le code qu'ils protègent, et met à jour la dette
-et la roadmap. Les retours arrivent en commentaire de la PR. Une seule
+et la roadmap (dans votre PR si vous cochez « Allow edits by maintainers »,
+sinon dans une PR de suivi). Les retours arrivent en commentaire de la PR. Une seule
 personne de l'association fusionne les PR, et rien ne fusionne en rouge.
 
 ## Le parcours d'une session Claude
@@ -79,8 +80,10 @@ npm run test:e2e     # Playwright (E2E, agnostiques aux données)
 Pas besoin de compte Vercel pour contribuer : les déploiements sont
 automatiques, via GitHub Actions.
 
-- **À l'ouverture d'une PR** (et à chaque push) : une **preview** est déployée et
-  son URL apparaît dans la PR, pour tester son travail en ligne et le faire relire.
+- **À l'ouverture d'une PR depuis une branche de ce dépôt** (et à chaque push) :
+  une **preview** est déployée et son URL apparaît dans la PR, pour tester son
+  travail en ligne et le faire relire. Une PR venue d'un fork n'a pas de
+  preview : testez en local (démarrage rapide du README).
 - **Au merge sur `main`** : la **production** (techspeakher.fr) est déployée
   automatiquement.
 
@@ -126,7 +129,8 @@ automatiques, via GitHub Actions.
 - Commits en français, **préfixés** : `feat:`, `fix:`, `chore:`, `docs:`,
   `test:`.
 - Une PR = un sujet cohérent. Décrivez le quoi et le pourquoi, liez l'issue.
-- Ajoutez / mettez à jour les tests et la doc concernée.
+- Ajoutez ou mettez à jour les tests et la doc concernée (voir l'étape 2 du
+  parcours d'une contributrice si vous ne savez pas comment).
 
 ## Où trouver de la doc
 

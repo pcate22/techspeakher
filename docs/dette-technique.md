@@ -1931,8 +1931,8 @@ personne ne perd de donnée, et rien n'est faux en public.
 - **Découpage `src/lib/tremplin-*`** : modules cohésifs, dépendances dans le
   bon sens. `tremplin-form.ts` gros mais cohésif — ne pas scinder.
   **Rouverture proposée le 2026-10-16** pour `tremplin-ateliers.ts`
-  (1 495 lignes), au nom de la lecture : décision de Cateline attendue
-  (`docs/audit-reprise-humaine.md` §5, D).
+  (1 495 lignes), au nom de la lecture ; décision de Cateline reportée avec le
+  lot 3 (`docs/audit-reprise-humaine.md` §5, D).
 - **`editionStatutAffiche`** (dates dérivées priment, statut manuel en
   secours) : bon modèle, pur, testé. La dette est le nombre d'états manuels
   (P2), pas le mécanisme.
