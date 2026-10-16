@@ -3,9 +3,11 @@
 > **Session du 2026-10-16 — audit « reprise humaine »**
 > (`docs/audit-reprise-humaine.md`, docs seulement). Aucun P0 touché ; le **3**
 > n'a pas été relu ce jour. Recalés contre le code : les chiffres du P1
-> « Squelette copié-collé des actions redirect » (§ Robustesse). Rien soldé,
-> rien de nouveau : le plan (découpage, commentaires, archive de la dette
-> soldée) attend la validation de Cateline et vit dans la roadmap.
+> « Squelette copié-collé des actions redirect » (§ Robustesse). Rien soldé.
+> Une rouverture est proposée en § Accepté (`tremplin-ateliers.ts`). Les
+> constats de l'audit (fichiers de plus de 1 000 lignes, commentaires, docs
+> sans index, connexion locale) sont suivis dans la roadmap (§ Reprise
+> humaine du code) tant que Cateline n'a pas validé le plan.
 >
 > **Session du 2026-10-15 — les six rouges locaux sous Node 26.** SOLDÉ : le
 > P2 « six tests rouges en local sous Node 26 » (§ Tests). Deux causes,
