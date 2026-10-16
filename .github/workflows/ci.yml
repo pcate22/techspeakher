@@ -1,0 +1,205 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint & Type-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: TypeScript
+        run: npx tsc --noEmit
+
+  test:
+    name: Tests unitaires
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Vitest
+        run: npm test
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [quality, test]
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build Next.js
+        run: npm run build
+
+  e2e:
+    name: Tests E2E (Playwright)
+    runs-on: ubuntu-latest
+    needs: [quality, test]
+
+    # LE DÉCOR DE DONNÉES. Sans base, la suite n'auditait que des états VIDES :
+    # annuaire « arrive bientôt », agenda vide, et /tremplin/[conf]/[annee] en
+    # 500. Aucune carte de speakeuse, aucune fiche n'était jamais passée devant
+    # axe en vrai navigateur (docs/audit-e2e-parcours-2026-08.md §3.2).
+    # Un Postgres éphémère, le schéma du dépôt, et le jeu de données FICTIVES
+    # déjà maintenu pour les previews : rien de personnel n'entre en CI.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: tsh_e2e
+        ports:
+          - 5432:5432
+        # `-U postgres` n'est pas décoratif : sans lui, `pg_isready` se présente
+        # sous l'utilisateur du runner et Postgres journalise un
+        # « FATAL: role "root" does not exist » à chaque battement. La sonde
+        # réussit quand même (le serveur a répondu), mais le job finit avec
+        # ~27 lignes FATAL dans les logs du service — de quoi envoyer la
+        # personne qui débogue un jour un E2E rouge chercher une panne de base
+        # qui n'existe pas.
+        options: >-
+          --health-cmd "pg_isready -U postgres -d tsh_e2e"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/tsh_e2e
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # Schéma puis décor. `sync-to-latest.sql` est idempotent (même script
+      # qu'en production), `seed-preview.sql` porte son propre garde-fou
+      # anti-prod : il refuse de tourner sur une base contenant de vraies
+      # speakeuses publiées.
+      - name: Préparer la base de test (schéma + décor)
+        run: npm run e2e:db
+
+      - name: Récupérer la version Playwright
+        id: pw-version
+        run: echo "version=$(node -e "console.log(require('./node_modules/@playwright/test/package.json').version)")" >> $GITHUB_OUTPUT
+
+      - name: Cache navigateurs Playwright
+        id: pw-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw-version.outputs.version }}
+
+      - name: Installer Chromium
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Installer dépendances système Chromium
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Build Next.js
+        run: npm run build
+
+      - name: Tests E2E
+        run: npx playwright test
+
+      - name: Rapport Playwright
+        uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
+
+  lighthouse:
+    name: Lighthouse
+    runs-on: ubuntu-latest
+    needs: [quality, test]
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build Next.js
+        run: npm run build
+
+      - name: Start server
+        run: npm start &
+        env:
+          PORT: 3000
+
+      - name: Wait for server
+        run: npx wait-on http://localhost:3000 --timeout 30000
+
+      - name: Lighthouse audit
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            http://localhost:3000
+            http://localhost:3000/tremplin
+            http://localhost:3000/speakeuses
+          runs: 3
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+          configPath: .github/lighthouse/lighthouserc.json
+
+  security:
+    name: Security audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+        continue-on-error: true

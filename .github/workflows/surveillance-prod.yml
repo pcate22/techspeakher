@@ -1,0 +1,53 @@
+name: Surveillance production
+
+# CE QUE ÇA ATTRAPE, ET QUE RIEN D'AUTRE NE VOIT.
+#
+# La CI juge le code, et `Vérifier le déploiement` juge la mise en ligne. Restent
+# les pannes qu'AUCUN déploiement ne cause, et qui arrivent donc quand personne
+# ne regarde : la base Neon qui tombe ou dépasse son quota, un certificat expiré,
+# le domaine qui décroche, un service tiers en rade. Aujourd'hui, on l'apprend
+# parce qu'une membre écrit — un dimanche, ou la veille d'un atelier.
+#
+# On rejoue simplement le contrôle post-déploiement, en lecture seule.
+#
+# CE QUE ÇA COÛTE, pour décider en connaissance de cause : ~20 s par passage,
+# toutes les 30 min, soit ~8 h de minutes GitHub par mois (sur 2 000 offertes en
+# dépôt privé). Si c'est trop, passer à `0 * * * *` (toutes les heures) suffit :
+# la panne qu'on cherche dure rarement moins d'une heure.
+#
+# CONTRE LA FATIGUE D'ALERTE : le script réessaie trois fois avant de déclarer
+# l'échec, donc un hoquet réseau ne réveille personne. Si malgré tout ça criait
+# au loup, on espace — une alarme qu'on finit par ignorer ne protège plus rien.
+#
+# GitHub désactive les workflows planifiés d'un dépôt resté 60 jours sans
+# activité : après une longue pause, vérifier qu'il tourne toujours.
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  # Pour lancer un contrôle à la demande (après un incident, ou pour tester).
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "URL à vérifier (défaut : la production)"
+        required: false
+
+concurrency:
+  group: surveillance-prod
+  cancel-in-progress: true
+
+jobs:
+  verifier:
+    name: Le site répond-il correctement ?
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      # Aucun `npm ci` : le script est volontairement sans dépendance, il
+      # n'utilise que `fetch`. Le passage coûte quelques secondes.
+      - name: Vérifier la production
+        run: node scripts/verifier-prod.mjs ${{ inputs.url }}

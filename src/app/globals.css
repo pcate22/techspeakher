@@ -1,0 +1,222 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-navy: #170E47;
+  --color-navy-light: #1F1757;
+  --color-navy-lighter: #2A2068;
+  --color-cyan: #5FECDE;
+  --color-cyan-light: #8FF3E9;
+  --color-magenta: #E631FB;
+  --color-magenta-light: #EE6FFF;
+  --color-orange: #F46F6F;
+  --color-gold: #F6B17A;
+  --color-silver: #B8B8D0;
+  --color-bronze: #F46F6F;
+  --color-orange-light: #F6B17A;
+  --color-coral: #F46F6F;
+  --color-peach: #F6B17A;
+  --color-cream: #FFF0DC;
+  --color-white: #FFFFFF;
+  --color-gray-light: #B8B8D0;
+  /* Contour de champ / contrôle : lisible sur les fonds sombres, y compris au
+     soleil (contraste non textuel WCAG 1.4.11, >= 3:1 sur navy/navy-light/
+     navy-lighter). Voir public/brand/tokens.json (theme.dark.color.border.field)
+     et docs/principes-conception-ui.md §9. Remplace border-navy-lighter (1.26:1). */
+  --color-field-border: #8A83C0;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --shadow-sticky: 0 2px 8px rgba(0, 0, 0, 0.35);
+  /* Hauteur des deux barres collantes du site : en-tête (4rem) + fil d'Ariane
+     (2.3125rem), moins 1px. Une troisième barre collante (l'en-tête de mois des
+     agendas) se cale dessus avec `top-barres` : le pixel retiré la glisse SOUS
+     le fil d'Ariane, sinon un liséré laisse voir le contenu défiler entre les
+     deux. Un seul endroit pour cette valeur — écrite en clair sur chaque page,
+     les deux agendas dérivaient. Le `scroll-padding-top` ci-dessous garde, lui,
+     sa marge de sécurité : trop réserver ne masque jamais rien. */
+  --spacing-barres: 6.25rem;
+  /* Hauteur de la bande de mois collante des agendas (`EnTetePeriode` :
+     py-2 + text-sm + bordure). C'est la TROISIÈME barre, celle que le
+     `scroll-padding-top` ci-dessous ne réserve pas — un élément qu'on amène en
+     vue sous elle (le jour même, à l'ouverture de « Mon agenda ») ajoute donc
+     cette hauteur, et elle seule : la marge de défilement se pose UNE fois, cf.
+     docs/principes-conception-ui.md. */
+  --spacing-bande-mois: 2.5rem;
+}
+
+body {
+  background-color: var(--color-navy);
+  color: var(--color-white);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Garde-fou anti-débordement latéral (mobile) : la page ne « glisse » plus de
+   droite à gauche si un élément dépasse d'un cheveu. `clip` plutôt que `hidden`
+   pour NE PAS créer de conteneur de défilement (préserve `position: sticky` de
+   l'en-tête) ; les zones à défilement horizontal volontaire (tableaux) ont leur
+   propre `overflow-x: auto` sur un descendant, non affecté. */
+html,
+body {
+  overflow-x: clip;
+  max-width: 100%;
+}
+
+/* Deux barres collantes (en-tête ~64px + fil d'Ariane ~33px) : sans marge de
+   défilement, une ancre ou un élément qui prend le focus se glisse dessous
+   (WCAG 2.4.11 « focus non masqué »). On réserve leur hauteur pour tout
+   défilement programmatique (scrollIntoView) et les liens d'ancrage. */
+html {
+  scroll-padding-top: 6.5rem;
+}
+
+/* Aucun contrôle de formulaire ne dépasse son conteneur. Les champs natifs
+   date/heure (iOS) et les <select> à longues options (e-mails) ont une largeur
+   INTRINSÈQUE qui débordait la carte / le modal sur mobile (texte coupé à
+   droite). `max-width: 100%` les plafonne, `min-width: 0` les laisse rétrécir
+   dans les conteneurs flex. */
+input,
+select,
+textarea {
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* Champs date/heure : même famille de problème que les <select> — tant qu'ils
+   gardent leur apparence NATIVE, iOS leur impose une largeur intrinsèque qui
+   passe outre `max-width` : le champ déborde de la carte et se fait couper au
+   bord de l'écran. `appearance: none` les fait obéir aux largeurs comme un
+   champ texte. Contreparties gérées : un champ vide n'a plus de contenu qui
+   fixe sa hauteur (min-height alignée sur les champs texte) et iOS centre la
+   valeur (on la rend alignée à gauche, comme la saisie). */
+input[type="date"],
+input[type="time"] {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: 2.375rem;
+}
+input::-webkit-date-and-time-value {
+  text-align: left;
+}
+
+/* iOS zoome la page entière au focus d'un champ écrit en moins de 16px, et la
+   page RESTE zoomée (défilement latéral partout) tant qu'on ne pince pas.
+   Sur écran tactile, les contrôles passent à 16px : plus de zoom forcé.
+   (Règle hors couche : elle prime sur l'utilitaire `text-sm` des champs.) */
+@media (hover: none) and (pointer: coarse) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* Chevron des <select> : la flèche native est dessinée par l'OS et sort en
+   NOIR sur iOS — invisible sur nos fonds sombres. On la remplace par un
+   chevron SVG couleur texte secondaire (#B8B8D0 = --color-gray-light,
+   dupliqué ici car url() n'accepte pas var()), avec la place qu'il faut à
+   droite du texte. */
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23B8B8D0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 1.1rem;
+  padding-right: 2.2rem;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Tailwind v4 retire le `cursor: pointer` par défaut des boutons : on le
+   rétablit pour tout élément réellement cliquable (boutons, selects, summary). */
+button:not(:disabled),
+select:not(:disabled),
+summary,
+[role="button"]:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+
+/* Custom selection color */
+::selection {
+  background-color: var(--color-magenta);
+  color: var(--color-navy);
+}
+
+
+/* Hauteur de la barre d'onglets basse — SOURCE UNIQUE. `min-h-14` (3.5rem) de
+   `BottomNav`, plus son filet supérieur d'1px, plus l'encoche iOS. Tout ce qui
+   doit se dégager de la barre part de là : le footer, le défilement, les barres
+   d'action collantes. Elle était recopiée en dur dans le seul dégagement qui
+   existait, donc un `min-h-14` changé aurait laissé les autres en place. */
+:root {
+  --hauteur-onglets: calc(3.5rem + 1px + env(safe-area-inset-bottom));
+}
+
+/* LA BARRE D'ACTION COLLANTE d'un formulaire long (« Enregistrer » qui reste à
+   l'écran quand le formulaire dépasse la flottaison).
+
+   Elle vaut une classe partagée, et pas un `sticky bottom-3` posé à la main sur
+   chaque écran, parce que la main oubliait la barre d'onglets. Mesuré en
+   navigateur (393×852) sur `/mon-espace/profil/[section]` : le bouton était
+   recouvert sur 32 de ses 44 px, et `elementFromPoint` en son centre renvoyait
+   l'onglet « Agenda » — appuyer sur « Enregistrer » changeait de page et perdait
+   la saisie. Sur la page « infos » d'un atelier : recouvert à 100 %.
+
+   Le `z-index` ne suffirait pas : passer au-dessus de la barre d'onglets la
+   masquerait à son tour. On se DÉCALE de sa hauteur, ci-dessous.
+
+   `bottom: 0`, sans retrait : le retrait de 0,75 rem allait avec le contour de
+   carte que la barre portait (une carte flottante se détache du bord). Sans
+   contour, ce liseré laissait défiler le formulaire SOUS un bandeau opaque —
+   ça se lisait comme un défaut d'affichage, pas comme une intention. */
+.barre-action-collante {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+}
+
+/* Ce que la barre d'onglets (`data-bottom-nav`, `fixed`) oblige à dégager. Son
+   attribut est le SEUL point d'accroche de ce bloc : le renommer tue les trois
+   règles en silence, d'où le test qui le tient (`barre-action-collante.test.ts`).
+
+   Le point de rupture suit CELUI DE LA BARRE (`xl:hidden`, soit < 1280 px) : les
+   deux se déplacent ENSEMBLE. La barre couvre toute la zone où le tiroir burger
+   existe, sinon la bande 640-1280 px n'aurait ni onglets ni navigation de bureau
+   — et le tiroir ne pourrait pas déléguer l'app aux onglets. */
+@media (max-width: 1279px) {
+  /* Le footer : ses derniers liens restent visibles et atteignables au clavier,
+     même à fond de défilement (WCAG 2.4.11). */
+  body:has([data-bottom-nav]) footer {
+    padding-bottom: var(--hauteur-onglets);
+  }
+  /* Le DÉFILEMENT, pendant bas de `scroll-padding-top`. Sans lui, le navigateur
+     amène l'élément qui prend le focus au bas du scrollport — là où l'attend la
+     barre. Mesuré : 3 arrêts de tabulation masqués sur 22 sur `/mon-espace`,
+     dont « Modifier mes infos » à 100 % (WCAG 2.4.11). */
+  html:has([data-bottom-nav]) {
+    scroll-padding-bottom: var(--hauteur-onglets);
+  }
+  /* La barre d'action se pose AU-DESSUS des onglets, pas dessous. Leur hauteur
+     EXACTE, sans retrait : la barre coiffe les onglets, bord à bord. */
+  body:has([data-bottom-nav]) .barre-action-collante {
+    bottom: var(--hauteur-onglets);
+  }
+  /* Le bandeau « Soutenir » de /partenaires : même règle que les onglets. */
+  body:has([data-barre-soutien]) footer {
+    padding-bottom: 5rem;
+  }
+  html:has([data-barre-soutien]) {
+    scroll-padding-bottom: 5rem;
+  }
+}

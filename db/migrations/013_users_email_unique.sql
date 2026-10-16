@@ -1,0 +1,12 @@
+-- Migration 013 — unicité de l'e-mail des comptes (insensible à la casse).
+-- À exécuter UNE fois dans l'éditeur SQL de Neon. Idempotent.
+--
+-- Pourquoi : Auth.js suppose un compte par e-mail, et la pré-création de compte
+-- au rattachement Tremplin (getOrCreateUserByEmail) faisait SELECT puis INSERT
+-- sans garde-fou → doublons possibles en cas de course. Cet index unique les
+-- empêche (et `getOrCreateUserByEmail` relit proprement sur conflit 23505).
+--
+-- ⚠️ Si des doublons d'e-mail (à la casse près) existent déjà, la création
+-- échoue : dédoublonner d'abord, p. ex. repérer les collisions avec
+--   SELECT lower(email), count(*) FROM users GROUP BY 1 HAVING count(*) > 1;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email_lower ON users (lower(email));

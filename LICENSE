@@ -1,0 +1,81 @@
+Licence Tech Speak'Her — code visible, tous droits réservés
+
+Copyright (c) 2025-2026 Tech Speak'Her (association, Toulouse).
+Tous droits réservés.
+
+Ce dépôt est public pour qu'on puisse LIRE le code, signaler ce qui cloche et
+proposer des changements. Ce n'est PAS un logiciel libre : la présente licence
+n'accorde aucun droit de réutilisation, de redistribution ni de déploiement.
+Les contributions, elles, restent bienvenues (voir CONTRIBUTING.md).
+
+
+1. Ce que vous pouvez faire sans rien demander
+
+- Consulter et lire le code, ici ou après un clone local.
+- Cloner, installer et exécuter le dépôt EN LOCAL pour l'étudier, reproduire un
+  défaut ou préparer une contribution.
+- Forker sur GitHub dans le seul but d'ouvrir une pull request sur ce dépôt.
+- Citer de courts extraits pour en discuter (issue, pull request, article,
+  présentation), en indiquant la source.
+
+
+2. Ce qui demande notre autorisation écrite
+
+- Déployer tout ou partie de ce code, en public comme en interne.
+- Le redistribuer, le publier ailleurs, le vendre ou le sous-licencier.
+- En reprendre tout ou partie dans un autre projet, modifié ou non, à but
+  lucratif ou non.
+- Conserver un fork actif au-delà de la contribution qui l'a motivé.
+
+Une autre communauté veut monter son propre tremplin, une école veut s'en
+servir en cours, une entreprise veut l'héberger : écrivez à
+techspeakher@gmail.com. Nous répondons au cas par cas, et une autorisation
+donnée l'est par écrit, pour un usage nommé.
+
+
+3. Contributions
+
+En proposant une contribution (pull request, correctif, documentation,
+traduction, contenu), vous déclarez en détenir les droits et vous concédez à
+Tech Speak'Her, pour la durée légale des droits d'auteur, une licence mondiale,
+non exclusive, irrévocable, gratuite, transférable et sous-licenciable
+permettant d'utiliser, reproduire, modifier, adapter, publier, distribuer et
+exploiter votre contribution dans le cadre du projet, y compris sous une
+licence que Tech Speak'Her choisirait plus tard.
+
+Vous gardez le droit d'auteur sur ce que vous écrivez : cette licence s'ajoute
+à vos droits, elle ne vous en prive pas. Vous restez libre de réutiliser votre
+propre contribution ailleurs, de votre côté.
+
+
+4. Marque
+
+Le nom « Tech Speak'Her », ses variantes, le logo et l'identité visuelle
+relèvent de TRADEMARK.md. Ils sont protégés séparément, et aucune autorisation
+donnée au titre de la présente licence ne vaut autorisation d'usage de la
+marque.
+
+
+5. Dépendances et données de tiers
+
+Cette licence porte sur le code écrit pour ce dépôt. Les bibliothèques tierces
+installées via package.json restent sous leurs propres licences. Les données
+importées gardent les leurs, avec leur attribution : le répertoire de
+conférences vient de developers.events (CC BY-NC 4.0) et de Toulouse Tech Hub
+(MIT), attributions portées par src/data/conferences-seed.ts.
+
+
+6. Absence de garantie
+
+Le code est fourni « en l'état », sans garantie d'aucune sorte, expresse ou
+implicite, notamment de qualité marchande, d'adéquation à un usage particulier
+ou d'absence de contrefaçon. Tech Speak'Her ne peut être tenue responsable d'un
+dommage lié à son usage, dans les limites permises par la loi.
+
+
+7. Version applicable
+
+Tech Speak'Her peut publier une nouvelle version de cette licence. La version
+applicable est celle présente dans le dépôt à la date de votre usage.
+
+Questions, demandes d'autorisation : techspeakher@gmail.com

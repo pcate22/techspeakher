@@ -1,0 +1,151 @@
+name: Déploiement Vercel
+
+# Déploie le site via le CLI Vercel, authentifié par un token du compte.
+# Cela contourne la limite du plan Hobby (seuls les commits du propriétaire
+# du compte se déploient automatiquement via l'intégration Git native) :
+# ici, les pushs de TOUTES les contributrices sont déployés.
+#
+# Secrets — Repo → Settings → Secrets and variables → Actions → Secrets :
+#   - VERCEL_TOKEN   jeton perso (Vercel → Account Settings → Tokens). Requis.
+#   - DATABASE_URL   URL Postgres Neon prod (endpoint -pooler, sslmode=verify-full).
+#                    Utilisée par le pas « Migration base (production) ». On passe
+#                    par un secret car la variable Vercel DATABASE_URL est
+#                    « Sensitive » (non déchiffrée par `vercel pull`). Optionnel :
+#                    si absent, la migration est ignorée et le déploiement continue.
+#
+# Le projet est lié par son nom (VERCEL_PROJECT) + le scope d'équipe
+# (VERCEL_SCOPE), tous deux publics et lisibles dans l'URL du projet Vercel
+# (vercel.com/<scope>/<projet>). Pas besoin de VERCEL_ORG_ID / VERCEL_PROJECT_ID.
+#
+# L'auto-déploiement Git natif est coupé côté vercel.json
+# ("git": { "deploymentEnabled": false }) : tous les déploiements passent ici.
+
+on:
+  push:
+    branches: ["**"]
+  workflow_dispatch: # déclenchement manuel (depuis GitHub ou via Claude)
+
+concurrency:
+  group: vercel-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  VERCEL_SCOPE: techspeakher-8614s-projects
+  VERCEL_PROJECT: techspeakher
+
+jobs:
+  preview:
+    name: Déploiement Preview
+    if: github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Installer le CLI Vercel
+        run: npm install --global vercel@latest
+
+      - name: Lier le projet Vercel
+        run: vercel link --yes --project "$VERCEL_PROJECT" --scope "$VERCEL_SCOPE" --token "$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Récupérer la config Vercel (preview)
+        run: vercel pull --yes --environment=preview --scope "$VERCEL_SCOPE" --token "$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build
+        run: vercel build --token "$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Déployer (preview)
+        # --archive=tgz : la CLI envoie UNE archive compressée au lieu de dizaines
+        # de fichiers un par un. Corrige le flake « Upload aborted » (AbortError)
+        # observé en CI, où un envoi individuel se coupait et faisait échouer tout
+        # le déploiement (donc pas de preview pour ce commit).
+        run: |
+          url=$(vercel deploy --prebuilt --archive=tgz --scope "$VERCEL_SCOPE" --token "$VERCEL_TOKEN")
+          echo "Preview: $url" >> "$GITHUB_STEP_SUMMARY"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+  production:
+    name: Déploiement Production
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Installer le CLI Vercel
+        run: npm install --global vercel@latest
+
+      - name: Lier le projet Vercel
+        run: vercel link --yes --project "$VERCEL_PROJECT" --scope "$VERCEL_SCOPE" --token "$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Récupérer la config Vercel (production)
+        run: vercel pull --yes --environment=production --scope "$VERCEL_SCOPE" --token "$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      # Migration AVANT la livraison : le schéma est synchronisé avant que le
+      # nouveau code ne soit servi. L'URL vient du secret GitHub Actions
+      # DATABASE_URL, PAS de `vercel pull` : la variable Vercel `DATABASE_URL`
+      # est « Sensitive » et n'est donc PAS déchiffrée par le CLI (elle
+      # ressortirait comme une valeur bidon → `getaddrinfo … base`). Le secret
+      # doit contenir l'URL Neon prod (endpoint -pooler, sslmode=verify-full).
+      - name: Installer les dépendances (pour le pilote pg)
+        run: npm ci
+
+      - name: Migration base (production)
+        # Gardé par la présence du secret : s'il est absent, le pas est ignoré
+        # (déploiement non bloqué). Un échec de migration fait échouer le job →
+        # le déploiement n'a PAS lieu (garde-fou).
+        if: ${{ env.DATABASE_URL != '' }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run db:migrate
+
+      - name: Build (production)
+        run: vercel build --prod --token "$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Déployer (production)
+        # --archive=tgz : cf. job preview — une archive au lieu de N fichiers,
+        # contre le flake « Upload aborted ».
+        run: |
+          url=$(vercel deploy --prebuilt --prod --archive=tgz --scope "$VERCEL_SCOPE" --token "$VERCEL_TOKEN")
+          echo "Production: $url" >> "$GITHUB_STEP_SUMMARY"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      # ON REGARDE CE QU'ON VIENT DE METTRE EN LIGNE.
+      #
+      # Jusqu'ici ce job migrait la base, construisait, déployait — et s'arrêtait.
+      # Une migration mal passée, une variable d'environnement absente, la base
+      # injoignable depuis Vercel : on l'apprenait parce qu'une membre écrivait.
+      #
+      # La CI ne peut pas couvrir ça : elle juge le CODE, sur un décor connu et
+      # des réglages de test. Ici on juge le DÉPLOIEMENT — environnement réel,
+      # vraie base, vraies données. En lecture seule : rien n'est créé, aucun
+      # e-mail ne part (les parcours d'écriture restent en CI).
+      #
+      # Le contrôle porte sur le CONTENU, pas sur les codes de réponse : mesuré,
+      # l'annuaire répond 200 même base coupée, et l'index de recherche renvoie
+      # « 0 fiche » sans erreur. C'est exactement l'incident du 2026-07-23, et un
+      # contrôle naïf serait resté vert pendant toute sa durée.
+      - name: Vérifier le déploiement
+        run: node scripts/verifier-prod.mjs

@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Maquette — Mon profil et l'onglet À faire</title>
+<style>
+  /* Palette RÉELLE du produit (src/app/globals.css) : la maquette doit se
+     juger dans les vraies couleurs, pas dans un gris de fil de fer. */
+  :root {
+    --navy: #170E47;
+    --navy-light: #1F1757;
+    --navy-lighter: #2A2068;
+    --cyan: #5FECDE;
+    --gold: #F6B17A;
+    --orange: #F46F6F;
+    --cream: #FFF0DC;
+    --gray-light: #B8B8D0;
+    --field-border: #8A83C0;
+    --white: #fff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #0d0828;
+    color: var(--white);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.45;
+    -webkit-text-size-adjust: 100%;
+  }
+  .intro {
+    max-width: 46rem; margin: 0 auto; padding: 1.5rem 1rem 0;
+  }
+  .intro h1 { font-size: 1.35rem; margin: 0 0 .5rem; }
+  .intro p { color: var(--gray-light); font-size: .95rem; margin: .5rem 0; }
+  .intro code {
+    background: var(--navy-lighter); padding: .1em .35em; border-radius: .25rem;
+    font-size: .85em;
+  }
+
+  /* Le cadre « téléphone » : 390 px, la largeur de référence des maquettes. */
+  .ecrans {
+    display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center;
+    padding: 1.5rem 1rem 4rem; max-width: 90rem; margin: 0 auto;
+  }
+  .ecran { width: 390px; max-width: 100%; }
+  .ecran > figcaption {
+    font-size: .9rem; font-weight: 700; color: var(--cream);
+    margin-bottom: .5rem;
+  }
+  .ecran > figcaption span {
+    display: block; font-weight: 400; color: var(--gray-light);
+    font-size: .85rem; margin-top: .15rem;
+  }
+  .tel {
+    background: var(--navy);
+    border: 1px solid var(--navy-lighter);
+    border-radius: 1.5rem;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    min-height: 720px;
+  }
+
+  /* En-tête du site */
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .75rem 1rem;
+    border-bottom: 1px solid var(--navy-lighter);
+    background: var(--navy-light);
+    font-size: .8rem; color: var(--gray-light);
+  }
+  .header .marque { font-weight: 700; letter-spacing: .06em; color: var(--white); font-size: .75rem; }
+
+  .corps { padding: 1.5rem 1rem 1rem; flex: 1; }
+
+  /* Bloc identité */
+  .identite { display: flex; align-items: center; gap: .85rem; margin-bottom: 1.25rem; }
+  .avatar {
+    width: 48px; height: 48px; border-radius: 50%; flex: 0 0 48px;
+    background: var(--navy-lighter); color: var(--cream);
+    display: grid; place-items: center; font-weight: 700; font-size: .95rem;
+  }
+  .identite h2 { margin: 0; font-size: 1.4rem; display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+  .pastille {
+    border: 1px solid var(--navy-lighter); border-radius: 999px;
+    padding: .1rem .6rem; font-size: .69rem; font-weight: 700;
+    color: var(--gray-light); letter-spacing: .04em;
+  }
+  .identite p { margin: .15rem 0 0; font-size: .85rem; color: var(--gray-light); }
+
+  /* Carte « Ta prochaine étape » */
+  .etape {
+    border: 1px solid rgba(246,177,122,.4);
+    background: rgba(246,177,122,.08);
+    border-radius: 1rem; padding: 1.15rem; margin-bottom: 1rem;
+  }
+  .etape h3 {
+    margin: 0 0 .5rem; font-size: .78rem; font-weight: 700;
+    letter-spacing: .08em; color: var(--gold); text-transform: uppercase;
+  }
+  .etape p { margin: 0 0 .9rem; font-size: .9rem; }
+  .bouton {
+    display: inline-block; background: var(--cyan); color: var(--navy);
+    font-weight: 700; font-size: .85rem; padding: .5rem 1rem;
+    border-radius: .55rem; text-decoration: none;
+  }
+
+  /* Étiquette de segment — la correction du 2026-08-16 :
+     casse normale, 14 px, gras, cream. Avant : 10,5 px, capitales, gris. */
+  /* Une étiquette appartient à ce qu'elle INTRODUIT : elle doit en être
+     nettement plus proche que de ce qui précède (loi de proximité). Ici 2 rem
+     au-dessus contre 0,5 rem en dessous, soit 4 pour 1.
+     Bug corrigé le 2026-08-16 : une règle `:first-of-type` collait la
+     PREMIÈRE étiquette au bloc du dessus (margin-top: 0), ce qui la faisait
+     lire comme la légende du groupe précédent. Repéré sur téléphone. */
+  .segment {
+    font-size: .875rem; font-weight: 700; color: var(--cream);
+    margin: 2rem 0 .5rem; padding: 0 .25rem;
+  }
+
+  /* Rangée de navigation */
+  .rangees { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .5rem; }
+  .rangee {
+    display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+    border: 1px solid var(--navy-lighter); background: var(--navy);
+    border-radius: .75rem; padding: .7rem 1rem;
+    text-decoration: none; color: inherit;
+  }
+  .rangee .titre { display: block; font-weight: 500; font-size: .95rem; }
+  .rangee .sous { display: block; font-size: .78rem; color: var(--gray-light); margin-top: .1rem; }
+  .rangee .chevron { color: var(--gray-light); font-size: 1.1rem; flex: 0 0 auto; }
+  .rangee.sortie .titre { color: var(--orange); }
+  .rangee.sortie { justify-content: flex-start; }
+
+  /* Pied allégé dans la coquille d'app */
+  .pied {
+    border-top: 1px solid var(--navy-lighter); margin-top: 1.5rem;
+    padding: 1rem; font-size: .72rem; color: var(--gray-light);
+    display: flex; flex-wrap: wrap; gap: .35rem .75rem; justify-content: center;
+  }
+  .pied a { color: var(--gray-light); }
+
+  /* Barre d'onglets */
+  .onglets {
+    display: flex; border-top: 1px solid var(--navy-lighter);
+    background: var(--navy-light); list-style: none; margin: 0; padding: 0;
+  }
+  .onglets li { flex: 1; }
+  .onglets a {
+    display: flex; flex-direction: column; align-items: center; gap: .15rem;
+    padding: .55rem .25rem; min-height: 52px; justify-content: center;
+    font-size: .68rem; color: var(--gray-light); text-decoration: none;
+    white-space: nowrap;
+  }
+  .onglets a[aria-current] { color: var(--cyan); font-weight: 700; }
+  .onglets .ico { font-size: 1rem; line-height: 1; position: relative; display: inline-flex; }
+  .onglets .ico svg { display: block; }
+  .plus {
+    background: var(--cyan); color: var(--navy); width: 34px; height: 34px;
+    border-radius: 50%; display: grid; place-items: center; font-weight: 700;
+    font-size: 1.1rem; margin: 0 auto;
+  }
+  /* Le compteur se pose SUR l'icône : il ne peut plus pousser le libellé sur
+     une deuxième ligne ni faire grandir l'onglet (retour terrain 2026-08-16). */
+  .compte {
+    position: absolute; top: -.5rem; left: .65rem;
+    min-width: 1.05rem; padding: 0 .2rem;
+    background: var(--cyan); color: var(--navy); border-radius: 999px;
+    font-size: .6rem; font-weight: 700; line-height: 1.05rem;
+    text-align: center;
+  }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  /* Liste « À faire » */
+  .titre-page { font-size: 1.4rem; font-weight: 700; margin: 0 0 .25rem; }
+  .meta-page { font-size: .85rem; color: var(--gray-light); margin: 0 0 1rem; }
+  .puces { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1rem; list-style: none; padding: 0; }
+  .puce {
+    border: 1px solid var(--field-border); border-radius: 999px;
+    padding: .3rem .7rem; font-size: .78rem; color: var(--gray-light);
+    text-decoration: none; display: inline-block;
+  }
+  .puce[aria-current] { background: var(--cyan); border-color: var(--cyan); color: var(--navy); font-weight: 700; }
+  .tache .sous { display: flex; gap: .5rem; flex-wrap: wrap; }
+  .retard { color: var(--orange); font-weight: 700; }
+  .vide {
+    border: 1px solid var(--navy-lighter); background: var(--navy-light);
+    border-radius: 1rem; padding: 1.5rem; text-align: center;
+  }
+  .vide p { margin: 0 0 .5rem; font-size: .95rem; }
+  .vide p:last-child { margin: 0; font-size: .85rem; color: var(--gray-light); }
+
+  .note {
+    max-width: 46rem; margin: 0 auto; padding: 0 1rem 3rem;
+    color: var(--gray-light); font-size: .9rem;
+  }
+  .note h2 { color: var(--white); font-size: 1.05rem; margin: 1.75rem 0 .5rem; }
+  .note ul { padding-left: 1.1rem; }
+  .note li { margin: .35rem 0; }
+  .note strong { color: var(--cream); }
+</style>
+</head>
+<body>
+
+<div class="intro">
+  <h1>Maquette — « Mon profil » rangé, et l'onglet « À faire »</h1>
+  <p>
+    Conception&nbsp;: <code>docs/conception-profil-et-a-faire.md</code>.
+    Palette réelle du produit, largeur 390&nbsp;px (la référence des maquettes).
+    Rien n'est cliquable&nbsp;: c'est une maquette, pas un prototype.
+  </p>
+  <p>
+    Sur téléphone, les quatre écrans s'empilent&nbsp;; en tournant l'écran ou
+    sur un grand écran, ils se placent côte à côte pour se comparer.
+  </p>
+</div>
+
+<div class="ecrans">
+
+  <!-- ÉCRAN 1 — AVANT -->
+  <figure class="ecran">
+    <figcaption>1. Aujourd'hui
+      <span>Compte orga + coach + speakeuse — l'écran de la capture</span>
+    </figcaption>
+    <div class="tel">
+      <div class="header"><span>☰</span><span class="marque">TECH SPEAK'HER</span><span>🔍</span></div>
+      <div class="corps">
+        <div class="identite">
+          <span class="avatar">CP</span>
+          <div>
+            <h2>Mon profil <span class="pastille">Privé</span></h2>
+            <p>Cateline P. · Fiche : publiée</p>
+          </div>
+        </div>
+
+        <div class="etape">
+          <h3 style="font-size:.66rem;letter-spacing:.14em;color:var(--gray-light)">TA PROCHAINE MARCHE</h3>
+          <p>Ta prochaine scène est le 22 octobre 2026. Prépare-la&nbsp;!</p>
+          <span class="bouton">Voir mon agenda</span>
+        </div>
+
+        <ul class="rangees">
+          <li><span class="rangee"><span><span class="titre">Ma fiche publique</span></span><span class="chevron">›</span></span></li>
+        </ul>
+
+        <p class="segment" style="font-size:.656rem;text-transform:uppercase;letter-spacing:.14em;color:var(--gray-light);font-weight:700">MES ACCÈS</p>
+        <ul class="rangees">
+          <li><span class="rangee"><span><span class="titre">À faire</span><span class="sous">Les tâches de l'asso qui t'attendent</span></span><span class="chevron">›</span></span></li>
+          <li><span class="rangee"><span><span class="titre">Tableau de bord orga</span><span class="sous">Speakeuses, contenus, messages, tremplins</span></span><span class="chevron">›</span></span></li>
+          <li><span class="rangee"><span><span class="titre">Ateliers · Tremplin 2026</span><span class="sous">L'accès direct aux ateliers de l'édition en cours</span></span><span class="chevron">›</span></span></li>
+          <li><span class="rangee"><span><span class="titre">Mes coachées</span><span class="sous">Les speakeuses que tu accompagnes, tes ateliers</span></span><span class="chevron">›</span></span></li>
+          <li><span class="rangee"><span><span class="titre">Tremplin 2026</span><span class="sous">Ta participation : ateliers, ressources et retour du jury</span></span><span class="chevron">›</span></span></li>
+          <li><span class="rangee"><span><span class="titre">Documents</span><span class="sous">Retours du jury et ressources, par édition</span></span><span class="chevron">›</span></span></li>
+          <li><span class="rangee"><span><span class="titre">Réglages</span><span class="sous">Méthodes de connexion, e-mails, compte</span></span><span class="chevron">›</span></span></li>
+          <li><span class="rangee sortie"><span class="titre">Se déconnecter</span></span></li>
+        </ul>
+
+        <div class="pied" style="flex-direction:column;align-items:flex-start;gap:.2rem">
+          <span>Le site · À propos · Annuaire speakeuses · Agenda · Tremplin ·</span>
+          <span>DevFest Toulouse · Conférences &amp; assos · Actualités</span>
+          <span>Infos · Partenaires · Contact · Code de conduite</span>
+          <span>Suivez-nous · LinkedIn · YouTube · Flux RSS</span>
+          <span>© 2026 Tech Speak'Her · Mentions légales</span>
+        </div>
+      </div>
+      <ul class="onglets">
+        <li><a href="#"><span class="ico">🏠</span>Accueil</a></li>
+        <li><a href="#"><span class="ico">📅</span>Agenda</a></li>
+        <li><a href="#"><span class="plus">+</span></a></li>
+        <li><a href="#"><span class="ico">✉️</span>Messages</a></li>
+        <li><a href="#" aria-current="page"><span class="ico">●</span>Profil</a></li>
+      </ul>
+    </div>
+  </figure>
+
+  <!-- ÉCRAN 2 — APRÈS -->
+  <figure class="ecran">
+    <figcaption>2. Cible
+      <span>Même compte : trois groupes nommés, « À faire » parti dans la barre</span>
+    </figcaption>
+    <div class="tel">
+      <div class="header"><span>☰</span><span class="marque">TECH SPEAK'HER</span><span>🔍</span></div>
+      <div class="corps">
+        <div class="identite">
+          <span class="avatar">CP</span>
+          <div>
+            <h2>Mon profil <span class="pastille">Privé</span></h2>
+            <p>Cateline P. · Fiche : publiée</p>
+          </div>
+        </div>
+
+        <div class="etape">
+          <h3>Ta prochaine étape</h3>
+          <p>Ta prochaine scène est le 22 octobre 2026. Prépare-la&nbsp;!</p>
+          <span class="bouton">Voir mon agenda</span>
+        </div>
+
+        <ul class="rangees">
+          <li><span class="rangee"><span><span class="titre">Ma fiche publique</span></span><span class="chevron">›</span></span></li>
+          <li><span class="rangee"><span><span class="titre">Mes articles</span><span class="sous">Du brouillon à la publication</span></span><span class="chevron">›</span></span></li>
+        </ul>
+
+        <p class="segment">Mon bénévolat</p>
+        <ul class="rangees">
+          <li><span class="rangee"><span><span class="titre">Espace organisatrices</span><span class="sous">Speakeuses, contenus, messages, tremplins</span></span><span class="chevron">›</span></span></li>
+          <li><span class="rangee"><span><span class="titre">Ateliers du tremplin en cours</span><span class="sous">Tremplin 2026</span></span><span class="chevron">›</span></span></li>
+          <li><span class="rangee"><span><span class="titre">Mes coachées</span><span class="sous">Speakeuses accompagnées et ateliers</span></span><span class="chevron">›</span></span></li>
+        </ul>
+
+        <p class="segment">Ma participation</p>
+        <ul class="rangees">
+          <li><span class="rangee"><span><span class="titre">Tremplin 2026</span><span class="sous">Ateliers, ressources et retour du jury</span></span><span class="chevron">›</span></span></li>
+          <li><span class="rangee"><span><span class="titre">Documents</span><span class="sous">Retours du jury et ressources</span></span><span class="chevron">›</span></span></li>
+        </ul>
+
+        <p class="segment">Mon compte</p>
+        <ul class="rangees">
+          <li><span class="rangee"><span><span class="titre">Réglages</span><span class="sous">Méthodes de connexion, e-mails, compte</span></span><span class="chevron">›</span></span></li>
+          <li><span class="rangee sortie"><span class="titre">Se déconnecter</span></span></li>
+        </ul>
+
+        <div class="pied">
+          <span>© 2026 Tech Speak'Her</span><span>·</span>
+          <a href="#">Mentions légales</a><span>·</span>
+          <a href="#">Code de conduite</a>
+        </div>
+      </div>
+      <ul class="onglets">
+        <li><a href="#"><span class="ico">🏠</span>Accueil</a></li>
+        <li><a href="#"><span class="ico">📅</span>Agenda</a></li>
+        <li><a href="#"><span class="plus">+</span></a></li>
+        <li><a href="#"><span class="ico"><span aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h11M4 12h11M4 18h7"/><path d="M16.5 17.5 19 20l4.5-5"/></svg></span><span class="compte" aria-hidden="true">5</span></span>À faire<span class="sr">, 5 en attente</span></a></li>
+        <li><a href="#" aria-current="page"><span class="ico">●</span>Profil</a></li>
+      </ul>
+    </div>
+  </figure>
+
+  <!-- ÉCRAN 3 — LE CAS MAJORITAIRE -->
+  <figure class="ecran">
+    <figcaption>3. Cible — speakeuse « simple »
+      <span>Le cas majoritaire : 3 rangées, UNE étiquette (comme aujourd'hui)</span>
+    </figcaption>
+    <div class="tel" style="min-height:520px">
+      <div class="header"><span>☰</span><span class="marque">TECH SPEAK'HER</span><span>🔍</span></div>
+      <div class="corps">
+        <div class="identite">
+          <span class="avatar">AL</span>
+          <div>
+            <h2>Mon profil <span class="pastille">Privé</span></h2>
+            <p>Ada Lovelace · Fiche : publiée</p>
+          </div>
+        </div>
+
+        <div class="etape">
+          <h3>Ta prochaine étape</h3>
+          <p>Tes talks sont prêts. Vise une scène&nbsp;: ajoute ta prochaine conférence sur un de tes talks.</p>
+          <span class="bouton">Déclarer une scène</span>
+        </div>
+
+        <ul class="rangees">
+          <li><span class="rangee"><span><span class="titre">Ma fiche publique</span></span><span class="chevron">›</span></span></li>
+        </ul>
+
+        <p class="segment">Mon compte</p>
+        <ul class="rangees">
+          <li><span class="rangee"><span><span class="titre">Réglages</span><span class="sous">Méthodes de connexion, e-mails, compte</span></span><span class="chevron">›</span></span></li>
+          <li><span class="rangee sortie"><span class="titre">Se déconnecter</span></span></li>
+        </ul>
+
+        <div class="pied">
+          <span>© 2026 Tech Speak'Her</span><span>·</span>
+          <a href="#">Mentions légales</a><span>·</span>
+          <a href="#">Code de conduite</a>
+        </div>
+      </div>
+      <ul class="onglets">
+        <li><a href="#"><span class="ico">🏠</span>Accueil</a></li>
+        <li><a href="#"><span class="ico">📅</span>Agenda</a></li>
+        <li><a href="#"><span class="plus">+</span></a></li>
+        <li><a href="#"><span class="ico" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h11M4 12h11M4 18h7"/><path d="M16.5 17.5 19 20l4.5-5"/></svg></span>À faire</a></li>
+        <li><a href="#" aria-current="page"><span class="ico">●</span>Profil</a></li>
+      </ul>
+    </div>
+  </figure>
+
+  <!-- ÉCRAN 4 — L'ONGLET À FAIRE -->
+  <figure class="ecran">
+    <figcaption>4. L'onglet « À faire »
+      <span>Vue orga — la liste s'ouvre COMPLÈTE, les puces ne filtrent qu'ensuite</span>
+    </figcaption>
+    <div class="tel">
+      <div class="header"><span>☰</span><span class="marque">TECH SPEAK'HER</span><span>🔍</span></div>
+      <div class="corps">
+        <h2 class="titre-page">À faire (5)</h2>
+        <p class="meta-page">Tout ce qui attend une action. La liste se met à jour toute seule.</p>
+
+        <ul class="puces">
+          <li><span class="puce" aria-current="page">Tout</span></li>
+          <li><span class="puce">Pour moi</span></li>
+          <li><span class="puce">Pour l'association</span></li>
+          <li><span class="puce">Mes coachées</span></li>
+        </ul>
+
+        <ul class="rangees">
+          <li><span class="rangee tache"><span><span class="titre">Valider la fiche d'Ada</span><span class="sous">Pour l'association <span class="retard">· En retard</span></span></span><span class="chevron">›</span></span></li>
+          <li><span class="rangee tache"><span><span class="titre">Modérer 3 messages reçus via les fiches</span><span class="sous">Pour l'association</span></span><span class="chevron">›</span></span></li>
+          <li><span class="rangee tache"><span><span class="titre">Pointer les présences de «&nbsp;Pitcher son talk&nbsp;»</span><span class="sous">Pour l'association · Tremplin 2026</span></span><span class="chevron">›</span></span></li>
+          <li><span class="rangee tache"><span><span class="titre">Répondre à Nawel</span><span class="sous">Pour moi</span></span><span class="chevron">›</span></span></li>
+          <li><span class="rangee tache"><span><span class="titre">Confirmer un talk repéré à ton nom</span><span class="sous">Pour moi</span></span><span class="chevron">›</span></span></li>
+        </ul>
+
+        <div class="pied">
+          <span>© 2026 Tech Speak'Her</span><span>·</span>
+          <a href="#">Mentions légales</a><span>·</span>
+          <a href="#">Code de conduite</a>
+        </div>
+      </div>
+      <ul class="onglets">
+        <li><a href="#"><span class="ico">🏠</span>Accueil</a></li>
+        <li><a href="#"><span class="ico">📅</span>Agenda</a></li>
+        <li><a href="#"><span class="plus">+</span></a></li>
+        <li><a href="#" aria-current="page"><span class="ico"><span aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h11M4 12h11M4 18h7"/><path d="M16.5 17.5 19 20l4.5-5"/></svg></span><span class="compte" aria-hidden="true">5</span></span>À faire<span class="sr">, 5 en attente</span></a></li>
+        <li><a href="#"><span class="ico">●</span>Profil</a></li>
+      </ul>
+    </div>
+  </figure>
+
+  <!-- ÉCRAN 5 — LISTE VIDE -->
+  <figure class="ecran">
+    <figcaption>5. L'onglet « À faire », rien en attente
+      <span>Le vide renvoie au fil : l'onglet ne devient jamais mort</span>
+    </figcaption>
+    <div class="tel" style="min-height:420px">
+      <div class="header"><span>☰</span><span class="marque">TECH SPEAK'HER</span><span>🔍</span></div>
+      <div class="corps">
+        <h2 class="titre-page">À faire</h2>
+        <div class="vide" style="margin-top:1rem">
+          <p>Rien en attente. Tout roule.</p>
+          <p>Ce qui se passe chez nous vit sur l'Accueil.</p>
+        </div>
+      </div>
+      <ul class="onglets">
+        <li><a href="#"><span class="ico">🏠</span>Accueil</a></li>
+        <li><a href="#"><span class="ico">📅</span>Agenda</a></li>
+        <li><a href="#"><span class="plus">+</span></a></li>
+        <li><a href="#" aria-current="page"><span class="ico" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h11M4 12h11M4 18h7"/><path d="M16.5 17.5 19 20l4.5-5"/></svg></span>À faire</a></li>
+        <li><a href="#"><span class="ico">●</span>Profil</a></li>
+      </ul>
+    </div>
+  </figure>
+
+</div>
+
+<div class="note">
+  <h2>Ce qu'il faut regarder, écran 1 contre écran 2</h2>
+  <ul>
+    <li><strong>L'étiquette de groupe.</strong> Écran 1&nbsp;: «&nbsp;MES ACCÈS&nbsp;» en 10,5&nbsp;px, capitales, gris — c'est le texte le moins lisible de la page, alors que c'est lui qui la structure. Écran 2&nbsp;: casse normale, 14&nbsp;px, crème. <em>Déjà corrigé et livré.</em></li>
+    <li><strong>Huit rangées deviennent trois groupes.</strong> Écran 1, rien ne dit qu'on passe du travail de l'association à sa propre participation. Les deux «&nbsp;Tremplin 2026&nbsp;» sont séparés par «&nbsp;Mes coachées&nbsp;».</li>
+    <li><strong>«&nbsp;À faire&nbsp;» quitte la page</strong> et devient l'onglet 4, avec son compteur. L'orga passe de 3&nbsp;taps sans signal à 1&nbsp;tap avec un nombre.</li>
+    <li><strong>Le pied de page</strong> passe de ~17&nbsp;liens à la ligne légale — les autres vivent déjà dans le menu ☰.</li>
+    <li><strong>Écran 3 est le juge.</strong> Une speakeuse sans rôle voit 3&nbsp;rangées et UNE étiquette&nbsp;: autant qu'aujourd'hui. La refonte ne coûte rien au cas majoritaire.</li>
+  </ul>
+
+  <h2>Ce qui reste ouvert</h2>
+  <ul>
+    <li><strong>Les deux rangées du haut n'ont pas d'étiquette</strong> (écrans 2 et 3). Aucun mot simple n'existe pour «&nbsp;ma fiche + mes articles&nbsp;», et on ne fabrique pas un mot pour avoir une étiquette. Mais trois groupes nommés et un groupe muet, ce sont deux traitements pour une même famille. <strong>C'est exactement ce que cette maquette doit trancher&nbsp;: est-ce que ça se lit, ou est-ce que ça flotte&nbsp;?</strong></li>
+    <li><strong>Le pictogramme de l'onglet 4</strong> est ici une liste cochée dessinée à la main. À affiner avec les quatre autres onglets, qui sont encore des emojis.</li>
+  </ul>
+</div>
+
+</body>
+</html>
