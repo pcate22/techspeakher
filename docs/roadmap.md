@@ -271,26 +271,23 @@ Ce qu'elle **laisse ouvert** : l'attribution « Propulsé par Tech Speak'Her »
 n'existe dans aucun écran (dette P2 du 23/08). Elle ne coûte rien tant qu'aucun
 déploiement n'est autorisé, et devient un pré-requis le jour du premier.
 
-**Le passage en public — état au 2026-10-15 : DÉCIDÉ, en cours.** Méthode
-tranchée par Cateline : un **nouveau dépôt public**, créé d'un seul commit à
-partir de `main` nettoyé ; l'actuel reste **privé**, en archive (ses 374 PR,
-ses issues et son historique restent privés, donc aucune réécriture
-d'historique ni demande au support GitHub). Balayage du 15/10 sur les 1 246
-commits : **aucun secret**. Relecture des 374 PR et 3 issues par six agents :
-rien de grave. Fait le 15/10 :
+**Le passage en public — FAIT le 2026-10-16.** Le code est public dans
+`pcate22/techspeakher`, créé d'un seul commit à partir de `main` nettoyé (photo
+du commit e79623b0 de l'ancien dépôt). L'ancien dépôt,
+`pcate22/Tech-Speak-her-web-site`, est **privé et archivé** : ses 374 PR, ses
+issues et son historique restent privés, sans réécriture ni demande au support
+GitHub. Fait avant la bascule : CSV de personnes réelles supprimés, vraies
+finalistes du seed remplacées par des figurantes (`seeds-figurants.test.ts`),
+30 PR ouvertes triées. Bascule du 16/10 : secrets `VERCEL_TOKEN` et
+`DATABASE_URL` recopiés, déploiement de production depuis le nouveau dépôt
+vérifié, ruleset « Main » actif (`docs/exploitation.md`).
 
-- ~~`sheets-templates/*.csv`~~ (personnes réelles) : **supprimés** ;
-- ~~vraies finalistes dans `src/lib/tremplin-seed.ts`~~ (nom, bio, LinkedIn,
-  publiables hors consentement dans un dépôt public) : **remplacées par des
-  figurantes** ; `seeds-figurants.test.ts` exige que tout LinkedIn de seed finisse
-  par `-demo` et le retour des CSV ;
-- les 30 PR ouvertes triées (section « Chantiers repris des PR fermées »).
-
-**Reste, dans l'ordre** : créer le dépôt public (Cateline : nom, compte),
-y pousser `main` en un commit ; rebrancher Vercel sur le nouveau dépôt et
-recopier les secrets de la CI ; poser la protection de `main` (possible en
-public sur un compte gratuit : lint, unitaires, E2E, build obligatoires) ;
-archiver l'ancien. **Restent publiques par choix** (contenu déjà sur le site) :
+**Reste** : relier, dans Vercel, l'intégration Git du projet au nouveau dépôt
+(ou la débrancher : le déploiement passe par `vercel-deploy.yml`) ; révoquer
+l'ancien jeton `VERCEL_TOKEN` du 25 juin ; refaire, dans le nouveau dépôt, les
+mises à jour Dependabot fuse.js et Next 16.3 (ex-#64 et #61, qui cassaient une
+recherche et le lint).
+**Restent publiques par choix** (contenu déjà sur le site) :
 les intervenantes du DevFest (`src/data/devfest.ts`), les crédits de
 `/tremplin`, les fondatrices ; les migrations SQL déjà appliquées gardent leurs
 commentaires nominatifs, et quelques tests prennent des noms de fondatrices

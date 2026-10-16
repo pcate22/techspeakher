@@ -1,7 +1,7 @@
 blank_issues_enabled: true
 contact_links:
   - name: Faille de sécurité
-    url: https://github.com/pcate22/tech-speak-her-web-site/security/advisories/new
+    url: https://github.com/pcate22/techspeakher/security/advisories/new
     about: Ne créez pas d'issue publique. Signalez en privé (voir SECURITY.md).
   - name: Question ou usage de la marque
     url: mailto:techspeakher@gmail.com

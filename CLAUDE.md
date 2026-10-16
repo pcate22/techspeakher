@@ -27,7 +27,7 @@
 Site web + plateforme de **Tech Speak'Her**, communauté de femmes de la tech à Toulouse qui encourage la prise de parole en conférence. Nos deux premiers meetups ont été organisés avec GDG Toulouse.
 
 - **Prod** : Vercel (deploy auto sur push `main`)
-- **Repo** : `pcate22/tech-speak-her-web-site`
+- **Repo** : `pcate22/techspeakher` (public depuis le 16/10/2026 ; l'historique de développement est dans `pcate22/Tech-Speak-her-web-site`, privé et archivé)
 
 ## Stack
 
