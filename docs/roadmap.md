@@ -4,7 +4,8 @@
 > la dette technique : `docs/dette-technique.md`. Pour l'étude d'import des
 > talks : `docs/faisabilite-import-talks.md`.
 >
-> Dernière mise à jour : **2026-10-15** (sections « Navigation connectée »,
+> Dernière mise à jour : **2026-10-16** (section « Reprise humaine du code »
+> seule) ; **2026-10-15** (sections « Navigation connectée »,
 > « Chantiers repris des PR fermées », « Adhésions HelloAsso », « Partenaires
 > par façon d'aider », « Header Nous rejoindre », « Landing partenaires »,
 > « Textes après l'AGE » et
@@ -13,14 +14,35 @@
 > PAS été revérifiées depuis. Une entrée qu'on solde se raye ici le jour même :
 > ce fichier est la première chose que lit la session suivante.
 >
-> **Deux chantiers ouverts, chacun avec son état daté ci-dessous** : l'import et
-> l'annuaire (le détecteur d'id Sessionize est livré depuis le 21/08 ; restent la
+> **Chantiers ouverts, chacun avec son état daté ci-dessous** (décompte à
+> vérifier au 2026-10-16 : les sections du 15/10 n'y figurent pas) : la reprise
+> humaine du code (audit livré le 16/10, plan en attente de validation),
+> l'import et l'annuaire (le détecteur d'id Sessionize est livré depuis le 21/08 ; restent la
 > ligne de dette `.invalid` et l'écoute d'un profil Notist), l'agenda public
 > (plan livré en entier, deux décisions produit). L'**arbitrage** de la file
 > côté orga est livré le 22/08 (PR #359) : voir l'item 1 ci-dessous, qui l'a
 > déclenché. Aucune passation ne s'empile sur une autre : `CLAUDE.md` §Clore
 > une session. La **licence** est tranchée le 23/08 : voir la section dédiée
 > ci-dessous, qui ferme la piste « une autre communauté déploie la plateforme ».
+
+## Reprise humaine du code — audit LIVRÉ le 2026-10-16, plan en attente de validation
+
+Le dépôt est public depuis le 16/10 (`pcate22/techspeakher`). Le code restera
+écrit à 95 % par des sessions Claude, mais une bénévole doit pouvoir le lire,
+le lancer et proposer un changement sans passer par une session. L'audit
+chiffré et le plan sont dans `docs/audit-reprise-humaine.md`.
+
+Plan en quatre lots (numéros de lot, pas de PR ; le lot 1 est l'audit) :
+**2** page d'accueil des docs, glossaire, démarrage local avec le décor,
+parcours humain dans `CONTRIBUTING.md` ; **3** découpage des quatre fichiers
+de plus de 1 000 lignes (une PR par fichier) ; **4** règle d'écriture des
+commentaires, test, puis tri ; **5** archive de la dette soldée. Ordre
+recommandé : 2, 5, 3, 4.
+
+**Où reprendre** : rien n'est commencé. Six décisions attendent Cateline
+(audit §5 : ordre, revues d'une PR humaine, connexion locale sans compte
+tiers, rouverture de `tremplin-ateliers.ts`, archive de la dette, règle des
+commentaires dans `CLAUDE.md`). Une fois tranchées, ouvrir le lot 2.
 
 ## Navigation connectée — rail bureau, « Ma fiche » à un geste, une date sans ouvrir le talk — PR #382 OUVERTE le 2026-10-15
 

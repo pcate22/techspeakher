@@ -1,5 +1,14 @@
 # Dette technique — Tech Speak'Her
 
+> **Session du 2026-10-16 — audit « reprise humaine »**
+> (`docs/audit-reprise-humaine.md`, docs seulement). Aucun P0 touché ; le **3**
+> n'a pas été relu ce jour. Recalés contre le code : les chiffres du P1
+> « Squelette copié-collé des actions redirect » (§ Robustesse). Rien soldé.
+> Une rouverture est proposée en § Accepté (`tremplin-ateliers.ts`). Les
+> constats de l'audit (fichiers de plus de 1 000 lignes, commentaires, docs
+> sans index, connexion locale) sont suivis dans la roadmap (§ Reprise
+> humaine du code) tant que Cateline n'a pas validé le plan.
+>
 > **Session du 2026-10-15 — les six rouges locaux sous Node 26.** SOLDÉ : le
 > P2 « six tests rouges en local sous Node 26 » (§ Tests). Deux causes,
 > vérifiées : le `localStorage` natif de Node ≥ 25 masquait celui de jsdom
@@ -711,8 +720,12 @@ ci-dessous, listées ici pour la traçabilité :
   `search-bar.test.tsx`). À trancher : soit assumer et croiser les commentaires,
   soit une seule source avec deux vues. **Effort : S.**
 - **Squelette copié-collé des actions redirect** dans
-  `src/app/admin/tremplins/actions.ts` (**1994 lignes**, 41 actions,
-  73 `revalidatePath`) : 4 suppressions PRG + 2 actions talk sur le même
+  `src/app/admin/tremplins/actions.ts` (**2 610 lignes**, 54 actions,
+  97 `revalidatePath`, chiffres recalés le 2026-10-16 ; le détail qui suit
+  n'a pas été relu ce jour, sauf `editionBase` : 5 appels, et
+  `revaliderEditionPartout` : 3 appels). Le découpage par sujet proposé par
+  `docs/audit-reprise-humaine.md` §4.4 (PR 3a) le solderait dans le geste.
+  Constat d'origine : 4 suppressions PRG + 2 actions talk sur le même
   préambule recopié ; `editionBase` ne retourne pas l'`editionId` (re-parse
   commenté 4×) ; le helper `revaliderEditionPartout` existe mais n'est
   utilisé que 3 fois. Faire retourner `{ base, editionId }` et généraliser le
@@ -1889,6 +1902,9 @@ personne ne perd de donnée, et rien n'est faux en public.
   client, messages centralisés. Les cas à saisie sont migrés (ActionState).
 - **Découpage `src/lib/tremplin-*`** : modules cohésifs, dépendances dans le
   bon sens. `tremplin-form.ts` gros mais cohésif — ne pas scinder.
+  **Rouverture proposée le 2026-10-16** pour `tremplin-ateliers.ts`
+  (1 495 lignes), au nom de la lecture : décision de Cateline attendue
+  (`docs/audit-reprise-humaine.md` §5, D).
 - **`editionStatutAffiche`** (dates dérivées priment, statut manuel en
   secours) : bon modèle, pur, testé. La dette est le nombre d'états manuels
   (P2), pas le mécanisme.
