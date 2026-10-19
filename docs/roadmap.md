@@ -16,7 +16,7 @@
 >
 > **Chantiers ouverts, chacun avec son état daté ci-dessous** (décompte à
 > vérifier au 2026-10-16 : les sections du 15/10 n'y figurent pas) : la reprise
-> humaine du code (audit livré le 16/10, plan en attente de validation),
+> humaine du code (porte d'entrée en PR le 16/10, le reste reporté),
 > l'import et l'annuaire (le détecteur d'id Sessionize est livré depuis le 21/08 ; restent la
 > ligne de dette `.invalid` et l'écoute d'un profil Notist), l'agenda public
 > (plan livré en entier, deux décisions produit). L'**arbitrage** de la file
@@ -25,24 +25,29 @@
 > une session. La **licence** est tranchée le 23/08 : voir la section dédiée
 > ci-dessous, qui ferme la piste « une autre communauté déploie la plateforme ».
 
-## Reprise humaine du code — audit LIVRÉ le 2026-10-16, plan en attente de validation
+## Reprise humaine du code — porte d'entrée en PR le 2026-10-16, le reste reporté
 
 Le dépôt est public depuis le 16/10 (`pcate22/techspeakher`). Le code restera
 écrit à 95 % par des sessions Claude, mais une bénévole doit pouvoir le lire,
 le lancer et proposer un changement sans passer par une session. L'audit
 chiffré et le plan sont dans `docs/audit-reprise-humaine.md`.
 
-Plan en quatre lots (numéros de lot, pas de PR ; le lot 1 est l'audit) :
-**2** page d'accueil des docs, glossaire, démarrage local avec le décor,
-parcours humain dans `CONTRIBUTING.md` ; **3** découpage des quatre fichiers
-de plus de 1 000 lignes (une PR par fichier) ; **4** règle d'écriture des
-commentaires, test, puis tri ; **5** archive de la dette soldée. Ordre
-recommandé : 2, 5, 3, 4.
+**Tranché le 2026-10-16** par Cateline (crédits limités, « on fait les trucs
+les plus importants ») :
 
-**Où reprendre** : rien n'est commencé. Six décisions attendent Cateline
-(audit §5 : ordre, revues d'une PR humaine, connexion locale sans compte
-tiers, rouverture de `tremplin-ateliers.ts`, archive de la dette, règle des
-commentaires dans `CLAUDE.md`). Une fois tranchées, ouvrir le lot 2.
+- **fait, en PR** : la porte d'entrée (lot 2 : `docs/README.md` avec index et
+  glossaire, démarrage local testé avec le décor, parcours humain dans
+  `CONTRIBUTING.md`, modèle de PR en deux parties) et la règle d'écriture des
+  commentaires dans `CLAUDE.md`, avec le tri au fil de l'eau ;
+- **reporté**, suivi dans la dette (P2, § « Reprise humaine ») : découpage des
+  quatre fichiers de plus de 1 000 lignes (lot 3), tri dédié des commentaires
+  (lot 4), archive de la dette soldée (lot 5), connexion locale sans compte
+  tiers.
+
+**Où reprendre** : quand des crédits le permettent, le lot 5 d'abord (court,
+docs seulement), puis le lot 3 (une PR par fichier, en commençant par
+`src/app/admin/tremplins/actions.ts`). Les décisions qui les accompagnent sont
+dans l'audit, §5.
 
 ## Navigation connectée — rail bureau, « Ma fiche » à un geste, une date sans ouvrir le talk — PR #382 OUVERTE le 2026-10-15
 

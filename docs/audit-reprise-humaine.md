@@ -10,8 +10,9 @@
 > la méthode des sessions. Il ajoute un parcours pour les humaines, et ses
 > chantiers de code (gros fichiers, commentaires) servent aussi aux sessions.
 >
-> **État** : plan **en attente de validation** par Cateline. Rien n'est
-> commencé. Les décisions à prendre sont au §5.
+> **État** : plan **tranché le 2026-10-16** (§5, « Décision ») : le lot 2 et
+> la règle des commentaires sont faits, le reste est reporté et suivi dans la
+> dette.
 >
 > **Numérotation.** Le plan compte quatre lots, numérotés de 2 à 5 (le lot 1
 > est cet audit). Ce sont des numéros de lot, pas des numéros de PR GitHub.
@@ -258,6 +259,26 @@ fichiers.
   `docs/clore-une-session.md`). D'accord ?
 - **F. La règle d'écriture des commentaires entre dans `CLAUDE.md`**
   (§4.5, étape 1) : c'est une règle nouvelle pour les sessions. D'accord ?
+
+### Décision du 2026-10-16
+
+Cateline, qui n'est pas technicienne et dont les crédits Claude sont
+limités : « on fait les trucs les plus importants ». Retenu :
+
+- **Lot 2 fait** : `docs/README.md` (accueil, index des docs, glossaire),
+  démarrage local avec le décor (testé le 2026-10-16 : schéma, décor, puis
+  `/speakeuses` affiche les quatre fiches du décor), parcours humain dans
+  `CONTRIBUTING.md`, modèle de PR en deux parties.
+- **F fait** : la règle des commentaires est dans `CLAUDE.md` et
+  `CONTRIBUTING.md`. Une session qui croise un commentaire « historique » le
+  ramène à son pourquoi : le tri du lot 4 se fait ainsi au fil de l'eau, sans
+  session dédiée.
+- **B appliqué** : une PR humaine est relue par une session lancée côté
+  association.
+- **Reportés** (dette P2, § « Reprise humaine ») : le découpage des gros
+  fichiers (lot 3), le tri dédié des commentaires (lot 4) et l'archive de la
+  dette soldée (lot 5) ; la connexion locale sans compte tiers (C) aussi. Les
+  décisions A, D et E reviendront avec leur lot.
 
 ## Annexe : refaire les mesures
 

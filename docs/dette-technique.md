@@ -3,11 +3,11 @@
 > **Session du 2026-10-16 — audit « reprise humaine »**
 > (`docs/audit-reprise-humaine.md`, docs seulement). Aucun P0 touché ; le **3**
 > n'a pas été relu ce jour. Recalés contre le code : les chiffres du P1
-> « Squelette copié-collé des actions redirect » (§ Robustesse). Rien soldé.
-> Une rouverture est proposée en § Accepté (`tremplin-ateliers.ts`). Les
-> constats de l'audit (fichiers de plus de 1 000 lignes, commentaires, docs
-> sans index, connexion locale) sont suivis dans la roadmap (§ Reprise
-> humaine du code) tant que Cateline n'a pas validé le plan.
+> « Squelette copié-collé des actions redirect » (§ Robustesse). SOLDÉ dans
+> le geste (PR « porte d'entrée ») : docs sans index ni glossaire
+> (`docs/README.md`), démarrage local réservé à Neon (README). NOUVEAU, en
+> P2 : ce que le plan reporte (§ « Reprise humaine »). Une rouverture est
+> proposée en § Accepté (`tremplin-ateliers.ts`), reportée avec le lot 3.
 >
 > **Session du 2026-10-15 — les six rouges locaux sous Node 26.** SOLDÉ : le
 > P2 « six tests rouges en local sous Node 26 » (§ Tests). Deux causes,
@@ -732,6 +732,34 @@ ci-dessous, listées ici pour la traçabilité :
   helper. **Effort : S/M** (refactor sûr, les redirects sont testés).
 
 ## 🟡 P2 — nice-to-have
+
+### Reprise humaine : ce que le plan reporte (2026-10-16)
+
+Plan et mesures : `docs/audit-reprise-humaine.md` (§4 et §5). Reporté faute de
+crédits, décision de Cateline du 2026-10-16.
+
+- **Quatre fichiers de plus de 1 000 lignes** : `src/app/admin/tremplins/actions.ts`
+  (2 610 lignes, 54 Server Actions), `src/lib/tremplin-ateliers.ts` (1 495),
+  `src/lib/profiles.ts` (1 224), `src/app/mon-espace/actions.ts` (1 049).
+  Découpage par sujet proposé à l'audit §4.4, une PR par fichier, puis la
+  règle ESLint `max-lines` à 1 000 sur le code hors tests. Le premier solde
+  le P1 « Squelette copié-collé des actions redirect ». **Effort : M à L.**
+- **Commentaires qui racontent l'histoire** : ~330 lignes dans ~150 fichiers
+  (code), ~260 dans ~130 fichiers (tests), et 98 blocs de 20 lignes ou plus.
+  La règle de `CLAUDE.md` (§Code & données, « Commentaires ») les fait
+  disparaître au fil des passages ; un tri dédié, et un test qui refuse dates
+  de revue et numéros de PR dans `src/`, restent à faire (audit §4.5).
+  **Effort : M.**
+- **La dette soldée reste dans ce doc** : ~890 lignes sur ~2 150 (en-tête
+  journal, P0 barrés, « Historique »). Les sortir vers
+  `docs/archives/dette-soldee.md` change la règle « barré à sa place » (en
+  tête du P0 et dans `docs/clore-une-session.md`) : décision E de l'audit.
+  **Effort : S.**
+- **Se connecter en local demande un compte tiers** (Google, LinkedIn ou une
+  clé Brevo) : sans eux, l'espace membre et l'admin restent fermés en local.
+  Piste : un script de dev qui crée le cookie de connexion d'un compte du
+  décor, comme `e2e/session.ts`, refusé hors `localhost` ; touche à
+  l'authentification, donc PR à part avec revue sécurité. **Effort : S.**
 
 ### Navigation connectée : ce que la refonte du 2026-10-15 laisse ouvert
 
@@ -1903,8 +1931,8 @@ personne ne perd de donnée, et rien n'est faux en public.
 - **Découpage `src/lib/tremplin-*`** : modules cohésifs, dépendances dans le
   bon sens. `tremplin-form.ts` gros mais cohésif — ne pas scinder.
   **Rouverture proposée le 2026-10-16** pour `tremplin-ateliers.ts`
-  (1 495 lignes), au nom de la lecture : décision de Cateline attendue
-  (`docs/audit-reprise-humaine.md` §5, D).
+  (1 495 lignes), au nom de la lecture ; décision de Cateline reportée avec le
+  lot 3 (`docs/audit-reprise-humaine.md` §5, D).
 - **`editionStatutAffiche`** (dates dérivées priment, statut manuel en
   secours) : bon modèle, pur, testé. La dette est le nombre d'états manuels
   (P2), pas le mécanisme.
