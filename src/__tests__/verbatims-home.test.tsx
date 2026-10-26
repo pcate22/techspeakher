@@ -51,10 +51,10 @@ describe("Home — les verbatims", () => {
       );
     const chiffres = rang(/chiffres clés/i);
     const paroles = rang(/en parlent/i);
-    const pourQui = rang(/pour qui/i);
+    const aQui = rang(/à qui s['’]adresse/i);
     expect(chiffres).toBeGreaterThanOrEqual(0);
     expect(paroles).toBe(chiffres + 1);
-    expect(paroles).toBeLessThan(pourQui);
+    expect(paroles).toBeLessThan(aQui);
   });
 
   it("laisse le CTA Tremplin seul CTA de la section basse (aucun bouton ajouté)", async () => {
