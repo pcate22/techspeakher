@@ -4,7 +4,8 @@
 > la dette technique : `docs/dette-technique.md`. Pour l'étude d'import des
 > talks : `docs/faisabilite-import-talks.md`.
 >
-> Dernière mise à jour : **2026-10-16** (section « Reprise humaine du code »
+> Dernière mise à jour : **2026-10-26** (section « Kit de communication » :
+> tutoiement et noms de famille tranchés) ; **2026-10-16** (section « Reprise humaine du code »
 > seule) ; **2026-10-15** (sections « Navigation connectée »,
 > « Chantiers repris des PR fermées », « Adhésions HelloAsso », « Partenaires
 > par façon d'aider », « Header Nous rejoindre », « Landing partenaires »,
@@ -237,7 +238,7 @@ le badge promis par les mentions légales sont à mettre dans CES outils ;
 `docs/google-ad-grants.md` §4 bis disait « le site reste muet sur les
 montants », `/adherer` les affiche désormais (texte du 13/10).
 
-## Kit de communication — LIVRÉ le 2026-10-14, modèle de présentation le 2026-10-15, fichiers et une décision en attente (tutoiement)
+## Kit de communication — LIVRÉ le 2026-10-14, modèle de présentation le 2026-10-15, tutoiement tranché le 2026-10-26, fichiers en attente
 
 Page `/kit-de-communication` (liée depuis `/partenaires` et le pied de page) :
 aperçu et téléchargement de chaque logo, **présentation de l'association**
@@ -275,8 +276,17 @@ page affiche « à venir » ; pour le remplir, déposer le fichier dans
    périmée, `tokens.json` (`font.family.wordmark`) est recalé. `logo tech
    speakher.jpg` (Drive, casse mixte blanche) est une ancienne version, écartée.
 
-**À DÉCIDER** : le **tutoiement**. La charte proscrit le vouvoiement ;
-`/partenaires` vouvoie, et le kit (même public) aussi.
+**TRANCHÉ le 2026-10-26** (Cateline) : le **tutoiement** pour ce qui parle
+aux speakeuses, le **vouvoiement** pour les organisateurs et les partenaires.
+`/partenaires` et le kit vouvoient donc à bon droit ; l'accueil est aligné
+(PR « textes de l'accueil sans tournures d'IA »). Reste à recaler la charte,
+qui proscrit encore le vouvoiement.
+
+**TRANCHÉ le 2026-10-26** (Cateline) : les **noms de famille s'affichent
+toujours en MAJUSCULES** (« Asma TABERKOKT »). Pas fait : les profils n'ont
+qu'un champ `name`, il faut d'abord décider comment isoler le nom de famille
+(champ séparé + migration, ou heuristique). Reprendre par une conception à
+faire trancher.
 
 ## Licence et réutilisation — TRANCHÉ le 2026-08-23
 
