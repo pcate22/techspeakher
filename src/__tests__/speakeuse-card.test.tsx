@@ -22,7 +22,7 @@ const profile: SpeakerProfile = makeProfile({
 describe("SpeakeuseCard", () => {
   it("affiche le nom et les tags", () => {
     render(<SpeakeuseCard profile={profile} />);
-    expect(screen.getByText("Marie Curie")).toBeInTheDocument();
+    expect(screen.getByText("Marie CURIE")).toBeInTheDocument();
     expect(screen.getByText("Industrie")).toBeInTheDocument();
   });
 

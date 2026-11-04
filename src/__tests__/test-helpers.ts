@@ -40,11 +40,13 @@ export function makeProfile(over: Partial<SpeakerProfile> = {}): SpeakerProfile 
     userId: 7,
     slug: null,
     name: "Marie Curie",
+    nomFamille: null,
     // Comme au bord (mapRow) : la MÊME fonction que lui — la fixture ne peut
     // pas diverger du calcul qu'elle représente.
     nomAffiche: nomAffiche(
       ("name" in over ? over.name : "Marie Curie") ?? null,
       over.titreProfil ?? null,
+      over.nomFamille ?? null,
     ),
     image: null,
     titreProfil: null,
@@ -129,11 +131,13 @@ export function makeFiche(over: Partial<SpeakerProfile> = {}): SpeakerProfile {
     userId: 7,
     slug: "lea-dubois",
     name: "Léa Dubois",
+    nomFamille: null,
     // Comme au bord (mapRow) : le cast `as SpeakerProfile` en fin de factory
     // laisserait sinon le champ absent — une fixture qui ment sur le DTO.
     nomAffiche: nomAffiche(
       ("name" in over ? over.name : "Léa Dubois") ?? null,
       ("titreProfil" in over ? over.titreProfil : "Développeuse plateforme") ?? null,
+      over.nomFamille ?? null,
     ),
     image: null,
     titreProfil: "Développeuse plateforme",

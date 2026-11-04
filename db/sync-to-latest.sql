@@ -2263,3 +2263,7 @@ END $$;
 -- ─── 075 — Invitation à adhérer, une fois par fiche ───
 -- Miroir de db/migrations/075_invitation_adhesion.sql.
 ALTER TABLE speaker_profiles ADD COLUMN IF NOT EXISTS adhesion_invitee_le TIMESTAMPTZ;
+
+-- ─── 076 — Nom de famille désigné, pour l'affichage en capitales ───
+-- Miroir de db/migrations/076_nom_famille.sql.
+ALTER TABLE users ADD COLUMN IF NOT EXISTS nom_famille VARCHAR(255);

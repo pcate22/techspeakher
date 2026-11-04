@@ -37,7 +37,11 @@ vi.mock("@/lib/profile-form", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/profile-form")>();
   return { ...actual, parseProfileForm: vi.fn() };
 });
-vi.mock("@/lib/users", () => ({ setUserName: vi.fn(), getUserById: vi.fn() }));
+vi.mock("@/lib/users", () => ({
+  setUserName: vi.fn(),
+  setUserNomFamille: vi.fn(),
+  getUserById: vi.fn(),
+}));
 vi.mock("@/lib/talk-form", () => ({
   parseTalkIdentityForm: vi.fn(),
   parseOccurrenceForm: vi.fn(),

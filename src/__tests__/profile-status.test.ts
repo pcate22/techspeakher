@@ -54,8 +54,16 @@ describe("nomAffiche — LE nom d'une fiche, calculé une fois au bord", () => {
   // recopiaient `name ?? titreProfil ?? "Speakeuse"` — et `??` laisse passer
   // `""` et `"   "` quand les gardes de publication testent `.trim()`. Une
   // fiche migrée au nom vide s'affichait donc « vide », pas même générique.
-  it("un nom réel passe, débarrassé de ses espaces de bord", () => {
-    expect(nomAffiche("  Ada Lovelace ", null)).toBe("Ada Lovelace");
+  it("un nom réel passe, débarrassé de ses espaces de bord, nom de famille en capitales", () => {
+    expect(nomAffiche("  Ada Lovelace ", null)).toBe("Ada LOVELACE");
+  });
+
+  it("la coupe désignée par la membre l'emporte sur la coupe devinée", () => {
+    expect(nomAffiche("Marie Anne Dupont", null, "Dupont")).toBe("Marie Anne DUPONT");
+  });
+
+  it("le titre de profil, en repli, garde sa casse", () => {
+    expect(nomAffiche(null, "Dev mentor")).toBe("Dev mentor");
   });
 
   it("un nom VIDE ou blanc retombe sur le titre du profil", () => {

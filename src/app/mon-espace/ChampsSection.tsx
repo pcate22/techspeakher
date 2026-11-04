@@ -22,6 +22,7 @@ import {
 } from "@/data/domaines";
 import { BASE_URL } from "@/constants/site";
 import { slugify } from "@/lib/slug";
+import { nomEnCapitales } from "@/lib/nom-famille";
 import { BIO_MAX, SHORT_MAX } from "@/lib/profile-limits";
 
 /**
@@ -94,6 +95,18 @@ export function ChampsIdentite({
         defaultValue={nom}
         placeholder="Ex. Ada Lovelace"
         error={erreurs?.nomComplet}
+      />
+      {/* La coupe prénom / nom est devinée (tout ce qui suit le premier mot) ;
+          ce champ ne sert qu'à la corriger. L'aperçu montre le nom ENREGISTRÉ :
+          c'est celui que lit l'annuaire. */}
+      <ChampTexte
+        id="nomFamille"
+        name="nomFamille"
+        label="Nom de famille"
+        maxLength={255}
+        defaultValue={initial?.nomFamille}
+        hint={`${nom.trim() ? `Ta fiche affiche « ${nomEnCapitales(nom, initial?.nomFamille)} ». ` : ""}Ton nom de famille s'affiche en capitales. À remplir pour un prénom composé sans trait d'union, par exemple « Dupont » pour Marie Anne Dupont.`}
+        error={erreurs?.nomFamille}
       />
       <div>
         <label htmlFor="slug" className={labelClass}>

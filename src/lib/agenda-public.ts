@@ -1,4 +1,5 @@
 import { pool } from "@/lib/db";
+import { nomEnCapitales } from "@/lib/nom-famille";
 import { TALK_SOURCE_TREMPLIN } from "@/lib/talks";
 import { OCCURRENCE_PUBLIABLE } from "@/lib/occurrence-visibilite";
 import { speakeuseHref } from "@/lib/profiles";
@@ -80,6 +81,7 @@ interface SceneRow {
   profile_id: number;
   slug: string | null;
   nom: string;
+  nom_famille: string | null;
   image: string | null;
 }
 
@@ -128,7 +130,7 @@ export function scenesVisiblesWhere(p: { tremplin: string; jour?: string }): str
 const SCENES_COLONNES = `SELECT o.id AS occ_id, o.date, o.conference,
             c.slug AS conf_slug, c.nom AS conf_nom, o.ville, o.region, o.pays,
             o.lien_conf, t.titre AS talk_titre, t.type AS talk_type,
-            sp.id AS profile_id, sp.slug, u.name AS nom, u.image`;
+            sp.id AS profile_id, sp.slug, u.name AS nom, u.nom_famille, u.image`;
 
 /** Colonnes et jointures partagées par les deux lectures (public + fil). */
 const SELECT_SCENES = `${SCENES_COLONNES}
@@ -154,7 +156,7 @@ function mapScene(r: SceneRow): ScenePublique {
     lienConf: r.lien_conf,
     talkTitre: r.talk_titre,
     talkType: r.talk_type,
-    speakeuseNom: r.nom,
+    speakeuseNom: nomEnCapitales(r.nom, r.nom_famille),
     speakeuseHref: speakeuseHref({ id: r.profile_id, slug: r.slug }),
     profileId: r.profile_id,
     image: r.image,

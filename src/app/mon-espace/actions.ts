@@ -42,7 +42,8 @@ import {
   type OccurrenceInput,
   type TalkOccurrence,
 } from "@/lib/talks";
-import { setUserName, getUserById } from "@/lib/users";
+import { setUserName, setUserNomFamille, getUserById } from "@/lib/users";
+import { lireNomFamille } from "@/lib/nom-famille";
 import { reprendrePhotoLinkedIn } from "@/lib/linkedin-photo";
 import type { ActionState } from "@/lib/action-state";
 // `estIdValide` vit dans `@/lib/id-url` depuis le 2026-08-21 : la copie locale
@@ -132,9 +133,6 @@ export async function saveProfile(
   const result = parseProfileForm(formData);
   if (!result.ok) return { ok: false, errors: result.errors };
 
-  // Le nom vit sur le COMPTE (users.name) : affiché sur la fiche et dans
-  // l'annuaire. Saisi ici pour la cohorte lien-magique (aucun nom OAuth) ;
-  // vide = inchangé (on n'efface jamais un nom).
   // Le nom vit sur le COMPTE, pas sur la fiche : normalisation et borne sont
   // tenues par `users.ts` (bord de la colonne), et un nom vide n'écrase jamais
   // celui qui existe. On le normalise ici seulement pour dériver l'adresse.
@@ -144,8 +142,13 @@ export async function saveProfile(
   // repli pour dériver l'adresse, et un slug existant est préservé si le champ
   // reste vide (on ne casse jamais une URL déjà partagée en silence).
   const existant = await getProfileByUserId(id);
-  if (nomComplet) await setUserName(id, nomComplet);
   const nomEffectif = nomComplet || existant?.name || "";
+  // Le nom de famille se lit contre le nom qui sera enregistré, avant toute
+  // écriture : un refus ne laisse pas un nom à moitié changé.
+  const nomFamille = lireNomFamille(nomEffectif, formString(formData, "nomFamille"));
+  if (!nomFamille.ok) return { ok: false, errors: { nomFamille: nomFamille.erreur } };
+  if (nomComplet) await setUserName(id, nomComplet);
+  await setUserNomFamille(id, nomFamille.valeur);
 
   // Adresse (slug) définitive : saisie explicite → contrôle d'unicité (message
   // clair si déjà prise) ; champ vide → slug existant conservé, sinon dérivé du nom.
@@ -220,6 +223,16 @@ export async function saveProfileSection(
   const result = parseProfilChamps(formData, section.champs);
   if (!result.ok) return refuser(result.errors);
 
+  // Le nom et sa coupe vivent sur le COMPTE : lus ensemble, contre le nom qui
+  // sera enregistré, avant toute écriture.
+  const nomComplet = section.champs.includes("nomComplet")
+    ? normaliserNomCompte(formString(formData, "nomComplet"))
+    : "";
+  const nomFamille = section.champs.includes("nomFamille")
+    ? lireNomFamille(nomComplet || existant.name || "", formString(formData, "nomFamille"))
+    : null;
+  if (nomFamille && !nomFamille.ok) return refuser({ nomFamille: nomFamille.erreur });
+
   // Adresse (slug) : contrôle d'unicité comme le parcours complet, et seulement
   // si la section la porte. Champ vide → l'adresse existante est conservée (on
   // ne casse jamais une URL déjà partagée), ou dérivée du nom s'il n'y en a pas.
@@ -237,10 +250,8 @@ export async function saveProfileSection(
   // Le nom vit sur le COMPTE (users.name), pas sur la fiche : seule la section
   // qui l'affiche a le droit de l'écrire, et un nom vide n'écrase jamais celui
   // qui existe.
-  if (section.champs.includes("nomComplet")) {
-    const nomComplet = normaliserNomCompte(formString(formData, "nomComplet"));
-    if (nomComplet) await setUserName(id, nomComplet);
-  }
+  if (nomComplet) await setUserName(id, nomComplet);
+  if (nomFamille) await setUserNomFamille(id, nomFamille.valeur);
 
   // La section repose SES colonnes sur celles déjà en base, puis les règles de
   // cohérence du profil entier s'appliquent (elles traversent les sections).

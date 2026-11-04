@@ -25,9 +25,9 @@ describe("SpeakeusesFilter", () => {
 
   it("affiche toutes les speakeuses par défaut", () => {
     render(<SpeakeusesFilter profiles={mockProfiles} />);
-    expect(screen.getByText("Alice Test")).toBeInTheDocument();
-    expect(screen.getByText("Bob Test")).toBeInTheDocument();
-    expect(screen.getByText("Claire Test")).toBeInTheDocument();
+    expect(screen.getByText("Alice TEST")).toBeInTheDocument();
+    expect(screen.getByText("Bob TEST")).toBeInTheDocument();
+    expect(screen.getByText("Claire TEST")).toBeInTheDocument();
   });
 
   it("chaque carte est un lien vers la fiche", () => {
@@ -61,9 +61,9 @@ describe("SpeakeusesFilter", () => {
     render(<SpeakeusesFilter profiles={mockProfiles} />);
     openFilters();
     fireEvent.click(chip("UX / Design / Accessibilité"));
-    expect(screen.getByText("Bob Test")).toBeInTheDocument();
-    expect(screen.queryByText("Alice Test")).not.toBeInTheDocument();
-    expect(screen.queryByText("Claire Test")).not.toBeInTheDocument();
+    expect(screen.getByText("Bob TEST")).toBeInTheDocument();
+    expect(screen.queryByText("Alice TEST")).not.toBeInTheDocument();
+    expect(screen.queryByText("Claire TEST")).not.toBeInTheDocument();
   });
 
   it("multi-sélection dans une catégorie = OU (Occitanie + Île-de-France)", () => {
@@ -74,9 +74,9 @@ describe("SpeakeusesFilter", () => {
     // Les DEUX restent actives (le bug : la 2e décochait la 1re).
     expect(chip("Occitanie")).toHaveAttribute("aria-pressed", "true");
     expect(chip("Île-de-France")).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByText("Alice Test")).toBeInTheDocument();
-    expect(screen.getByText("Bob Test")).toBeInTheDocument();
-    expect(screen.queryByText("Claire Test")).not.toBeInTheDocument();
+    expect(screen.getByText("Alice TEST")).toBeInTheDocument();
+    expect(screen.getByText("Bob TEST")).toBeInTheDocument();
+    expect(screen.queryByText("Claire TEST")).not.toBeInTheDocument();
   });
 
   it("multi-sélection entre catégories = ET (Occitanie ET Anglais = Alice)", () => {
@@ -84,19 +84,19 @@ describe("SpeakeusesFilter", () => {
     openFilters();
     fireEvent.click(chip("Occitanie")); // zone
     fireEvent.click(chip("Anglais")); // langue
-    expect(screen.getByText("Alice Test")).toBeInTheDocument();
+    expect(screen.getByText("Alice TEST")).toBeInTheDocument();
     // Claire parle anglais mais n'est pas en Occitanie → exclue.
-    expect(screen.queryByText("Claire Test")).not.toBeInTheDocument();
-    expect(screen.queryByText("Bob Test")).not.toBeInTheDocument();
+    expect(screen.queryByText("Claire TEST")).not.toBeInTheDocument();
+    expect(screen.queryByText("Bob TEST")).not.toBeInTheDocument();
   });
 
   it("« Tout effacer » réinitialise la sélection des filtres", () => {
     render(<SpeakeusesFilter profiles={mockProfiles} />);
     openFilters();
     fireEvent.click(chip("Occitanie"));
-    expect(screen.queryByText("Bob Test")).not.toBeInTheDocument();
+    expect(screen.queryByText("Bob TEST")).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /tout effacer/i }));
-    expect(screen.getByText("Bob Test")).toBeInTheDocument();
+    expect(screen.getByText("Bob TEST")).toBeInTheDocument();
   });
 
   // NB : la recherche s'appuie désormais sur le matcher partagé (Fuse chargé à
@@ -108,27 +108,27 @@ describe("SpeakeusesFilter", () => {
     fireEvent.change(input, { target: { value: "test" } });
     openFilters();
     fireEvent.click(chip("Occitanie")); // ne reste qu'Alice
-    await waitFor(() => expect(screen.queryByText("Bob Test")).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.queryByText("Bob TEST")).not.toBeInTheDocument());
     fireEvent.click(screen.getByRole("button", { name: /tout effacer/i }));
     // Filtres vidés → Bob revient ; la recherche saisie reste en place.
     expect((input as HTMLInputElement).value).toBe("test");
-    expect(await screen.findByText("Bob Test")).toBeInTheDocument();
+    expect(await screen.findByText("Bob TEST")).toBeInTheDocument();
   });
 
   it("recherche par nom (insensible aux accents)", async () => {
     render(<SpeakeusesFilter profiles={mockProfiles} />);
     const input = screen.getByRole("searchbox", { name: /rechercher/i });
     fireEvent.change(input, { target: { value: "bob" } });
-    expect(await screen.findByText("Bob Test")).toBeInTheDocument();
-    await waitFor(() => expect(screen.queryByText("Alice Test")).not.toBeInTheDocument());
+    expect(await screen.findByText("Bob TEST")).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByText("Alice TEST")).not.toBeInTheDocument());
   });
 
   it("recherche sur les zones (« ile » retrouve Île-de-France)", async () => {
     render(<SpeakeusesFilter profiles={mockProfiles} />);
     const input = screen.getByRole("searchbox", { name: /rechercher/i });
     fireEvent.change(input, { target: { value: "ile-de-france" } });
-    expect(await screen.findByText("Bob Test")).toBeInTheDocument();
-    await waitFor(() => expect(screen.queryByText("Alice Test")).not.toBeInTheDocument());
+    expect(await screen.findByText("Bob TEST")).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByText("Alice TEST")).not.toBeInTheDocument());
   });
 
   it("recherche + filtre se combinent (ET)", async () => {
@@ -137,8 +137,8 @@ describe("SpeakeusesFilter", () => {
     fireEvent.click(chip("Anglais")); // Alice + Claire
     const input = screen.getByRole("searchbox", { name: /rechercher/i });
     fireEvent.change(input, { target: { value: "claire" } });
-    expect(await screen.findByText("Claire Test")).toBeInTheDocument();
-    await waitFor(() => expect(screen.queryByText("Alice Test")).not.toBeInTheDocument());
+    expect(await screen.findByText("Claire TEST")).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByText("Alice TEST")).not.toBeInTheDocument());
   });
 
   it("affiche un message quand l'annuaire est vide", () => {
@@ -160,8 +160,8 @@ describe("SpeakeusesFilter", () => {
     const input = screen.getByRole("searchbox", { name: /rechercher/i });
     fireEvent.change(input, { target: { value: "kubernetes" } });
     // Alice remonte par sa bio, alors que « Kubernetes » n'est sur aucune carte.
-    expect(await screen.findByText("Alice Test")).toBeInTheDocument();
-    await waitFor(() => expect(screen.queryByText("Bob Test")).not.toBeInTheDocument());
+    expect(await screen.findByText("Alice TEST")).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByText("Bob TEST")).not.toBeInTheDocument());
   });
 
   it("tolère une faute de frappe (moteur partagé : « kubernets »)", async () => {
@@ -170,7 +170,7 @@ describe("SpeakeusesFilter", () => {
     );
     const input = screen.getByRole("searchbox", { name: /rechercher/i });
     fireEvent.change(input, { target: { value: "kubernets" } });
-    expect(await screen.findByText("Alice Test")).toBeInTheDocument();
+    expect(await screen.findByText("Alice TEST")).toBeInTheDocument();
   });
 
   it("une requête d'1 caractère n'applique pas de filtre texte (seuil du moteur)", () => {
@@ -178,8 +178,8 @@ describe("SpeakeusesFilter", () => {
     const input = screen.getByRole("searchbox", { name: /rechercher/i });
     fireEvent.change(input, { target: { value: "b" } });
     // Tout reste affiché, et le compteur ne prétend pas « correspondant ».
-    expect(screen.getByText("Alice Test")).toBeInTheDocument();
-    expect(screen.getByText("Bob Test")).toBeInTheDocument();
+    expect(screen.getByText("Alice TEST")).toBeInTheDocument();
+    expect(screen.getByText("Bob TEST")).toBeInTheDocument();
     expect(screen.queryByText(/correspondant/i)).not.toBeInTheDocument();
   });
 
@@ -191,10 +191,10 @@ describe("SpeakeusesFilter", () => {
     render(<SpeakeusesFilter profiles={profiles} searchText={{ 11: "adore kubernetes" }} />);
     const input = screen.getByRole("searchbox", { name: /rechercher/i });
     fireEvent.change(input, { target: { value: "kubernetes" } });
-    await screen.findByText("Kubernetes Fan");
+    await screen.findByText("Kubernetes FAN");
     // Les deux matchent, mais le nom (poids fort) remonte en premier.
     const links = screen.getAllByRole("link");
-    expect(links[0]).toHaveTextContent("Kubernetes Fan");
+    expect(links[0]).toHaveTextContent("Kubernetes FAN");
   });
 
   it("la puce active porte aria-pressed=true", () => {

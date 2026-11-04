@@ -1,6 +1,7 @@
 import { pool } from "@/lib/db";
 import { getEditionByConfAndYear, type EditionStatut } from "@/lib/tremplin-editions";
 import { sqlDansListe } from "@/lib/sql-liste";
+import { nomEnCapitales, nomPublic } from "@/lib/nom-famille";
 import { STATUTS_FICHE_JOINTE } from "@/lib/profile-status";
 import {
   getProgrammePublicByEdition,
@@ -224,6 +225,7 @@ interface FinalistRow {
   id: number;
   // Nom : saisi par l'orga (sans compte) OU nom du compte relié.
   nom: string | null;
+  nom_famille: string | null;
   // Bio / site / photo / poste : DONNÉES PERSONNELLES, lues sur la fiche
   // speakeuse (profil) et l'avatar du compte — jamais saisies par l'orga.
   role: string | null;
@@ -237,6 +239,7 @@ interface FinalistRow {
 interface AwardRow {
   classement: number | null;
   nom: string | null;
+  nom_famille: string | null;
   sujet: string | null;
   public: boolean;
 }
@@ -245,6 +248,7 @@ interface AccompagnanteRow {
   phase: PhaseAtelier;
   user_id: number;
   nom: string | null;
+  nom_famille: string | null;
   role: string | null;
   lien: string | null;
 }
@@ -261,6 +265,7 @@ interface AccompagnanteRow {
  */
 const COLS_GALERIE = `r.id,
               COALESCE(r.participante_nom, u.name) AS nom,
+              u.nom_famille,
               sp.poste   AS role,
               st.titre   AS sujet,
               sp.bio     AS bio,
@@ -370,7 +375,7 @@ export async function getPublicEdition(
     // reliée par compte serait « non communiquée » ici tout en étant nommée
     // dans la galerie (et privée du badge gagnante).
     pool.query(
-      `SELECT r.classement, COALESCE(r.participante_nom, u.name) AS nom,
+      `SELECT r.classement, COALESCE(r.participante_nom, u.name) AS nom, u.nom_famille,
               r.titre_palmares AS sujet, r."public"
          FROM tremplin_registrations r
          LEFT JOIN users u ON u.id = r."userId"
@@ -400,9 +405,11 @@ export async function getPublicEdition(
         // Le classement étant unique par édition, la jointure ne multiplie pas.
         `SELECT rec.intitule, rec.detail, rec.rang, rec.transfert_raison,
                 CASE WHEN r."public" THEN COALESCE(r.participante_nom, u.name) END AS beneficiaire_nom,
+                CASE WHEN r."public" THEN u.nom_famille END AS beneficiaire_nom_famille,
                 CASE WHEN r."public" THEN r.classement END AS beneficiaire_classement,
                 CASE WHEN r."public" THEN rec.beneficiaire_registration_id END AS beneficiaire_public_id,
-                CASE WHEN ro."public" THEN COALESCE(ro.participante_nom, uo.name) END AS origine_nom
+                CASE WHEN ro."public" THEN COALESCE(ro.participante_nom, uo.name) END AS origine_nom,
+                CASE WHEN ro."public" THEN uo.nom_famille END AS origine_nom_famille
            FROM tremplin_recompenses rec
            LEFT JOIN tremplin_registrations r ON r.id = rec.beneficiaire_registration_id
            LEFT JOIN users u ON u.id = r."userId"
@@ -471,7 +478,7 @@ export async function getPublicEdition(
     // une autre question.
     pool
       .query(
-        `SELECT a.phase, u.id AS user_id, u.name AS nom, cp.role, cp.lien
+        `SELECT a.phase, u.id AS user_id, u.name AS nom, u.nom_famille, cp.role, cp.lien
            FROM tremplin_ateliers a
            JOIN tremplin_atelier_coachs ac ON ac.atelier_id = a.id
            JOIN users u ON u.id = ac.user_id
@@ -510,19 +517,21 @@ export async function getPublicEdition(
     rang: number | null;
     transfert_raison: RecompenseTransfertRaison | null;
     beneficiaire_nom: string | null;
+    beneficiaire_nom_famille: string | null;
     beneficiaire_classement: number | null;
     beneficiaire_public_id: number | null;
     origine_nom: string | null;
+    origine_nom_famille: string | null;
   }
   const recRows = recompensesRes.rows as RecompensePubRow[];
   const recompenses: PublicRecompense[] = recRows.map((r) => ({
     intitule: r.intitule,
     detail: r.detail,
     rang: r.rang,
-    beneficiaireNom: r.beneficiaire_nom ?? null,
+    beneficiaireNom: nomPublic(r.beneficiaire_nom, r.beneficiaire_nom_famille),
     beneficiaireClassement: r.beneficiaire_classement ?? null,
     transfertRaison: r.transfert_raison ?? null,
-    origineNom: r.origine_nom ?? null,
+    origineNom: nomPublic(r.origine_nom, r.origine_nom_famille),
   }));
   // Mention sur la carte de la bénéficiaire (uniquement des inscriptions
   // publiques : l'id ne sert qu'au rapprochement interne, jamais sérialisé).
@@ -540,7 +549,7 @@ export async function getPublicEdition(
     (rows as FinalistRow[])
       .filter((r) => r.nom !== null)
       .map((r) => ({
-        nom: r.nom as string,
+        nom: nomEnCapitales(r.nom as string, r.nom_famille),
         role: r.role,
         sujet: r.sujet,
         bio: r.bio,
@@ -568,12 +577,12 @@ export async function getPublicEdition(
     const cle = `${row.phase}:${row.user_id}`;
     if (dejaCreditee.has(cle)) continue;
     dejaCreditee.add(cle);
-    liste.push({ nom: row.nom, role: row.role, lien: row.lien });
+    liste.push({ nom: nomEnCapitales(row.nom, row.nom_famille), role: row.role, lien: row.lien });
   }
 
   const palmares: PublicAward[] = (awardsRes.rows as AwardRow[]).map((r) => ({
     recompense: rangLabel(r.classement) ?? "",
-    nom: r.public ? r.nom : null,
+    nom: r.public ? nomPublic(r.nom, r.nom_famille) : null,
     sujet: r.public ? r.sujet : null,
   }));
 

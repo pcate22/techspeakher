@@ -36,14 +36,14 @@ describe("getSpeakerSearchItems", () => {
     const items = await getSpeakerSearchItems();
     expect(items).toMatchObject([
       {
-        title: "Marie Curie",
+        title: "Marie CURIE",
         // zones et langues indexées : « Occitanie » remonte dans la recherche
         description: "CTO · Lab · Occitanie · Anglais",
         url: "/speakeuses/12",
         category: "Speakeuse",
       },
       {
-        title: "Ada Lovelace",
+        title: "Ada LOVELACE",
         description: "",
         url: "/speakeuses/7",
         category: "Speakeuse",
