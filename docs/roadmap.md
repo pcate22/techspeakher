@@ -4,8 +4,9 @@
 > la dette technique : `docs/dette-technique.md`. Pour l'étude d'import des
 > talks : `docs/faisabilite-import-talks.md`.
 >
-> Dernière mise à jour : **2026-10-16** (section « Reprise humaine du code »
-> seule) ; **2026-10-15** (sections « Navigation connectée »,
+> Dernière mise à jour : **2026-11-04** (section « Header Nous rejoindre,
+> page bénévole » seule : conditions des coachs et du jury) ; **2026-10-16**
+> (section « Reprise humaine du code » seule) ; **2026-10-15** (sections « Navigation connectée »,
 > « Chantiers repris des PR fermées », « Adhésions HelloAsso », « Partenaires
 > par façon d'aider », « Header Nous rejoindre », « Landing partenaires »,
 > « Textes après l'AGE » et
@@ -174,8 +175,21 @@ groupe sous le même titre. `/adherer` devient une landing (même grille Scalezi
 que `/partenaires`) : les tarifs et le « à savoir » des statuts restent **mot
 pour mot**.
 
+**Conditions des coachs et du jury, tranchées le 2026-11-04** par Cateline,
+après une candidate coach trop peu expérimentée (PR de la branche
+`claude/conditions-coachs-6e7b00`) : coach = au moins 10 talks dans plusieurs
+meetups et conférences (l'international est un plus) et savoir faire un
+feedback constructif, avec une franchise bienveillante ; jury = solide
+expérience de la scène ou du recrutement de speakers ; moins de 10 talks =
+organisation, communication, et un talk aux meetups. Ni le jury ni le
+Tremplin ne servent de repli : le Tremplin vise les primo-speakeuses, avec des
+conditions propres à chaque édition. Affiché sur les cartes de `/benevole`
+(champ `conditions`) et dans la FAQ de `/partenaires`. **À décider** : si les
+conditions valent pour les coachs déjà en place.
+
 **À relire** (collège) : `landingAdhesion` et `src/data/benevole.ts`, écrits par
-Claude. Trois affirmations ont été retirées faute de source (temps à donner,
+Claude (les conditions et la phrase sous les questions de `/benevole` sont de
+Cateline, le 2026-11-04). Trois affirmations ont été retirées faute de source (temps à donner,
 nombre de séances de coaching, accompagnement par une orga) : à remettre si le
 collège les confirme. **Suite** : la landing partenaires par type de soutien,
 PR suivante (section ci-dessous).

@@ -1,5 +1,12 @@
 # Dette technique — Tech Speak'Her
 
+> **Session du 2026-11-04 — conditions des coachs et du jury bénévoles**
+> (`/benevole`, FAQ `/partenaires`). Aucun P0 touché ; le **3** n'a pas été
+> relu ce jour. SOLDÉ en partie dans le geste : le P2 « `french-spelling.test.ts`
+> ne peut pas attraper ce qu'il doit imposer » (§ P2), pour deux fichiers :
+> `src/data/benevole.ts` et `src/data/partenaires.ts` entrent dans
+> `FICHIERS_COPIE` (typographie seulement). Rien de nouveau en dette.
+>
 > **Session du 2026-10-16 — audit « reprise humaine »**
 > (`docs/audit-reprise-humaine.md`, docs seulement). Aucun P0 touché ; le **3**
 > n'a pas été relu ce jour. Recalés contre le code : les chiffres du P1
@@ -679,7 +686,11 @@ ci-dessous, listées ici pour la traçabilité :
   AFFICHÉ (nœuds JSX + littéraux `src/data`). Les 4 cadratins de
   `tremplinSteps` (affichés en prod sur `/tremplin`) sont de la copie
   marketing : remplacement = décision de ton à faire trancher par la cliente.
-  **Effort : M.**
+  **Effort : M.** Relu en partie le 2026-11-04 : `src/data/benevole.ts` et
+  `src/data/partenaires.ts` sont entrés dans `FICHIERS_COPIE` (typographie
+  seulement). Le compte « 13 imports » et le reste de l'item sont à vérifier
+  au 2026-11-04 : `FICHIERS_COPIE` lit déjà une partie de `src/app` et
+  `src/components`.
 - **Une source de recherche en panne le reste jusqu'au rechargement de la
   page.** `fetchSource` (`src/components/SearchBar.tsx`) avale l'échec réseau
   ET le `!res.ok`, et rend `[]`. Comme le Fuse est mémoïsé au niveau du module,
