@@ -14,8 +14,19 @@
  * minuscules (« Marie de LA TOUR » — le « La » qui suit appartient au nom). */
 const PARTICULES = new Set(["de", "d'", "du", "des", "van", "von", "der", "den", "di", "da", "del", "della", "dos", "das"]);
 
+/** Les mots d'un nom. Coupe sur les espaces ordinaires seulement, comme
+ * `uneSeuleLigne` : une insécable saisie tient deux mots ensemble. */
 function mots(s: string): string[] {
-  return s.trim().split(/\s+/).filter(Boolean);
+  return s.split(/[^\S\u00a0\u202f]+/).filter(Boolean);
+}
+
+/** Nombre de mots du nom de famille désigné, ou `null` s'il ne désigne pas des
+ * mots ENTIERS qui terminent `nom` en y laissant au moins un prénom. */
+function tailleFamille(nom: string, nomFamille: string): number | null {
+  const n = mots(nom).map((m) => m.toLowerCase());
+  const f = mots(nomFamille).map((m) => m.toLowerCase());
+  if (f.length === 0 || f.length >= n.length) return null;
+  return f.every((m, i) => m === n[n.length - f.length + i]) ? f.length : null;
 }
 
 function enCapitales(motsNom: string[]): string {
@@ -35,10 +46,7 @@ function enCapitales(motsNom: string[]): string {
 /** Vrai si `nomFamille` désigne des mots ENTIERS qui terminent `nom`, sans en
  * être la totalité (il reste au moins un prénom). Casse ignorée. */
 export function nomFamilleValide(nom: string, nomFamille: string): boolean {
-  const n = mots(nom).map((m) => m.toLowerCase());
-  const f = mots(nomFamille).map((m) => m.toLowerCase());
-  if (f.length === 0 || f.length >= n.length) return false;
-  return f.every((m, i) => m === n[n.length - f.length + i]);
+  return tailleFamille(nom, nomFamille) !== null;
 }
 
 /** Le nom affiché, nom de famille en capitales. Une correction qui ne termine
@@ -46,8 +54,7 @@ export function nomFamilleValide(nom: string, nomFamille: string): boolean {
 export function nomEnCapitales(nom: string, nomFamille?: string | null): string {
   const m = mots(nom);
   if (m.length < 2) return m.join(" ");
-  const taille =
-    nomFamille && nomFamilleValide(nom, nomFamille) ? mots(nomFamille).length : m.length - 1;
+  const taille = (nomFamille && tailleFamille(nom, nomFamille)) || m.length - 1;
   const famille = m.slice(m.length - taille);
   // Rien que des particules : pas de nom à mettre en capitales.
   if (famille.every((mot) => PARTICULES.has(mot.toLowerCase()))) return m.join(" ");
@@ -74,7 +81,7 @@ export function lireNomFamille(
   saisie: string,
 ): { ok: true; valeur: string | null } | { ok: false; erreur: string } {
   if (!saisie.trim()) return { ok: true, valeur: null };
-  if (!nomFamilleValide(nom, saisie)) return { ok: false, erreur: NOM_FAMILLE_INVALIDE };
-  const m = mots(nom);
-  return { ok: true, valeur: m.slice(m.length - mots(saisie).length).join(" ") };
+  const taille = tailleFamille(nom, saisie);
+  if (taille === null) return { ok: false, erreur: NOM_FAMILLE_INVALIDE };
+  return { ok: true, valeur: mots(nom).slice(-taille).join(" ") };
 }

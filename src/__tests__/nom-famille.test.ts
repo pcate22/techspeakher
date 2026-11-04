@@ -17,6 +17,10 @@ describe("nomEnCapitales : heuristique", () => {
     expect(nomEnCapitales(nom)).toBe(attendu);
   });
 
+  it("une insécable tient deux mots ensemble, comme à l'enregistrement du nom", () => {
+    expect(nomEnCapitales("Marie\u00a0Anne Dupont")).toBe("Marie\u00a0Anne DUPONT");
+  });
+
   it("laisse un nom d'un seul mot tel quel", () => {
     expect(nomEnCapitales("Asma")).toBe("Asma");
   });

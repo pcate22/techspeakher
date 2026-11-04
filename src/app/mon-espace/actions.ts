@@ -145,10 +145,13 @@ export async function saveProfile(
   const nomEffectif = nomComplet || existant?.name || "";
   // Le nom de famille se lit contre le nom qui sera enregistré, avant toute
   // écriture : un refus ne laisse pas un nom à moitié changé.
-  const nomFamille = lireNomFamille(nomEffectif, formString(formData, "nomFamille"));
-  if (!nomFamille.ok) return { ok: false, errors: { nomFamille: nomFamille.erreur } };
+  // Champ absent du POST = correction inchangée (jamais effacée en silence).
+  const nomFamille = formData.has("nomFamille")
+    ? lireNomFamille(nomEffectif, formString(formData, "nomFamille"))
+    : null;
+  if (nomFamille && !nomFamille.ok) return { ok: false, errors: { nomFamille: nomFamille.erreur } };
   if (nomComplet) await setUserName(id, nomComplet);
-  await setUserNomFamille(id, nomFamille.valeur);
+  if (nomFamille) await setUserNomFamille(id, nomFamille.valeur);
 
   // Adresse (slug) définitive : saisie explicite → contrôle d'unicité (message
   // clair si déjà prise) ; champ vide → slug existant conservé, sinon dérivé du nom.

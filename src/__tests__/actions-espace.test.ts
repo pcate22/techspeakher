@@ -85,7 +85,7 @@ import {
   deleteProfileAction,
 } from "@/app/mon-espace/actions";
 
-import { setUserName, getUserById } from "@/lib/users";
+import { setUserName, setUserNomFamille, getUserById } from "@/lib/users";
 import { fd } from "./test-helpers";
 
 beforeEach(() => vi.clearAllMocks());
@@ -167,6 +167,12 @@ describe("saveProfile — garde-fous", () => {
       saveProfile({}, fd({ nomComplet: "  Rachel Dubois  " })),
     ).rejects.toThrow("REDIRECT:/mon-espace/fiche");
     expect(setUserName).toHaveBeenCalledWith(7, "Rachel Dubois");
+  });
+
+  it("champ nom de famille absent du POST → la correction enregistrée reste", async () => {
+    vi.mocked(getProfileByUserId).mockResolvedValue(null);
+    await expect(saveProfile({}, fd({ nomComplet: "Rachel Dubois" }))).rejects.toThrow();
+    expect(setUserNomFamille).not.toHaveBeenCalled();
   });
 
   it("nomComplet vide → ne touche pas au nom du compte", async () => {

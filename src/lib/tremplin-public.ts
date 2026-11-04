@@ -547,9 +547,10 @@ export async function getPublicEdition(
    * une inscription sans nom ni compte relié n'a rien à afficher. */
   const galerie = (rows: unknown[]): PublicFinalist[] =>
     (rows as FinalistRow[])
-      .filter((r) => r.nom !== null)
+      .map((r) => ({ ...r, nom: nomPublic(r.nom, r.nom_famille) }))
+      .filter((r): r is typeof r & { nom: string } => r.nom !== null)
       .map((r) => ({
-        nom: nomEnCapitales(r.nom as string, r.nom_famille),
+        nom: r.nom,
         role: r.role,
         sujet: r.sujet,
         bio: r.bio,

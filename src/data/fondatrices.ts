@@ -5,8 +5,8 @@
  */
 export const fondatrices = [
   { name: "Virginie Jugie" },
-  { name: "Cateline Puccetti" },
-  { name: "Rachel Dubois" },
-  { name: "Montaine Marteau" },
+  { name: "Cateline PUCCETTI" },
+  { name: "Rachel DUBOIS" },
+  { name: "Montaine MARTEAU" },
   { name: "Sandrine Berger" },
 ] as const;

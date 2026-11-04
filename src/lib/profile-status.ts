@@ -1,5 +1,5 @@
 import type { ProfileStatus } from "@/lib/profiles";
-import { nomEnCapitales } from "@/lib/nom-famille";
+import { nomPublic } from "@/lib/nom-famille";
 
 /**
  * Source unique pour les statuts d'une fiche speakeuse (liste, libellés
@@ -98,6 +98,5 @@ export function nomAffiche(
   titreProfil: string | null,
   nomFamille: string | null = null,
 ): string {
-  if (name?.trim()) return nomEnCapitales(name, nomFamille);
-  return titreProfil?.trim() || NOM_GENERIQUE;
+  return nomPublic(name, nomFamille) ?? (titreProfil?.trim() || NOM_GENERIQUE);
 }
