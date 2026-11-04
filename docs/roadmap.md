@@ -187,8 +187,8 @@ conditions propres à chaque édition. Affiché sur les cartes de `/benevole`
 (champ `conditions`), dans la FAQ de `/partenaires`, et sur sa rangée du jury
 (« Une personne expérimentée de votre structure… »). La première question de
 `/benevole` ne parle plus de nombre de talks, pour ne pas contredire la
-deuxième. **À décider** : si les conditions valent pour les coachs déjà en
-place.
+deuxième. Les conditions valent pour les nouvelles coachs seulement, pas pour
+celles déjà en place (Cateline, 2026-11-04).
 
 **À relire** (collège) : `landingAdhesion` et `src/data/benevole.ts`, écrits par
 Claude (les conditions, les deux premières questions et la phrase sous les
