@@ -131,8 +131,18 @@ describe("landing partenaires", () => {
   it("le bénévolat est une forme de soutien : la FAQ dit comment", async () => {
     render(await Partenaires());
     const faq = screen.getByRole("region", { name: /Questions fréquentes/ });
-    expect(faq).toHaveTextContent(/donner de son temps/);
-    expect(faq).toHaveTextContent(/coachs bénévoles/);
+    const question = within(faq).getByText(/donner de son temps/);
+    const reponse = question.nextElementSibling as HTMLElement;
+    expect(reponse).toHaveTextContent(/coachs bénévoles/);
+    // La réponse dit le seuil du coaching, comme /benevole.
+    expect(reponse).toHaveTextContent(/au moins 10\stalks/);
+  });
+
+  it("la rangée du jury dit que le jury demande de l'expérience, comme /benevole", async () => {
+    render(await Partenaires());
+    // La phrase d'aide suit le titre de la rangée, hors de la liste qui défile.
+    const titre = screen.getByRole("heading", { name: "Siéger à notre jury" });
+    expect(titre.nextElementSibling).toHaveTextContent(/Une personne expérimentée de votre structure/);
   });
 
   it("la FAQ dit ce que le soutien est, et ce qu'il donne", async () => {

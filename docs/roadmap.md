@@ -4,8 +4,9 @@
 > la dette technique : `docs/dette-technique.md`. Pour l'étude d'import des
 > talks : `docs/faisabilite-import-talks.md`.
 >
-> Dernière mise à jour : **2026-11-04** (section « Noms de famille en
-> capitales » seule) ; **2026-10-16** (section « Reprise humaine du code »
+> Dernière mise à jour : **2026-11-04** (sections « Noms de famille en
+> capitales » et « Header Nous rejoindre, page bénévole » seules : conditions
+> des coachs et du jury) ; **2026-10-16** (section « Reprise humaine du code »
 > seule) ; **2026-10-15** (sections « Navigation connectée »,
 > « Chantiers repris des PR fermées », « Adhésions HelloAsso », « Partenaires
 > par façon d'aider », « Header Nous rejoindre », « Landing partenaires »,
@@ -175,7 +176,7 @@ sert), le délai validé « dans quelques minutes, et au plus tard le
 lendemain » partout où il se dit, et une ligne `[adhesions]` de compteurs dans
 les logs du cron pour diagnostiquer une adhésion non reliée.
 
-## Header « Nous rejoindre », page bénévole, landing adhérer — PR OUVERTE le 2026-10-15
+## Header « Nous rejoindre », page bénévole, landing adhérer — sur `main` (vérifié le 2026-11-04) ; conditions des coachs et du jury en PR le 2026-11-04
 
 Le header passe de sept liens à cinq, plus un menu déroulant **« Nous
 rejoindre »** : Adhérer (`/adherer`), Devenir bénévole (`/benevole`, page
@@ -185,8 +186,24 @@ groupe sous le même titre. `/adherer` devient une landing (même grille Scalezi
 que `/partenaires`) : les tarifs et le « à savoir » des statuts restent **mot
 pour mot**.
 
+**Conditions des coachs et du jury, tranchées le 2026-11-04** par Cateline,
+après une candidate coach trop peu expérimentée (PR de la branche
+`claude/conditions-coachs-6e7b00`) : coach = au moins 10 talks dans plusieurs
+meetups et conférences (l'international est un plus) et savoir faire un
+feedback constructif, avec une franchise bienveillante ; jury = solide
+expérience de la scène ou du recrutement de speakers ; moins de 10 talks =
+organisation, communication, et un talk aux meetups. Ni le jury ni le
+Tremplin ne servent de repli : le Tremplin vise les primo-speakeuses, avec des
+conditions propres à chaque édition. Affiché sur les cartes de `/benevole`
+(champ `conditions`), dans la FAQ de `/partenaires`, et sur sa rangée du jury
+(« Une personne expérimentée de votre structure… »). La première question de
+`/benevole` ne parle plus de nombre de talks, pour ne pas contredire la
+deuxième. Les conditions valent pour les nouvelles coachs seulement, pas pour
+celles déjà en place (Cateline, 2026-11-04).
+
 **À relire** (collège) : `landingAdhesion` et `src/data/benevole.ts`, écrits par
-Claude. Trois affirmations ont été retirées faute de source (temps à donner,
+Claude (les conditions, les deux premières questions et la phrase sous les
+questions de `/benevole` sont validées par Cateline le 2026-11-04). Trois affirmations ont été retirées faute de source (temps à donner,
 nombre de séances de coaching, accompagnement par une orga) : à remettre si le
 collège les confirme. **Suite** : la landing partenaires par type de soutien,
 PR suivante (section ci-dessous).

@@ -8,6 +8,21 @@
 > (`aria-describedby` porte maintenant les deux). NOUVEAU, en P2 et P3 : ce que
 > la PR laisse en casse d'origine (§ « Noms de famille en capitales »).
 
+> **Session du 2026-11-04 — conditions des coachs et du jury bénévoles**
+> (`/benevole`, FAQ `/partenaires`). Aucun P0 touché ; le **3** n'a pas été
+> relu ce jour. SOLDÉ en partie dans le geste : le P2 « `french-spelling.test.ts`
+> ne peut pas attraper ce qu'il doit imposer » (§ P2), pour les quatre données
+> des landings « Nous rejoindre » (`landingAdhesion`, `landingBenevole`,
+> `missionsBenevoles`, `landingPartenaires`), désormais relues champ par champ
+> par `collectAllTexts`, et pour les métadonnées de `/benevole` et
+> `/partenaires` (`FICHIERS_COPIE`), dont les deux-points avaient une espace
+> normale. NOUVEAU, en P2 (§ « Landings Nous rejoindre ») : la grille de cartes
+> copiée sur trois pages, trois colonnes dès 640 px sur deux d'entre elles, et
+> la phrase négative du reçu fiscal dans `src/data/adhesion.ts`. DÉCOUVERT et
+> contourné le même jour : l'E2E de la CI échouait pour toutes les PR
+> (`ubuntu-latest` passé à 26.04, Chromium refusé par Playwright) ; le job est
+> épinglé sur `ubuntu-24.04`, en P2 (§ « CI : le job E2E épinglé »).
+>
 > **Session du 2026-10-16 — audit « reprise humaine »**
 > (`docs/audit-reprise-humaine.md`, docs seulement). Aucun P0 touché ; le **3**
 > n'a pas été relu ce jour. Recalés contre le code : les chiffres du P1
@@ -687,7 +702,12 @@ ci-dessous, listées ici pour la traçabilité :
   AFFICHÉ (nœuds JSX + littéraux `src/data`). Les 4 cadratins de
   `tremplinSteps` (affichés en prod sur `/tremplin`) sont de la copie
   marketing : remplacement = décision de ton à faire trancher par la cliente.
-  **Effort : M.**
+  **Effort : M.** Relu en partie le 2026-11-04 : les quatre données des
+  landings « Nous rejoindre » sont relues champ par champ (`chainesDe`, dans
+  le test), et les métadonnées de `/benevole` et `/partenaires` entrent dans
+  `FICHIERS_COPIE`. Le compte « 13 imports » et le reste de l'item sont à
+  vérifier au 2026-11-04 : `FICHIERS_COPIE` lit déjà une partie de `src/app`
+  et `src/components`.
 - **Une source de recherche en panne le reste jusqu'au rechargement de la
   page.** `fetchSource` (`src/components/SearchBar.tsx`) avale l'échec réseau
   ET le `!res.ok`, et rend `[]`. Comme le Fuse est mémoïsé au niveau du module,
@@ -765,6 +785,38 @@ Mise en forme au bord des lectures publiques par `src/lib/nom-famille.ts`
   dans `users.nom_famille`. Sans effet à l'écran (`nomEnCapitales` l'ignore),
   mais c'est une donnée fausse ; le nom et sa coupe ne s'écrivent pas non plus
   dans une transaction.
+### CI : le job E2E épinglé sur `ubuntu-24.04` (2026-11-04)
+
+- **Déclencheur : une version de Playwright qui accepte Chromium sur Ubuntu
+  26.04.** `ubuntu-latest` est passé à 26.04 début novembre 2026, et
+  `npx playwright install --with-deps chromium` y échoue (« Playwright does not
+  support chromium on ubuntu26.04-x64 », avec `@playwright/test` ^1.60). Toutes
+  les PR étaient rouges en E2E, sans rapport avec leur contenu. Le job `e2e`
+  de `.github/workflows/ci.yml` tourne donc sur `ubuntu-24.04`. À ramener sur
+  `ubuntu-latest` en montant Playwright, avant que GitHub retire l'image 24.04.
+  **Effort : XS.**
+
+### Landings « Nous rejoindre » : trois restes des revues (2026-11-04)
+
+Relevés par les revues de la PR « conditions des coachs et du jury », laissés
+hors de cette PR parce qu'ils touchent d'autres pages ou un texte adopté.
+
+- **Grille de cartes copiée sur trois landings.** `src/app/benevole/page.tsx`
+  (missions), `src/app/adherer/page.tsx` (apports) et
+  `src/app/partenaires/page.tsx` (« pourquoi ») écrivent chacune leur grille.
+  Un composant `CartesLanding` dans `src/components/Landing.tsx`, avec
+  `conditions` en option, les unifierait. **Effort : S.**
+- **Trois colonnes dès 640 px sur `/adherer` et `/partenaires`.** `/benevole`
+  passe à `lg:grid-cols-3` : entre 640 et 1023 px, une carte n'y avait que 20 à
+  26 caractères par ligne. `src/app/adherer/page.tsx:103` et
+  `src/app/partenaires/page.tsx:129` gardent `sm:grid-cols-3`. À faire avec le
+  point précédent. **Effort : XS.**
+- **La phrase du reçu fiscal reste négative dans `src/data/adhesion.ts`**
+  (`aSavoirAdhesion` : « Les dons ne donnent pas droit à un reçu fiscal pour le
+  moment »). La FAQ de `/partenaires` dit la même chose au positif, avec
+  l'accord de Cateline. Le texte de l'adhésion vient des statuts et du
+  règlement intérieur : il change sur décision du collège. **Effort : XS**,
+  une fois décidé.
 
 ### Reprise humaine : ce que le plan reporte (2026-10-16)
 
