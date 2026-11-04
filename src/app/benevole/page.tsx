@@ -46,6 +46,11 @@ export default function Benevole() {
                 <div className="text-3xl mb-3" aria-hidden="true">{m.icon}</div>
                 <h3 className="text-lg font-bold text-white mb-2">{m.titre}</h3>
                 <p className="text-sm text-gray-light leading-relaxed">{m.description}</p>
+                {m.conditions && (
+                  <p className="text-sm text-white leading-relaxed mt-4 pt-4 border-t border-navy-lighter">
+                    {m.conditions}
+                  </p>
+                )}
               </li>
             ))}
           </ul>

@@ -248,6 +248,11 @@ const FICHIERS_COPIE = [
   "src/app/agenda/AgendaFiltres.tsx",
   "src/app/agenda/page.tsx",
   "src/app/agenda/[annee]/page.tsx",
+  // Les landings « Nous rejoindre » : leur copie vit dans `src/data`, mais les
+  // imports en dur plus haut ne la ramassaient pas. Les conditions du coaching
+  // y portent des « : » et des « ? ».
+  "src/data/benevole.ts",
+  "src/data/partenaires.ts",
 ];
 
 const REGLES_TYPO_SOURCE: SpellingRule[] = [

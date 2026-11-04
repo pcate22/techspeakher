@@ -173,7 +173,7 @@ export const landingPartenaires = {
     {
       question: "Peut-on donner de son temps, à titre personnel ?",
       reponse:
-        "Avec plaisir. Nous cherchons des coachs bénévoles pour aider les speakeuses à préparer leur talk (plan, slides, répétition). Écrivez-nous en disant ce que vous aimeriez transmettre.",
+        "Avec plaisir. Nous cherchons des coachs bénévoles qui ont déjà donné au moins 10\u00A0talks, pour aider les speakeuses à préparer leur talk (plan, slides, répétition). Écrivez-nous en disant ce que vous aimeriez transmettre.",
     },
   ],
 } as const;

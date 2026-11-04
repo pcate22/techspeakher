@@ -133,6 +133,9 @@ describe("landing partenaires", () => {
     const faq = screen.getByRole("region", { name: /Questions fréquentes/ });
     expect(faq).toHaveTextContent(/donner de son temps/);
     expect(faq).toHaveTextContent(/coachs bénévoles/);
+    // Les conditions du coaching suivent l'invitation : sans elles, la FAQ
+    // ouvrait le coaching à toutes, à l'inverse de /benevole.
+    expect(faq).toHaveTextContent(/au moins 10\stalks/);
   });
 
   it("la FAQ dit ce que le soutien est, et ce qu'il donne", async () => {
