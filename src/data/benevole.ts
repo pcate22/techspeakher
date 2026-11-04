@@ -19,7 +19,7 @@ export const landingBenevole = {
   promesse: "Aidez des femmes de la tech à préparer leur premier talk.",
   sousPromesse: "Vous choisissez la mission et les dates.",
   questions: [
-    "Vous avez déjà donné un talk, et vous auriez aimé être accompagnée la première fois.",
+    "Vous voulez voir plus de femmes de la tech sur scène, et vous avez un peu de temps à donner.",
     "Vous avez donné au moins 10\u00A0talks et vous savez faire un feedback franc et constructif sur un plan, des slides ou une répétition.",
     "Vous aimez organiser des soirées et accueillir du monde.",
   ],

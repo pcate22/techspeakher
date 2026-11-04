@@ -5,10 +5,10 @@ import Benevole from "@/app/benevole/page";
 import { missionsBenevoles } from "@/data/benevole";
 
 /**
- * /BENEVOLE : le site cherchait des coachs et un jury sans page pour les
- * accueillir. Une page, un rôle (proposer son temps), une action : nous
- * écrire. Le coaching seul a des conditions, dites sur sa carte : une coach
- * trop peu expérimentée ne peut pas accompagner une speakeuse jusqu'à la scène.
+ * /BENEVOLE : une page, un rôle (proposer son temps), une action (nous
+ * écrire). Le coaching et le jury disent leurs conditions sur leur carte ; la
+ * section « Vous vous reconnaissez ? » oriente celles qui ont moins de 10 talks
+ * vers ce qui leur est ouvert.
  */
 
 afterEach(cleanup);
@@ -40,6 +40,7 @@ describe("/benevole", () => {
     const coach = carteMission("Coacher une speakeuse");
     expect(coach).toHaveTextContent(/au moins 10\stalks/);
     expect(coach).toHaveTextContent(/meetups et conférences/);
+    expect(coach).toHaveTextContent(/l'international est un plus/);
     expect(coach).toHaveTextContent(/feedback constructif/);
     expect(coach).toHaveTextContent(/franchise bienveillante/);
   });
@@ -50,16 +51,25 @@ describe("/benevole", () => {
     expect(jury).toHaveTextContent(/Pour le jury, il faut une solide expérience de la scène/);
   });
 
+  it("la question du coaching reprend le seuil de sa carte", () => {
+    render(<Benevole />);
+    const reconnaissez = screen.getByRole("region", { name: /Vous vous reconnaissez/ });
+    expect(reconnaissez).toHaveTextContent(
+      /au moins 10\stalks et vous savez faire un feedback franc et constructif/,
+    );
+  });
+
   it("oriente celles qui ont moins de 10 talks vers l'organisation, la communication et la scène des meetups", () => {
     render(<Benevole />);
     const reconnaissez = screen.getByRole("region", { name: /Vous vous reconnaissez/ });
     expect(reconnaissez).toHaveTextContent(/moins de 10\stalks/);
     expect(reconnaissez).toHaveTextContent(/organisation ou la communication/);
     expect(reconnaissez).toHaveTextContent(/proposez un talk à nos meetups/);
-    // Le jury demande de l'expérience, et le Tremplin vise les primo-speakeuses
-    // avec des conditions propres à chaque édition : aucun des deux n'est une
-    // porte de repli pour une candidate coach.
-    expect(reconnaissez).not.toHaveTextContent(/jury/i);
+    // Le jury et le coaching demandent de l'expérience, et le Tremplin vise
+    // les primo-speakeuses avec des conditions propres à chaque édition :
+    // aucun n'est une porte de repli. « jur » attrape aussi juré et jurée.
+    expect(reconnaissez).not.toHaveTextContent(/jur(y|é)/i);
+    expect(reconnaissez).not.toHaveTextContent(/coach/i);
     expect(reconnaissez).not.toHaveTextContent(/Tremplin/i);
   });
 

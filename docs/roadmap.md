@@ -165,7 +165,7 @@ sert), le délai validé « dans quelques minutes, et au plus tard le
 lendemain » partout où il se dit, et une ligne `[adhesions]` de compteurs dans
 les logs du cron pour diagnostiquer une adhésion non reliée.
 
-## Header « Nous rejoindre », page bénévole, landing adhérer — PR OUVERTE le 2026-10-15
+## Header « Nous rejoindre », page bénévole, landing adhérer — sur `main` (vérifié le 2026-11-04) ; conditions des coachs et du jury en PR le 2026-11-04
 
 Le header passe de sept liens à cinq, plus un menu déroulant **« Nous
 rejoindre »** : Adhérer (`/adherer`), Devenir bénévole (`/benevole`, page
@@ -184,12 +184,15 @@ expérience de la scène ou du recrutement de speakers ; moins de 10 talks =
 organisation, communication, et un talk aux meetups. Ni le jury ni le
 Tremplin ne servent de repli : le Tremplin vise les primo-speakeuses, avec des
 conditions propres à chaque édition. Affiché sur les cartes de `/benevole`
-(champ `conditions`) et dans la FAQ de `/partenaires`. **À décider** : si les
-conditions valent pour les coachs déjà en place.
+(champ `conditions`), dans la FAQ de `/partenaires`, et sur sa rangée du jury
+(« Une personne expérimentée de votre structure… »). La première question de
+`/benevole` ne parle plus de nombre de talks, pour ne pas contredire la
+deuxième. **À décider** : si les conditions valent pour les coachs déjà en
+place.
 
 **À relire** (collège) : `landingAdhesion` et `src/data/benevole.ts`, écrits par
-Claude (les conditions et la phrase sous les questions de `/benevole` sont de
-Cateline, le 2026-11-04). Trois affirmations ont été retirées faute de source (temps à donner,
+Claude (les conditions, les deux premières questions et la phrase sous les
+questions de `/benevole` sont validées par Cateline le 2026-11-04). Trois affirmations ont été retirées faute de source (temps à donner,
 nombre de séances de coaching, accompagnement par une orga) : à remettre si le
 collège les confirme. **Suite** : la landing partenaires par type de soutien,
 PR suivante (section ci-dessous).

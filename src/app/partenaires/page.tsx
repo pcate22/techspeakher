@@ -13,9 +13,9 @@ import { countPublishedProfiles } from "@/lib/profiles";
 import type { PublicAccompagnante } from "@/lib/tremplin-public";
 
 export const metadata: Metadata = {
-  title: "Partenaires : nous soutenir | Tech Speak'Her",
+  title: "Partenaires\u00A0: nous soutenir | Tech Speak'Her",
   description:
-    "Entreprises, conférences, structures tech, à Toulouse et au-delà : soutenez Tech Speak'Her et aidez plus de femmes de la tech à monter sur scène.",
+    "Entreprises, conférences, structures tech, à Toulouse et au-delà\u00A0: soutenez Tech Speak'Her et aidez plus de femmes de la tech à monter sur scène.",
   keywords: [
     "partenaires Tech Speak'Her",
     "sponsoring femmes tech",

@@ -75,7 +75,7 @@ export const typesSoutien: TypeSoutien[] = [
   {
     id: "jury",
     titre: "Siéger à notre jury",
-    aide: "Une personne de votre structure écoute les talks du Tremplin et fait un retour à chaque speakeuse.",
+    aide: "Une personne expérimentée de votre structure écoute les talks du Tremplin et fait un retour à chaque speakeuse.",
     // Dit UNE fois pour la rangée, pas sur chaque carte (Cateline, 2026-10-15).
     membresIntro: "Ont siégé au jury du Tremplin DevFest Toulouse 2026\u00A0:",
     lien: { href: "/tremplin#jury-title", label: "Voir le jury du Tremplin" },
@@ -158,7 +158,7 @@ export const landingPartenaires = {
     },
     {
       question: "Recevons-nous un reçu fiscal ?",
-      reponse: "Les dons ne donnent pas droit à un reçu fiscal pour le moment.",
+      reponse: "Pour le moment, les dons sont sans reçu fiscal.",
     },
     {
       question: "À quoi sert notre soutien ?",
