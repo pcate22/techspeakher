@@ -10,7 +10,10 @@
 > `/partenaires` (`FICHIERS_COPIE`), dont les deux-points avaient une espace
 > normale. NOUVEAU, en P2 (§ « Landings Nous rejoindre ») : la grille de cartes
 > copiée sur trois pages, trois colonnes dès 640 px sur deux d'entre elles, et
-> la phrase négative du reçu fiscal dans `src/data/adhesion.ts`.
+> la phrase négative du reçu fiscal dans `src/data/adhesion.ts`. DÉCOUVERT et
+> contourné le même jour : l'E2E de la CI échouait pour toutes les PR
+> (`ubuntu-latest` passé à 26.04, Chromium refusé par Playwright) ; le job est
+> épinglé sur `ubuntu-24.04`, en P2 (§ « CI : le job E2E épinglé »).
 >
 > **Session du 2026-10-16 — audit « reprise humaine »**
 > (`docs/audit-reprise-humaine.md`, docs seulement). Aucun P0 touché ; le **3**
@@ -749,6 +752,17 @@ ci-dessous, listées ici pour la traçabilité :
   helper. **Effort : S/M** (refactor sûr, les redirects sont testés).
 
 ## 🟡 P2 — nice-to-have
+
+### CI : le job E2E épinglé sur `ubuntu-24.04` (2026-11-04)
+
+- **Déclencheur : une version de Playwright qui accepte Chromium sur Ubuntu
+  26.04.** `ubuntu-latest` est passé à 26.04 début novembre 2026, et
+  `npx playwright install --with-deps chromium` y échoue (« Playwright does not
+  support chromium on ubuntu26.04-x64 », avec `@playwright/test` ^1.60). Toutes
+  les PR étaient rouges en E2E, sans rapport avec leur contenu. Le job `e2e`
+  de `.github/workflows/ci.yml` tourne donc sur `ubuntu-24.04`. À ramener sur
+  `ubuntu-latest` en montant Playwright, avant que GitHub retire l'image 24.04.
+  **Effort : XS.**
 
 ### Landings « Nous rejoindre » : trois restes des revues (2026-11-04)
 
