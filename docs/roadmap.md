@@ -4,7 +4,8 @@
 > la dette technique : `docs/dette-technique.md`. Pour l'étude d'import des
 > talks : `docs/faisabilite-import-talks.md`.
 >
-> Dernière mise à jour : **2026-10-16** (section « Reprise humaine du code »
+> Dernière mise à jour : **2026-11-04** (section « Noms de famille en
+> capitales » seule) ; **2026-10-16** (section « Reprise humaine du code »
 > seule) ; **2026-10-15** (sections « Navigation connectée »,
 > « Chantiers repris des PR fermées », « Adhésions HelloAsso », « Partenaires
 > par façon d'aider », « Header Nous rejoindre », « Landing partenaires »,
