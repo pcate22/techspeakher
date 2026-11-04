@@ -46,6 +46,12 @@ export async function setUserName(userId: number, name: string): Promise<void> {
   await pool.query(`UPDATE users SET name = $2 WHERE id = $1`, [userId, nom]);
 }
 
+/** Écrit le nom de famille désigné (`null` = la coupe devinée suffit). La
+ * valeur arrive déjà lue contre le nom par `lireNomFamille`. */
+export async function setUserNomFamille(userId: number, nomFamille: string | null): Promise<void> {
+  await pool.query(`UPDATE users SET nom_famille = $2 WHERE id = $1`, [userId, nomFamille]);
+}
+
 /** Met à jour la photo (avatar) du compte. Utilisée quand la membre choisit
  * explicitement d'appliquer la photo d'un provider (LinkedIn, Google) : on
  * stocke l'URL renvoyée par le provider. */

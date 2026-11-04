@@ -37,7 +37,11 @@ vi.mock("@/lib/profile-form", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/profile-form")>();
   return { ...actual, parseProfileForm: vi.fn() };
 });
-vi.mock("@/lib/users", () => ({ setUserName: vi.fn(), getUserById: vi.fn() }));
+vi.mock("@/lib/users", () => ({
+  setUserName: vi.fn(),
+  setUserNomFamille: vi.fn(),
+  getUserById: vi.fn(),
+}));
 vi.mock("@/lib/talk-form", () => ({
   parseTalkIdentityForm: vi.fn(),
   parseOccurrenceForm: vi.fn(),
@@ -81,7 +85,7 @@ import {
   deleteProfileAction,
 } from "@/app/mon-espace/actions";
 
-import { setUserName, getUserById } from "@/lib/users";
+import { setUserName, setUserNomFamille, getUserById } from "@/lib/users";
 import { fd } from "./test-helpers";
 
 beforeEach(() => vi.clearAllMocks());
@@ -163,6 +167,22 @@ describe("saveProfile — garde-fous", () => {
       saveProfile({}, fd({ nomComplet: "  Rachel Dubois  " })),
     ).rejects.toThrow("REDIRECT:/mon-espace/fiche");
     expect(setUserName).toHaveBeenCalledWith(7, "Rachel Dubois");
+  });
+
+  it("adresse déjà prise → ni le nom ni sa coupe ne s'écrivent", async () => {
+    vi.mocked(getProfileByUserId).mockResolvedValue(null);
+    vi.mocked(isSlugAvailable).mockResolvedValueOnce(false);
+    vi.mocked(parseProfileForm).mockReturnValueOnce({ ok: true, data: { slug: "prise" } } as never);
+    const r = await saveProfile({}, fd({ nomComplet: "Marie Anne Dupont", nomFamille: "Dupont", slug: "prise" }));
+    expect(r.ok).toBe(false);
+    expect(setUserName).not.toHaveBeenCalled();
+    expect(setUserNomFamille).not.toHaveBeenCalled();
+  });
+
+  it("champ nom de famille absent du POST → la correction enregistrée reste", async () => {
+    vi.mocked(getProfileByUserId).mockResolvedValue(null);
+    await expect(saveProfile({}, fd({ nomComplet: "Rachel Dubois" }))).rejects.toThrow();
+    expect(setUserNomFamille).not.toHaveBeenCalled();
   });
 
   it("nomComplet vide → ne touche pas au nom du compte", async () => {

@@ -1,4 +1,5 @@
 import type { ProfileStatus } from "@/lib/profiles";
+import { nomPublic } from "@/lib/nom-famille";
 
 /**
  * Source unique pour les statuts d'une fiche speakeuse (liste, libellés
@@ -89,7 +90,13 @@ export const NOM_GENERIQUE = "Speakeuse";
  * recopiaient `name ?? titreProfil ?? "Speakeuse"` — et `??` laisse passer
  * `""` et `"   "` quand les gardes de publication testent `.trim()` : une
  * fiche migrée au nom vide s'affichait « vide » dans l'annuaire public.
+ * Le nom de famille y passe en capitales (`nom-famille.ts`), le titre de repli
+ * garde sa casse.
  */
-export function nomAffiche(name: string | null, titreProfil: string | null): string {
-  return name?.trim() || titreProfil?.trim() || NOM_GENERIQUE;
+export function nomAffiche(
+  name: string | null,
+  titreProfil: string | null,
+  nomFamille: string | null = null,
+): string {
+  return nomPublic(name, nomFamille) ?? (titreProfil?.trim() || NOM_GENERIQUE);
 }

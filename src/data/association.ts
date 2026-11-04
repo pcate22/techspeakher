@@ -39,7 +39,7 @@ export const ASSOCIATION = {
    * Directrice de la publication, co-représentante légale (statuts adoptés par
    * l'AGE du 29 septembre 2026). Texte « mentions légales » du 13 octobre 2026.
    */
-  directricePublication: "Cateline Puccetti",
+  directricePublication: "Cateline PUCCETTI",
   /** Désignation de la déléguée à la protection des données auprès de la CNIL. */
   dpoCnil: "DPO-176240",
 } as const;

@@ -60,7 +60,9 @@ Pré-création d'un compte (migration) : on insère `users` + `speaker_profiles`
 
 ## Modèle de données (`db/schema.sql`)
 
-- `users` — compte (nom, e-mail, image, `is_orga`). Tables Auth.js : `accounts`,
+- `users` — compte (nom, e-mail, image, `is_orga`). `nom_famille`
+  (migration 076) : la coupe prénom / nom désignée par la membre quand celle
+  que devine `src/lib/nom-famille.ts` est fausse. Tables Auth.js : `accounts`,
   `sessions`, `verification_token`. `accounts.email` (migration 074) garde
   l'adresse que Google ou LinkedIn donne à la connexion : Auth.js l'oublie, le
   rapprochement des adhésions en a besoin.

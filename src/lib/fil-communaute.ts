@@ -1,4 +1,5 @@
 import { pool } from "@/lib/db";
+import { nomEnCapitales } from "@/lib/nom-famille";
 import { speakeuseHref } from "@/lib/profiles";
 
 /**
@@ -39,6 +40,7 @@ interface VenueRow {
   slug: string | null;
   titre_profil: string | null;
   nom: string;
+  nom_famille: string | null;
   image: string | null;
   date: string;
 }
@@ -67,7 +69,7 @@ export const VENUES_VISIBLES = `sp.status = 'publie'
  */
 export async function getNouvellesVenues(limite = 3): Promise<NouvelleVenue[]> {
   const { rows } = await pool.query(
-    `SELECT sp.id, sp.slug, sp.titre_profil, u.name AS nom, u.image,
+    `SELECT sp.id, sp.slug, sp.titre_profil, u.name AS nom, u.nom_famille, u.image,
             ${sqlJourParis("sp.published_at")} AS date
        ${VENUES_FROM}
       WHERE ${VENUES_VISIBLES}
@@ -77,7 +79,7 @@ export async function getNouvellesVenues(limite = 3): Promise<NouvelleVenue[]> {
   );
   return (rows as VenueRow[]).map((r) => ({
     profileId: r.id,
-    nom: r.nom,
+    nom: nomEnCapitales(r.nom, r.nom_famille),
     href: speakeuseHref({ id: r.id, slug: r.slug }),
     titreProfil: r.titre_profil,
     image: r.image,

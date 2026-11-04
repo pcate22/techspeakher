@@ -33,7 +33,11 @@ vi.mock("@/lib/profiles", async (importOriginal) => {
     raisonBlocageAnnuaire: vi.fn(),
     };
 });
-vi.mock("@/lib/users", () => ({ setUserName: vi.fn(), getUserById: vi.fn() }));
+vi.mock("@/lib/users", () => ({
+  setUserName: vi.fn(),
+  setUserNomFamille: vi.fn(),
+  getUserById: vi.fn(),
+}));
 vi.mock("@/lib/talks", () => ({
   addTalk: vi.fn(),
   updateTalk: vi.fn(),
@@ -57,7 +61,7 @@ import {
   isSlugAvailable,
   type SpeakerProfile,
 } from "@/lib/profiles";
-import { setUserName } from "@/lib/users";
+import { setUserName, setUserNomFamille } from "@/lib/users";
 import { saveProfileSection } from "@/app/mon-espace/actions";
 
 const fiche = (o: Partial<SpeakerProfile> = {}): SpeakerProfile =>
@@ -149,6 +153,36 @@ describe("saveProfileSection — n'écrit que sa section", () => {
     ).rejects.toThrow(/REDIRECT/);
     expect(setUserName).toHaveBeenCalledWith(7, "Léa Dubois-Martin");
     expect(ecrit()?.titreProfil).toBe("CTO");
+  });
+
+  it("le nom de famille désigné s'écrit avec le nom, depuis « Qui tu es »", async () => {
+    await expect(
+      enregistrer("identite", { nomComplet: "Marie Anne Dupont", nomFamille: " Dupont " }),
+    ).rejects.toThrow(/REDIRECT/);
+    expect(setUserNomFamille).toHaveBeenCalledWith(7, "Dupont");
+  });
+
+  it("un nom de famille vide efface la correction (retour à la coupe devinée)", async () => {
+    await expect(
+      enregistrer("identite", { nomComplet: "Marie Anne Dupont", nomFamille: "" }),
+    ).rejects.toThrow(/REDIRECT/);
+    expect(setUserNomFamille).toHaveBeenCalledWith(7, null);
+  });
+
+  it("un nom de famille qui ne termine pas le nom est refusé, et rien ne s'écrit", async () => {
+    const r = await enregistrer("identite", { nomComplet: "Marie Anne Dupont", nomFamille: "Martin" });
+    expect(r.ok).toBe(false);
+    expect(r.errors?.nomFamille).toBeTruthy();
+    expect(setUserNomFamille).not.toHaveBeenCalled();
+    expect(setUserName).not.toHaveBeenCalled();
+    expect(upsertProfile).not.toHaveBeenCalled();
+  });
+
+  it("le nom de famille ne s'écrit QUE depuis « Qui tu es »", async () => {
+    await expect(
+      enregistrer("sujets", { sujets: ["Mobile"], nomFamille: "Injecté" }),
+    ).rejects.toThrow(/REDIRECT/);
+    expect(setUserNomFamille).not.toHaveBeenCalled();
   });
 
   it("vider un champ de SA section l'efface bien (c'est un retrait volontaire)", async () => {

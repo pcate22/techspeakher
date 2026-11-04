@@ -1,3 +1,4 @@
+import { nomPublic } from "@/lib/nom-famille";
 import { pool } from "@/lib/db";
 import { getSession } from "@/lib/auth-guards";
 import { siTableAbsente } from "@/lib/pg-errors";
@@ -148,6 +149,9 @@ export async function getReactionsPourFil(
               (array_agg(u.name ORDER BY b.id)
                  FILTER (WHERE u.name IS NOT NULL AND b.user_id <> $1))[1]
                 AS premiere,
+              (array_agg(u.nom_famille ORDER BY b.id)
+                 FILTER (WHERE u.name IS NOT NULL AND b.user_id <> $1))[1]
+                AS premiere_nom_famille,
               bool_or(b.user_id = $1) AS moi
          FROM fil_reactions b
          LEFT JOIN users u ON u.id = b.user_id
@@ -167,6 +171,7 @@ export async function getReactionsPourFil(
     contenu_id: number | null;
     nb: number;
     premiere: string | null;
+    premiere_nom_famille: string | null;
     moi: boolean;
   }[]) {
     // LA même clé que les cartes (cleCarte) : les deux producteurs du format
@@ -177,7 +182,11 @@ export async function getReactionsPourFil(
         : r.profile_id != null
           ? cleCarte("venue", r.profile_id)
           : cleCarte("asso", r.contenu_id as number);
-    infos.set(cle, { nb: r.nb, premiere: r.premiere, moi: r.moi === true });
+    infos.set(cle, {
+      nb: r.nb,
+      premiere: nomPublic(r.premiere, r.premiere_nom_famille),
+      moi: r.moi === true,
+    });
   }
   return infos;
 }

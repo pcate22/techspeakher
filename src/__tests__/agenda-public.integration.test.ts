@@ -105,7 +105,7 @@ describe("getScenesPubliques — périmètre public", () => {
 
     const scenes = await getScenesPubliques();
     expect(scenes.map((s) => s.talkTitre)).toEqual(["Accessibilité sans excuse"]);
-    expect(scenes[0].speakeuseNom).toBe("Léa Dubois");
+    expect(scenes[0].speakeuseNom).toBe("Léa DUBOIS");
     expect(scenes[0].speakeuseHref).toBe("/speakeuses/lea-dubois");
   });
 

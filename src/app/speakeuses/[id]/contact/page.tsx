@@ -1,3 +1,4 @@
+import { nomPublic } from "@/lib/nom-famille";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
@@ -29,7 +30,7 @@ export default async function ContactSpeakeuse({
     redirect(`${speakeuseHref(profile)}/contact`);
   }
 
-  const nom = profile.name?.trim() || "cette speakeuse";
+  const nom = nomPublic(profile.name, profile.nomFamille) ?? "cette speakeuse";
 
   return (
     <>

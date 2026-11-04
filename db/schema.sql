@@ -11,6 +11,9 @@
 CREATE TABLE IF NOT EXISTS users (
   id            SERIAL PRIMARY KEY,
   name          VARCHAR(255),
+  -- Nom de famille désigné par la membre quand la coupe devinée dans `name` est
+  -- fausse (migration 076) ; NULL = tout ce qui suit le premier mot.
+  nom_famille   VARCHAR(255),
   email         VARCHAR(255),
   "emailVerified" TIMESTAMPTZ,
   image         TEXT,

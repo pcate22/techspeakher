@@ -1,4 +1,5 @@
 import { pool } from "@/lib/db";
+import { nomEnCapitales } from "@/lib/nom-famille";
 import { siTableAbsente } from "@/lib/pg-errors";
 import type { PublicAccompagnante } from "@/lib/tremplin-public";
 
@@ -93,7 +94,7 @@ export function getCoachProfile(userId: number): Promise<CoachProfile | null> {
 export function listAccompagnantesPubliques(): Promise<PublicAccompagnante[]> {
   return pool
     .query(
-      `SELECT DISTINCT u.name AS nom, cp.role, cp.lien
+      `SELECT DISTINCT u.name AS nom, u.nom_famille, cp.role, cp.lien
          FROM tremplin_atelier_coachs ac
          JOIN tremplin_ateliers a
            ON a.id = ac.atelier_id AND a.au_programme_public = true
@@ -104,7 +105,11 @@ export function listAccompagnantesPubliques(): Promise<PublicAccompagnante[]> {
         WHERE u.name IS NOT NULL
         ORDER BY u.name`,
     )
-    .then(({ rows }) => rows as PublicAccompagnante[])
+    .then(({ rows }) =>
+      (rows as (PublicAccompagnante & { nom_famille: string | null })[]).map(
+        ({ nom_famille, ...a }) => ({ ...a, nom: nomEnCapitales(a.nom, nom_famille) }),
+      ),
+    )
     .catch(siTableAbsente([] as PublicAccompagnante[]));
 }
 

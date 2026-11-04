@@ -83,12 +83,13 @@ export const SECTIONS_PROFIL: readonly SectionProfil[] = [
     aide: "Ton nom, ton titre de profil, ton poste, ta ville et ta bio : l'en-tête de ta fiche, ce qu'on lit en premier.",
     // Le périmètre suit l'EN-TÊTE de la fiche : un crayon en haut ouvre tout ce
     // qui s'y affiche, sans qu'on aille chercher la ville dans une autre page.
-    // `nomComplet` vit sur le COMPTE (users.name) et `slug` sur l'URL : deux
+    // `nomComplet` et `nomFamille` vivent sur le COMPTE (users) et `slug` sur l'URL :
     // écritures à part, gardées ici parce qu'elles s'éditent au même endroit.
     // Les quatre champs de ville voyagent ensemble (l'autocomplétion BAN les
     // renseigne d'un bloc) : ils ne peuvent pas être séparés.
     champs: [
       "nomComplet",
+      "nomFamille",
       "slug",
       "titreProfil",
       "poste",

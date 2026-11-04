@@ -119,6 +119,7 @@ import {
   setRecompenseSuivi,
 } from "@/lib/tremplin-recompenses";
 import { effacerCompteEnBase, ensureProfileId } from "@/lib/profiles";
+import { nomEnCapitales } from "@/lib/nom-famille";
 
 let backup: { restore: () => void };
 
@@ -299,9 +300,9 @@ describe("DTO public d'édition (réel)", () => {
     // Palmarès ordonné (rang) ET nominatif (gagnantes consententes).
     expect(pub!.palmares.map((p) => p.recompense)).toEqual(["1ᵉʳ prix", "2ᵉ prix", "3ᵉ prix"]);
     expect(pub!.palmares.map((p) => p.nom)).toEqual([
-      "Sarah Lemoine",
-      "Alice Moreau",
-      "Nina Rousseau",
+      "Sarah LEMOINE",
+      "Alice MOREAU",
+      "Nina ROUSSEAU",
     ]);
     // Le titre du talk est conservé au palmarès (comme l'ancienne page).
     expect(pub!.palmares[0].sujet).toBeTruthy();
@@ -452,12 +453,12 @@ describe("contrôles admin visibilité / détails publics (réel)", () => {
     expect(await setRegistrationVisibility(cible.id, editionId, false)).toBe(true);
     expect(await consentAt(cible.id)).toBeNull(); // consentement effacé au retrait
     let pub = await publicDto("devfest-toulouse", 2026);
-    expect(pub!.finalistes.map((f) => f.nom)).not.toContain(cible.participanteNom);
+    expect(pub!.finalistes.map((f) => f.nom)).not.toContain(nomEnCapitales(cible.participanteNom!));
 
     expect(await setRegistrationVisibility(cible.id, editionId, true)).toBe(true);
     expect(await consentAt(cible.id)).not.toBeNull(); // horodaté à l'activation
     pub = await publicDto("devfest-toulouse", 2026);
-    expect(pub!.finalistes.map((f) => f.nom)).toContain(cible.participanteNom);
+    expect(pub!.finalistes.map((f) => f.nom)).toContain(nomEnCapitales(cible.participanteNom!));
   });
 
   it("la visibilité est scopée à l'édition (autre édition → false, rien changé)", async () => {
@@ -506,7 +507,7 @@ describe("contrôles admin visibilité / détails publics (réel)", () => {
     );
 
     const pub = await publicDto("devfest-toulouse", 2026);
-    const f = pub!.finalistes.find((x) => x.nom === reg.participanteNom)!;
+    const f = pub!.finalistes.find((x) => x.nom === nomEnCapitales(reg.participanteNom!))!;
     expect(f).toBeDefined();
     expect(f.bio).toBe("Bio de sa fiche"); // profil, pas l'inscription
     expect(f.siteWeb).toBe("https://nadia.example");
@@ -529,7 +530,7 @@ describe("contrôles admin visibilité / détails publics (réel)", () => {
     await h.pool.query(`UPDATE tremplin_registrations SET finale_presente = true WHERE id = $1`, [reg.id]);
 
     const pub = await publicDto("devfest-toulouse", 2026);
-    const f = pub!.finalistes.find((x) => x.nom === reg.participanteNom)!;
+    const f = pub!.finalistes.find((x) => x.nom === nomEnCapitales(reg.participanteNom!))!;
     expect(f).toBeDefined();
     // Découplage édition ↔ annuaire : bio / site / rôle s'affichent sur la page
     // d'édition sur la base du consentement d'édition, même sans publication.
@@ -556,7 +557,7 @@ describe("contrôles admin visibilité / détails publics (réel)", () => {
     await h.pool.query(`UPDATE tremplin_registrations SET finale_presente = true WHERE id = $1`, [reg.id]);
 
     const pub = await publicDto("devfest-toulouse", 2026);
-    const f = pub!.finalistes.find((x) => x.nom === reg.participanteNom)!;
+    const f = pub!.finalistes.find((x) => x.nom === nomEnCapitales(reg.participanteNom!))!;
     expect(f).toBeDefined(); // nommée (consentement galerie)
     expect(f.bio).toBeNull(); // fiche masquée → rien
     expect(f.siteWeb).toBeNull();
@@ -576,7 +577,7 @@ describe("contrôles admin visibilité / détails publics (réel)", () => {
     const pub = await publicDto("devfest-toulouse", 2026);
     const row = pub!.palmares.find((x) => x.recompense === "4ᵉ prix")!;
     expect(row).toBeDefined();
-    expect(row.nom).toBe("Gagnante Compte"); // nom du compte via COALESCE, pas null
+    expect(row.nom).toBe("Gagnante COMPTE"); // nom du compte via COALESCE, pas null
   });
 
   it("un seul rang de podium par édition : réattribuer un classement déjà pris est refusé (index unique)", async () => {
@@ -3074,7 +3075,7 @@ describe("Les deux temps du parcours, côté public", () => {
 
     const dto = (await publicDto("devfest-toulouse", 2026))!;
     const noms = dto.accompagnees.map((a) => a.nom);
-    expect(noms).toContain(consentante.participanteNom);
+    expect(noms).toContain(nomEnCapitales(consentante.participanteNom!));
     expect(noms).not.toContain(discrete.participanteNom);
     // Comptée sans être nommée : l'effectif de la phase reste publié (décision
     // orga du 2026-08-02), la réserve est consignée dans la conception.
@@ -3090,8 +3091,8 @@ describe("Les deux temps du parcours, côté public", () => {
     await setRegistrationVisibility(reg.id, editionId, false);
 
     const dto = (await publicDto("devfest-toulouse", 2026))!;
-    expect(dto.accompagnees.map((a) => a.nom)).toContain(reg.participanteNom);
-    expect(dto.finalistes.map((f) => f.nom)).not.toContain(reg.participanteNom);
+    expect(dto.accompagnees.map((a) => a.nom)).toContain(nomEnCapitales(reg.participanteNom!));
+    expect(dto.finalistes.map((f) => f.nom)).not.toContain(nomEnCapitales(reg.participanteNom!));
   });
 
   it("supprimer son compte retire son nom des accompagnées, et la fiche coach avec", async () => {
@@ -3140,7 +3141,7 @@ describe("Les deux temps du parcours, côté public", () => {
     expect(await setRegistrationPhasePublic(reg.id, editionId, "montee_sur_scene", true)).toBe(true);
     expect([...(await getPhasesPubliquesForRegistration(reg.id))]).toEqual(["montee_sur_scene"]);
     expect((await publicDto("devfest-toulouse", 2026))!.accompagnees.map((a) => a.nom))
-      .toContain(reg.participanteNom);
+      .toContain(nomEnCapitales(reg.participanteNom!));
     // Horodaté : l'accord doit être démontrable.
     const { rows } = await h.pool.query(
       `SELECT public_consent_at FROM tremplin_registration_phases
@@ -3194,7 +3195,7 @@ describe("Les deux temps du parcours, côté public", () => {
     // Chaîne vide → null : un lien vide ne doit pas devenir un lien affiché.
     expect(fiche?.lien).toBeNull();
     expect((await publicDto("devfest-toulouse", 2026))!.accompagnantes.montee_sur_scene).toEqual([
-      { nom: "Nina Coach", role: "Coach produit et agile", lien: null },
+      { nom: "Nina COACH", role: "Coach produit et agile", lien: null },
     ]);
   });
 
@@ -3276,11 +3277,11 @@ describe("Les deux temps du parcours, côté public", () => {
     const dto = (await publicDto("devfest-toulouse", 2026))!;
     // Une fiche coach consentie = un nom, son rôle et son lien.
     expect(dto.accompagnantes.cfp_et_pitch).toEqual([
-      { nom: "Rachel Coach", role: "Coach produit", lien: "https://racheldubois.fr" },
+      { nom: "Rachel COACH", role: "Coach produit", lien: "https://racheldubois.fr" },
     ]);
     // Sans accord (ou sans fiche coach), personne n'est nommé — on sous-annonce
     // plutôt que d'exposer un nom que personne n'a proposé de publier.
-    expect(dto.accompagnantes.montee_sur_scene.map((c) => c.nom)).toEqual(["Rachel Coach"]);
+    expect(dto.accompagnantes.montee_sur_scene.map((c) => c.nom)).toEqual(["Rachel COACH"]);
   });
 
   it("les accompagnantes : révoquer l'accord retire le nom des deux phases d'un coup", async () => {

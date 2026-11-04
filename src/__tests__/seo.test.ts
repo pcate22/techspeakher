@@ -124,7 +124,7 @@ describe("fiche generateMetadata — indexation", () => {
     });
     const meta = await generateMetadata({ params: Promise.resolve({ id: "5" }) });
     expect(meta.robots).toMatchObject({ index: true });
-    expect(String(meta.title)).toMatch(/Marie Curie/);
+    expect(String(meta.title)).toMatch(/Marie CURIE/);
     expect(meta.alternates?.canonical).toBe("/speakeuses/5");
   });
 

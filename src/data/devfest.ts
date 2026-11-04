@@ -10,42 +10,42 @@ import type { DevfestTalk } from "@/types";
  */
 export const devfest2026Talks: DevfestTalk[] = [
   {
-    name: "Camille Ghibaudo",
+    name: "Camille GHIBAUDO",
     titre: "Défier un GAFAM dans l'auto : la force de l'union, la ruse de la standardisation",
     format: "Conférence",
     note: "2ᵉ du Tremplin 2026",
     linkedin: "https://www.linkedin.com/in/camilleghibaudo/",
   },
   {
-    name: "Leïla Gazeilles",
+    name: "Leïla GAZEILLES",
     titre: "Dire oui tue vos projets : anatomie d'un piège courant",
     format: "Quickie",
     note: "Finaliste du Tremplin 2026",
     linkedin: "https://www.linkedin.com/in/le%C3%AFla-gazeilles-pmp-ph-d-7853b524/",
   },
   {
-    name: "Claire Pellat",
+    name: "Claire PELLAT",
     titre: "Comment décider de ne pas faire ce qu'on avait prévu de faire : quand la data dit stop",
     format: "Quickie",
     note: "Accompagnée par Tech Speak'Her",
     linkedin: "https://www.linkedin.com/in/claire-pellat/",
   },
   {
-    name: "Asma Taberkokt",
+    name: "Asma TABERKOKT",
     titre: "Mon CV ne répond plus : j'ai construit un chatbot à la place",
     format: "Quickie",
     note: "Accompagnée par Tech Speak'Her",
     linkedin: "https://www.linkedin.com/in/asma-t-5b71b6217/",
   },
   {
-    name: "Cateline Puccetti",
+    name: "Cateline PUCCETTI",
     titre: "Votre IA s'en sort moins bien que vos utilisateurs aveugles",
     format: "Quickie",
     note: "Fondatrice Tech Speak'Her",
     linkedin: "https://www.linkedin.com/in/cateline-puccetti/",
   },
   {
-    name: "Montaine Marteau",
+    name: "Montaine MARTEAU",
     titre: "Construisez le dashboard qui répond à vos questions",
     format: "Quickie",
     note: "Fondatrice Tech Speak'Her",

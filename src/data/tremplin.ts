@@ -24,7 +24,7 @@ export const accompagnement: AccompagnementTheme[] = [
     done: true,
     dateEnd: "2026-05-12",
     coAnimatrice: {
-      name: "Lucile Briotet",
+      name: "Lucile BRIOTET",
       role: "Conceptrice-rédactrice",
       url: "https://fr.linkedin.com/in/lucilebriotet",
     },
@@ -46,14 +46,14 @@ export const accompagnement: AccompagnementTheme[] = [
 
 /** Le jury 100% féminin de la soirée Tremplin du 4 juin 2026. */
 export const jury: Jure[] = [
-  { name: "Aline Paponaud", role: "DSI Sud-Ouest, Inovie" },
-  { name: "Aurélie Vache", role: "Developer Advocate, OVHcloud" },
-  { name: "Céline Chantry-Darmon", role: "Chief Scientific Officer, Tekkare" },
-  { name: "Corrine Favaro", role: "Directrice Domaine Méthode, BPCE Solutions informatiques" },
-  { name: "Magali Germond", role: "Déléguée Régionale Numeum, administratrice Digital 113" },
-  { name: "Rachel Dubois", role: "Coach Orga - Produit, ex-Spotify, Airbus, Vinted" },
-  { name: "Sandrine David", role: "Directrice Business Applications, Berger-Levrault" },
-  { name: "Sophie Lagarde", role: "Directrice Relation Clients BPCE-IT, administratrice La Mêlée" },
+  { name: "Aline PAPONAUD", role: "DSI Sud-Ouest, Inovie" },
+  { name: "Aurélie VACHE", role: "Developer Advocate, OVHcloud" },
+  { name: "Céline CHANTRY-DARMON", role: "Chief Scientific Officer, Tekkare" },
+  { name: "Corrine FAVARO", role: "Directrice Domaine Méthode, BPCE Solutions informatiques" },
+  { name: "Magali GERMOND", role: "Déléguée Régionale Numeum, administratrice Digital 113" },
+  { name: "Rachel DUBOIS", role: "Coach Orga - Produit, ex-Spotify, Airbus, Vinted" },
+  { name: "Sandrine DAVID", role: "Directrice Business Applications, Berger-Levrault" },
+  { name: "Sophie LAGARDE", role: "Directrice Relation Clients BPCE-IT, administratrice La Mêlée" },
 ];
 
 export const prix: Prix[] = [
@@ -108,12 +108,12 @@ export const partenaires: Partenaire[] = [
     ? [{ name: lucile.name, description: `${lucile.role}, co-animatrice de l'atelier CFP.`, url: lucile.url }]
     : []),
   {
-    name: "Rachel Dubois",
+    name: "Rachel DUBOIS",
     description: "Coach produit & enterprise, ex-Spotify et Airbus. Mentorat lors des ateliers et membre du jury.",
     url: "https://racheldubois.fr",
   },
   {
-    name: "Noëlle Ballestrero",
+    name: "Noëlle BALLESTRERO",
     description: "Photographe, reportage photo de la soirée.",
     url: "https://fr.linkedin.com/in/no%C3%ABlle-ballestrero-578398143",
   },
@@ -179,7 +179,7 @@ export const faq: FAQ[] = [
   },
   {
     q: "Qui compose le jury\u00A0?",
-    a: "Un jury 100% féminin de 8 personnalités de la tech et du leadership occitan\u00A0: Aline Paponaud (Inovie), Aurélie Vache (OVHcloud), Céline Chantry-Darmon (Tekkare), Corrine Favaro (BPCE Solutions informatiques), Magali Germond (Numeum / Digital 113), Rachel Dubois, Sandrine David (Berger-Levrault) et Sophie Lagarde (BPCE-IT / La Mêlée). Profils complets dans la section «\u00A0Le jury\u00A0» de la page.",
+    a: "Un jury 100% féminin de 8 personnalités de la tech et du leadership occitan\u00A0: Aline PAPONAUD (Inovie), Aurélie VACHE (OVHcloud), Céline CHANTRY-DARMON (Tekkare), Corrine FAVARO (BPCE Solutions informatiques), Magali GERMOND (Numeum / Digital 113), Rachel DUBOIS, Sandrine DAVID (Berger-Levrault) et Sophie LAGARDE (BPCE-IT / La Mêlée). Profils complets dans la section «\u00A0Le jury\u00A0» de la page.",
   },
   {
     q: "Je dois habiter à Toulouse\u00A0?",
@@ -191,7 +191,7 @@ export const faq: FAQ[] = [
   },
   {
     q: "Qui organise le Tremplin\u00A0?",
-    a: "Le Tremplin est organisé par les bénévoles de Tech Speak'Her, association loi 1901. La soirée du 4 juin a été rendue possible grâce à BPCE Solutions informatiques, qui nous accueille dans ses locaux toulousains, et aux partenaires qui prennent en charge l'apéro dînatoire. L'atelier 3 (CFP) a été co-animé avec Lucile Briotet, conceptrice-rédactrice.",
+    a: "Le Tremplin est organisé par les bénévoles de Tech Speak'Her, association loi 1901. La soirée du 4 juin a été rendue possible grâce à BPCE Solutions informatiques, qui nous accueille dans ses locaux toulousains, et aux partenaires qui prennent en charge l'apéro dînatoire. L'atelier 3 (CFP) a été co-animé avec Lucile BRIOTET, conceptrice-rédactrice.",
   },
 ];
 
