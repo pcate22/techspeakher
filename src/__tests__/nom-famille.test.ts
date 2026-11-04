@@ -21,6 +21,10 @@ describe("nomEnCapitales : heuristique", () => {
     expect(nomEnCapitales("Marie\u00a0Anne Dupont")).toBe("Marie\u00a0Anne DUPONT");
   });
 
+  it("garde la casse saisie d'une particule (« De » reste « De »)", () => {
+    expect(nomEnCapitales("Anne De Smet")).toBe("Anne De SMET");
+  });
+
   it("laisse un nom d'un seul mot tel quel", () => {
     expect(nomEnCapitales("Asma")).toBe("Asma");
   });

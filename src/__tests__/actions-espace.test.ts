@@ -169,6 +169,16 @@ describe("saveProfile — garde-fous", () => {
     expect(setUserName).toHaveBeenCalledWith(7, "Rachel Dubois");
   });
 
+  it("adresse déjà prise → ni le nom ni sa coupe ne s'écrivent", async () => {
+    vi.mocked(getProfileByUserId).mockResolvedValue(null);
+    vi.mocked(isSlugAvailable).mockResolvedValueOnce(false);
+    vi.mocked(parseProfileForm).mockReturnValueOnce({ ok: true, data: { slug: "prise" } } as never);
+    const r = await saveProfile({}, fd({ nomComplet: "Marie Anne Dupont", nomFamille: "Dupont", slug: "prise" }));
+    expect(r.ok).toBe(false);
+    expect(setUserName).not.toHaveBeenCalled();
+    expect(setUserNomFamille).not.toHaveBeenCalled();
+  });
+
   it("champ nom de famille absent du POST → la correction enregistrée reste", async () => {
     vi.mocked(getProfileByUserId).mockResolvedValue(null);
     await expect(saveProfile({}, fd({ nomComplet: "Rachel Dubois" }))).rejects.toThrow();

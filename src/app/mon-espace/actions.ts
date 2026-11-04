@@ -143,15 +143,13 @@ export async function saveProfile(
   // reste vide (on ne casse jamais une URL déjà partagée en silence).
   const existant = await getProfileByUserId(id);
   const nomEffectif = nomComplet || existant?.name || "";
-  // Le nom de famille se lit contre le nom qui sera enregistré, avant toute
-  // écriture : un refus ne laisse pas un nom à moitié changé.
+  // Le nom de famille se lit contre le nom qui sera enregistré. Les deux
+  // s'écrivent après le contrôle de l'adresse : un refus ne change rien.
   // Champ absent du POST = correction inchangée (jamais effacée en silence).
   const nomFamille = formData.has("nomFamille")
     ? lireNomFamille(nomEffectif, formString(formData, "nomFamille"))
     : null;
   if (nomFamille && !nomFamille.ok) return { ok: false, errors: { nomFamille: nomFamille.erreur } };
-  if (nomComplet) await setUserName(id, nomComplet);
-  if (nomFamille) await setUserNomFamille(id, nomFamille.valeur);
 
   // Adresse (slug) définitive : saisie explicite → contrôle d'unicité (message
   // clair si déjà prise) ; champ vide → slug existant conservé, sinon dérivé du nom.
@@ -164,6 +162,9 @@ export async function saveProfile(
   } else {
     slug = existant?.slug ?? (await deriveAvailableSlug(nomEffectif, id));
   }
+
+  if (nomComplet) await setUserName(id, nomComplet);
+  if (nomFamille) await setUserNomFamille(id, nomFamille.valeur);
 
   try {
     await upsertProfile(id, { ...result.data, slug });

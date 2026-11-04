@@ -103,9 +103,10 @@ export function ChampsIdentite({
         id="nomFamille"
         name="nomFamille"
         label="Nom de famille"
+        autoComplete="family-name"
         maxLength={255}
         defaultValue={initial?.nomFamille}
-        hint={`${nom.trim() ? `Ta fiche affiche « ${nomEnCapitales(nom, initial?.nomFamille)} ». ` : ""}Ton nom de famille s'affiche en capitales. À remplir pour un prénom composé sans trait d'union, par exemple « Dupont » pour Marie Anne Dupont.`}
+        hint={`${nom.trim() ? `Ta fiche affiche « ${nomEnCapitales(nom, initial?.nomFamille)} » (nom enregistré). ` : ""}Si ton nom de famille est plus court, écris-le ici, par exemple « Dupont » pour Marie Anne Dupont.`}
         error={erreurs?.nomFamille}
       />
       <div>

@@ -1,5 +1,13 @@
 # Dette technique — Tech Speak'Her
 
+> **Session du 2026-11-04 — noms de famille en capitales.** Aucun P0 touché ;
+> le **3** n'a pas été relu ce jour. SOLDÉ dans le geste : commentaire en
+> double dans `saveProfile` ; écriture du nom AVANT le contrôle de l'adresse
+> (`saveProfile` écrivait le nom puis refusait « adresse prise ») ; l'aide d'un
+> `ChampTexte` disparaissait du lecteur d'écran dès qu'une erreur s'affichait
+> (`aria-describedby` porte maintenant les deux). NOUVEAU, en P2 et P3 : ce que
+> la PR laisse en casse d'origine (§ « Noms de famille en capitales »).
+
 > **Session du 2026-10-16 — audit « reprise humaine »**
 > (`docs/audit-reprise-humaine.md`, docs seulement). Aucun P0 touché ; le **3**
 > n'a pas été relu ce jour. Recalés contre le code : les chiffres du P1
@@ -732,6 +740,31 @@ ci-dessous, listées ici pour la traçabilité :
   helper. **Effort : S/M** (refactor sûr, les redirects sont testés).
 
 ## 🟡 P2 — nice-to-have
+
+### Noms de famille en capitales : ce qui reste (2026-11-04)
+
+Règle tranchée par Cateline : le nom de famille s'affiche en capitales partout.
+Mise en forme au bord des lectures publiques par `src/lib/nom-famille.ts`
+(coupe devinée, corrigeable par la membre via `users.nom_famille`, migration 076).
+
+- **P2 — Espace membre et admin encore en casse d'origine.** Lus bruts :
+  `src/lib/tremplin-ateliers.ts` (coachs et co-membres de sous-groupe, vus par
+  les participantes), et les écrans orga (`contact-message`,
+  `conference-propositions`, `tremplin-coachs`, `tremplin-registrations`,
+  `adhesions`, `comptes-inactifs`, `cfp-suggestions`). Les e-mails gardent
+  volontairement la casse saisie (salutation). Ajouter `u.nom_famille` au
+  SELECT et `nomPublic` au mapRow.
+- **P3 — Capitales écrites dans le texte, pas en CSS.** Un nom court sans
+  voyelle (« LY », « NG ») peut être épelé comme un sigle par un lecteur
+  d'écran, et le copier-coller garde les capitales. Le propre : renvoyer prénom
+  et nom séparés dans les DTO et afficher le nom via `text-transform`. Les
+  données statiques (`src/data` : jury, verbatims, DevFest, fondatrices) sont
+  écrites en capitales à la main en attendant.
+- **P3 — Correction périmée en base.** Quand la membre change son nom sans
+  repasser par le champ, une ancienne coupe qui ne termine plus le nom reste
+  dans `users.nom_famille`. Sans effet à l'écran (`nomEnCapitales` l'ignore),
+  mais c'est une donnée fausse ; le nom et sa coupe ne s'écrivent pas non plus
+  dans une transaction.
 
 ### Reprise humaine : ce que le plan reporte (2026-10-16)
 

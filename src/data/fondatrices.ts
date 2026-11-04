@@ -4,9 +4,9 @@
  * speakeuses (rapprochement par nom côté serveur, si la fiche est publiée).
  */
 export const fondatrices = [
-  { name: "Virginie Jugie" },
+  { name: "Virginie JUGIE" },
   { name: "Cateline PUCCETTI" },
   { name: "Rachel DUBOIS" },
   { name: "Montaine MARTEAU" },
-  { name: "Sandrine Berger" },
+  { name: "Sandrine BERGER" },
 ] as const;
