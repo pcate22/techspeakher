@@ -1,3 +1,4 @@
+import { nomEnCapitales } from "../src/lib/nom-famille";
 import { test, expect } from "@playwright/test";
 import { exigerDecor, LEA, AICHA, YASMINE, EMAILS_DU_DECOR } from "./decor";
 
@@ -39,7 +40,7 @@ test.describe("Annuaire (avec données)", () => {
     const index = (await (await request.get("/api/search/speakeuses")).json()) as Array<{
       title?: string;
     }>;
-    expect(index.map((i) => i.title)).not.toContain(YASMINE.nom);
+    expect(index.map((i) => i.title)).not.toContain(nomEnCapitales(YASMINE.nom));
   });
 
   test("aucune adresse e-mail dans l'annuaire servi", async ({ request }) => {
@@ -58,7 +59,7 @@ test.describe("Annuaire (avec données)", () => {
       .first()
       .click();
     await expect(page).toHaveURL(new RegExp(`${LEA.fiche}$`));
-    await expect(page.getByRole("heading", { level: 1 })).toContainText(LEA.nom);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(nomEnCapitales(LEA.nom));
   });
 
   /**

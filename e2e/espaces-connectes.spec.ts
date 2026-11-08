@@ -1,3 +1,4 @@
+import { nomEnCapitales } from "../src/lib/nom-famille";
 import { test, expect } from "@playwright/test";
 import { exigerDecor, COMPTES, YASMINE, INES, EMAILS_DU_DECOR } from "./decor";
 import { seConnecter } from "./session";
@@ -75,7 +76,9 @@ test.describe("Espace membre", () => {
    */
   test("l'espace affiche bien les données de la personne connectée", async ({ page }) => {
     await page.goto("/mon-espace");
-    await expect(page.locator("body")).toContainText(COMPTES.membre.nom);
+    // L'accueil montre le nom sous deux formes (avatar tel que saisi, cartes du
+    // fil nom de famille en capitales) : la casse ne dit rien de la personne.
+    await expect(page.locator("body")).toContainText(COMPTES.membre.nom, { ignoreCase: true });
   });
 
   /**
@@ -93,7 +96,7 @@ test.describe("Espace membre", () => {
 
   test("sa fiche personnelle porte ses informations", async ({ page }) => {
     await page.goto("/mon-espace/fiche");
-    await expect(page.locator("body")).toContainText(COMPTES.membre.nom);
+    await expect(page.locator("body")).toContainText(nomEnCapitales(COMPTES.membre.nom));
   });
 });
 
@@ -120,7 +123,7 @@ test.describe("Espace orga", () => {
    */
   test("la fiche en attente attend bien dans la file de modération", async ({ page }) => {
     await page.goto("/admin/speakeuses");
-    await expect(page.locator("body")).toContainText(YASMINE.nom);
+    await expect(page.locator("body")).toContainText(nomEnCapitales(YASMINE.nom));
   });
 
   /**
@@ -132,7 +135,7 @@ test.describe("Espace orga", () => {
    */
   test("le brouillon en sommeil est trouvable, et le lot le compte", async ({ page }) => {
     await page.goto("/admin/speakeuses/relances");
-    await expect(page.locator("body")).toContainText(INES.nom);
+    await expect(page.locator("body")).toContainText(nomEnCapitales(INES.nom));
     await expect(page.getByRole("button", { name: /relancer 1 speakeuse/i })).toBeVisible();
   });
 

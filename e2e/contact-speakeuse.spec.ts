@@ -1,3 +1,4 @@
+import { nomEnCapitales } from "../src/lib/nom-famille";
 import { test, expect } from "@playwright/test";
 import { exigerDecor, LEA, AICHA, EMAILS_DU_DECOR } from "./decor";
 
@@ -43,7 +44,7 @@ test.describe("Contacter une speakeuse", () => {
 
     // La fiche s'affiche bien, elle : on n'a pas simplement testé une page vide.
     await page.goto(LEA.fiche);
-    await expect(page.getByRole("heading", { level: 1 })).toContainText(LEA.nom);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(nomEnCapitales(LEA.nom));
   });
 
   test("une fiche qui a ouvert le contact propose un formulaire de relais", async ({

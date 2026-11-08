@@ -1,3 +1,4 @@
+import { nomEnCapitales } from "../src/lib/nom-famille";
 import { test, type APIRequestContext } from "@playwright/test";
 
 /**
@@ -159,8 +160,9 @@ export const EMAILS_DU_DECOR = [
   EXPEDITRICE_MESSAGE,
 ] as const;
 
-/** Marqueur de présence du décor, cherché dans l'index public de recherche. */
-const MARQUEUR = LEA.nom;
+/** Marqueur de présence du décor, cherché dans l'index public de recherche :
+ * le nom tel que les pages l'affichent, nom de famille en capitales. */
+const MARQUEUR = nomEnCapitales(LEA.nom);
 
 let cache: boolean | undefined;
 
