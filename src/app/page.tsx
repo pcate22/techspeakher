@@ -118,7 +118,7 @@ export default async function Home() {
       : null,
     {
       value: "Toulouse",
-      label: "une scène tech qui compte",
+      label: "nos meetups, le Tremplin, le DevFest",
       color: "text-orange",
     },
   ].filter((s): s is { value: string; label: string; color: string; href?: string } => s != null);
@@ -220,7 +220,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Elles en parlent mieux que nous — la parole des personnes concernées,
+      {/* Elles en parlent : la parole des personnes concernées,
           juste après les chiffres : le constat (17 % de femmes dans la tech)
           puis ce que ça change, dit par celles qui sont passées par le
           Tremplin. Aucun lien dans ce bloc : c'est une preuve, pas une porte de
@@ -229,7 +229,7 @@ export default async function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="mb-8 text-center">
             <h2 id="verbatims-title" className="text-3xl font-bold">
-              Elles en parlent <span className="text-magenta">mieux que nous</span>
+              Elles <span className="text-magenta">en parlent</span>
             </h2>
             <p className="text-gray-light mt-1">
               Ce qu&apos;en disent les participantes et les jurées du premier Tremplin.
@@ -310,18 +310,20 @@ export default async function Home() {
         </section>
       )}
 
-      {/* Cette communauté, c'est pour qui ? — Pattern A (cascade tutoyée + sticky) */}
-      <section className="py-16 sm:py-20 px-4" aria-labelledby="pour-qui-title">
+      {/* À qui s'adresse la communauté. Tutoyé, comme tout ce qui parle aux
+          speakeuses ; les organisateurs sont vouvoyés (bloc plus bas). */}
+      <section className="py-16 sm:py-20 px-4" aria-labelledby="a-qui-title">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 id="pour-qui-title" className="sr-only">
-            Cette communauté, c&apos;est pour qui&nbsp;?
+          <h2 id="a-qui-title" className="sr-only">
+            À qui s&apos;adresse la communauté
           </h2>
-          <div className="space-y-3 text-base sm:text-lg text-white leading-relaxed mb-12">
-            <p>Tu prépares ton premier talk ou tu enchaînes les conférences&nbsp;?</p>
-            <p>Tu veux partager ton expertise, ton vécu, ta voix&nbsp;?</p>
-            <p>Tu cherches une communauté de femmes de la tech qui ose&nbsp;?</p>
+          <div className="text-base sm:text-lg text-white leading-relaxed mb-12">
+            <p>
+              Que tu prépares ton premier talk ou que tu en donnes déjà, la
+              communauté t&apos;aide à oser la scène.
+            </p>
           </div>
-          <StickyNote>Cette communauté est pour toi&nbsp;!</StickyNote>
+          <StickyNote>Tu es la bienvenue&nbsp;!</StickyNote>
         </div>
       </section>
 
@@ -363,8 +365,8 @@ export default async function Home() {
             Tremplin Tech Speak&apos;Her x DevFest Toulouse 2026
           </h2>
           <p className="text-gray-light mb-6 max-w-2xl mx-auto">
-            Vous rêvez de donner votre premier talk en conférence&nbsp;? Le Tremplin
-            vous accompagne du pitch à la scène du DevFest Toulouse&nbsp;!
+            Le Tremplin t&apos;accompagne pour ton premier talk en conférence, du
+            pitch à la scène du DevFest Toulouse.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button href="/tremplin">
@@ -384,7 +386,8 @@ export default async function Home() {
             Vous cherchez des intervenantes pour vos prochains événements&nbsp;?
           </h2>
           <p className="text-gray-light mb-6">
-            Contactez-nous&nbsp;: on a fait une liste des speakeuses de notre communauté&nbsp;!
+            L&apos;annuaire présente les speakeuses de la communauté. Pour une
+            demande précise, écrivez-nous.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button href="/speakeuses">
