@@ -3,9 +3,10 @@ import { textesAffichables } from "./copie-affichee";
 import { describe, it, expect } from "vitest";
 import { allActualites, behindTheScenes } from "@/data/actualites";
 import { prix, faq } from "@/data/tremplin";
-import { pourquoi, typesSoutien } from "@/data/partenaires";
+import { landingPartenaires, pourquoi, typesSoutien } from "@/data/partenaires";
+import { landingBenevole, missionsBenevoles } from "@/data/benevole";
 import { codeDeConduite } from "@/data/charte";
-import { aSavoirAdhesion, introAdhesion, tarifsAdhesion } from "@/data/adhesion";
+import { aSavoirAdhesion, introAdhesion, landingAdhesion, tarifsAdhesion } from "@/data/adhesion";
 import { verbatims } from "@/data/verbatims";
 import { SECTEURS, SUJETS, REGIONS, LANGUES } from "@/data/domaines";
 import {
@@ -80,6 +81,17 @@ const EXCEPTIONS: RegExp[] = [
   /opportunit/i, // utilisé volontairement dans certains contextes
 ];
 
+/**
+ * Toutes les chaînes d'une donnée, à toute profondeur. Les liens internes
+ * (`/contact`, `/tremplin#jury`) et les adresses web ne sont pas de la copie.
+ */
+function chainesDe(valeur: unknown): string[] {
+  if (typeof valeur === "string") return /^(\/|https?:)/.test(valeur) ? [] : [valeur];
+  if (Array.isArray(valeur)) return valeur.flatMap(chainesDe);
+  if (valeur && typeof valeur === "object") return Object.values(valeur).flatMap(chainesDe);
+  return [];
+}
+
 /** Collecter toutes les chaînes de texte visibles du site */
 function collectAllTexts(): { source: string; text: string }[] {
   const texts: { source: string; text: string }[] = [];
@@ -124,6 +136,17 @@ function collectAllTexts(): { source: string; text: string }[] {
   }
   for (const t of [introAdhesion, ...tarifsAdhesion, ...aSavoirAdhesion]) {
     texts.push({ source: "adhésion", text: t });
+  }
+  // Les landings « Nous rejoindre » : tout leur texte, champ par champ, pour
+  // qu'un champ ajouté (une condition, une question) soit relu sans y penser.
+  const landings = {
+    "landing adhérer": landingAdhesion,
+    "landing bénévole": landingBenevole,
+    "missions bénévoles": missionsBenevoles,
+    "landing partenaires": landingPartenaires,
+  };
+  for (const [source, valeur] of Object.entries(landings)) {
+    for (const text of chainesDe(valeur)) texts.push({ source, text });
   }
   // Taxonomies : libellés affichés au profil, en filtres et sur les fiches.
   for (const v of [...SECTEURS, ...SUJETS, ...REGIONS, ...LANGUES]) {
@@ -248,6 +271,10 @@ const FICHIERS_COPIE = [
   "src/app/agenda/AgendaFiltres.tsx",
   "src/app/agenda/page.tsx",
   "src/app/agenda/[annee]/page.tsx",
+  // Les pages des landings « Nous rejoindre » : leur description part dans
+  // Google et dans les aperçus de partage, comme du texte affiché.
+  "src/app/benevole/page.tsx",
+  "src/app/partenaires/page.tsx",
 ];
 
 const REGLES_TYPO_SOURCE: SpellingRule[] = [

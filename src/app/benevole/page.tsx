@@ -7,7 +7,7 @@ import { landingBenevole as L, missionsBenevoles } from "@/data/benevole";
 export const metadata: Metadata = {
   title: "Devenir bénévole | Tech\u00A0Speak'Her",
   description:
-    "Coacher une speakeuse, faire partie du jury du Tremplin, organiser un meetup : donnez un peu de temps pour mettre plus de femmes de la tech sur scène.",
+    "Coacher une speakeuse, faire partie du jury du Tremplin, organiser un meetup\u00A0: donnez un peu de temps pour mettre plus de femmes de la tech sur scène.",
   alternates: { canonical: "/benevole" },
 };
 
@@ -40,12 +40,17 @@ export default function Benevole() {
           <h2 id="missions-title" className="text-2xl font-bold text-center mb-8">
             Ce que vous pouvez <span className="text-cyan">faire</span>
           </h2>
-          <ul className="grid grid-cols-1 sm:grid-cols-3 gap-6 list-none mb-10" role="list">
+          <ul className="grid grid-cols-1 lg:grid-cols-3 gap-6 list-none mb-10" role="list">
             {missionsBenevoles.map((m) => (
               <li key={m.titre} className="bg-navy-light border border-navy-lighter rounded-xl p-6">
                 <div className="text-3xl mb-3" aria-hidden="true">{m.icon}</div>
                 <h3 className="text-lg font-bold text-white mb-2">{m.titre}</h3>
                 <p className="text-sm text-gray-light leading-relaxed">{m.description}</p>
+                {m.conditions && (
+                  <p className="text-sm text-gray-light leading-relaxed mt-4 pt-4 border-t border-field-border">
+                    {m.conditions}
+                  </p>
+                )}
               </li>
             ))}
           </ul>

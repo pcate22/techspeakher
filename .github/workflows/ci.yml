@@ -66,7 +66,12 @@ jobs:
 
   e2e:
     name: Tests E2E (Playwright)
-    runs-on: ubuntu-latest
+    # Épinglé : `ubuntu-latest` est passé à 26.04, où `playwright install`
+    # refuse Chromium (« Playwright does not support chromium on
+    # ubuntu26.04-x64 »). À ramener sur `ubuntu-latest` quand une version de
+    # Playwright la prend en charge (docs/dette-technique.md, P2, « CI : le
+    # job E2E épinglé »).
+    runs-on: ubuntu-24.04
     needs: [quality, test]
 
     # LE DÉCOR DE DONNÉES. Sans base, la suite n'auditait que des états VIDES :
