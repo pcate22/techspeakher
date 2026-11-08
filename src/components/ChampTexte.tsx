@@ -75,7 +75,8 @@ export default function ChampTexte({
    * l'autofill du navigateur restent muets — coûteux au clavier et sur mobile. */
   autoComplete?: string;
 }) {
-  const describedBy = error ? `err-${id}` : hint ? `hint-${id}` : undefined;
+  // L'aide reste décrite sous l'erreur : c'est souvent elle qui dit comment corriger.
+  const describedBy = [error && `err-${id}`, hint && `hint-${id}`].filter(Boolean).join(" ") || undefined;
   // Une liste vide n'annonce rien d'utile : on ne câble `list` que s'il y a
   // vraiment des valeurs à proposer (sinon l'aide technique promet une
   // autocomplétion creuse).

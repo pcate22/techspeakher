@@ -24,6 +24,7 @@ export const CHAMPS_PROFIL: Record<string, ChampProfil> = {
     etape: 0,
     messageRequis: "Indique ton prénom et ton nom pour enregistrer.",
   },
+  nomFamille: { libelle: "Nom de famille", etape: 0 },
   slug: { libelle: "Adresse de ta fiche", etape: 0 },
   titreProfil: { libelle: "Titre de profil", etape: 0 },
   poste: { libelle: "Poste actuel", etape: 0 },

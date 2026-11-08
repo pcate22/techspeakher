@@ -103,7 +103,7 @@ describe("listAccompagnantesPubliques", () => {
     await anime(at, u);
 
     expect(await listAccompagnantesPubliques()).toEqual([
-      { nom: "Lucile Briotet", role: "Conceptrice-rédactrice", lien: "https://ex.fr" },
+      { nom: "Lucile BRIOTET", role: "Conceptrice-rédactrice", lien: "https://ex.fr" },
     ]);
   });
 
@@ -188,9 +188,9 @@ describe("listAccompagnantesPubliques", () => {
     }
 
     expect((await listAccompagnantesPubliques()).map((a) => a.nom)).toEqual([
-      "Alice Durand",
-      "Marie Blanc",
-      "Zoé Martin",
+      "Alice DURAND",
+      "Marie BLANC",
+      "Zoé MARTIN",
     ]);
   });
 

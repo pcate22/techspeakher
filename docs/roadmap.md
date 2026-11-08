@@ -4,9 +4,10 @@
 > la dette technique : `docs/dette-technique.md`. Pour l'étude d'import des
 > talks : `docs/faisabilite-import-talks.md`.
 >
-> Dernière mise à jour : **2026-11-04** (section « Header Nous rejoindre,
-> page bénévole » seule : conditions des coachs et du jury) ; **2026-10-16**
-> (section « Reprise humaine du code » seule) ; **2026-10-15** (sections « Navigation connectée »,
+> Dernière mise à jour : **2026-11-04** (sections « Noms de famille en
+> capitales » et « Header Nous rejoindre, page bénévole » seules : conditions
+> des coachs et du jury) ; **2026-10-16** (section « Reprise humaine du code »
+> seule) ; **2026-10-15** (sections « Navigation connectée »,
 > « Chantiers repris des PR fermées », « Adhésions HelloAsso », « Partenaires
 > par façon d'aider », « Header Nous rejoindre », « Landing partenaires »,
 > « Textes après l'AGE » et
@@ -25,6 +26,16 @@
 > déclenché. Aucune passation ne s'empile sur une autre : `CLAUDE.md` §Clore
 > une session. La **licence** est tranchée le 23/08 : voir la section dédiée
 > ci-dessous, qui ferme la piste « une autre communauté déploie la plateforme ».
+
+## Noms de famille en capitales — PR OUVERTE le 2026-11-04
+
+Tranché par Cateline : le nom de famille s'affiche en capitales partout
+(« Asma TABERKOKT »), avec une coupe devinée (tout ce qui suit le premier mot,
+particules en minuscules) que la membre corrige au besoin dans « Qui tu es »
+(champ « Nom de famille », migration 076). Livré dans la PR : annuaire, fiche,
+contact, agenda, fil, bravos, Tremplin, coachs et données statiques. Reste :
+l'espace membre Tremplin et les écrans orga (dette P2, § « Noms de famille en
+capitales »). Avant la mise en prod : jouer la migration 076.
 
 ## Reprise humaine du code — porte d'entrée en PR le 2026-10-16, le reste reporté
 

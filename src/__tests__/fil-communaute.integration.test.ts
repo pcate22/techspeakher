@@ -59,6 +59,14 @@ async function fiche(
 }
 
 describe("getNouvellesVenues", () => {
+  it("met en capitales le nom de famille désigné par la membre, sinon la coupe devinée", async () => {
+    await fiche("Marie Anne Dupont", "publie", "2026-07-20");
+    await h.pool.query(`UPDATE users SET nom_famille = 'Dupont' WHERE name = 'Marie Anne Dupont'`);
+    await fiche("Asma Taberkokt", "publie", "2026-07-19");
+    const venues = await getNouvellesVenues();
+    expect(venues.map((v) => v.nom)).toEqual(["Marie Anne DUPONT", "Asma TABERKOKT"]);
+  });
+
   it("ne montre que les fiches PUBLIÉES", async () => {
     await fiche("Léa Dubois", "publie", "2026-07-20", { slug: "lea-dubois" });
     for (const statut of ["brouillon", "en_attente", "masque", "refuse"]) {
@@ -66,7 +74,7 @@ describe("getNouvellesVenues", () => {
       await fiche(`Fiche ${statut}`, statut, "2026-07-25");
     }
     const venues = await getNouvellesVenues();
-    expect(venues.map((v) => v.nom)).toEqual(["Léa Dubois"]);
+    expect(venues.map((v) => v.nom)).toEqual(["Léa DUBOIS"]);
   });
 
   it("la plus récemment publiée d'abord", async () => {
@@ -86,7 +94,7 @@ describe("getNouvellesVenues", () => {
     await fiche("Sans date", "publie", null);
     await fiche("Avec date", "publie", "2026-07-20");
     const venues = await getNouvellesVenues();
-    expect(venues.map((v) => v.nom)).toEqual(["Avec date"]);
+    expect(venues.map((v) => v.nom)).toEqual(["Avec DATE"]);
   });
 
   it("écarte une fiche publiée sans nom (elle s'afficherait anonyme)", async () => {

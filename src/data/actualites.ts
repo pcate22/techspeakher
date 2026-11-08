@@ -69,9 +69,9 @@ export const allActualites: ActuItem[] = [
   {
     date: "12 mars 2026",
     title: "J'ai packagé mon application en image Docker, et maintenant\u00A0?",
-    speaker: "Aurélie Vache",
+    speaker: "Aurélie VACHE",
     description:
-      "Un talk sur la sécurité de la supply chain logicielle, par Aurélie Vache (Developer Advocate OVHcloud, GDE Cloud, Docker Captain).",
+      "Un talk sur la sécurité de la supply chain logicielle, par Aurélie VACHE (Developer Advocate OVHcloud, GDE Cloud, Docker Captain).",
     tag: "Passé",
     category: "Meetup & Talk",
     externalLink: "https://www.meetup.com/fr-FR/gdg-toulouse/events/313488746/",
@@ -80,7 +80,7 @@ export const allActualites: ActuItem[] = [
   {
     date: "13 novembre 2025",
     title: "La méthode pour coder ce qui compte vraiment",
-    speaker: "Cateline Puccetti",
+    speaker: "Cateline PUCCETTI",
     description:
       "La toute première conférence de Cateline\u00A0! Présentée au DevFest Toulouse 2025, la preuve que ça fonctionne.",
     tag: "Passé",
@@ -91,9 +91,9 @@ export const allActualites: ActuItem[] = [
   {
     date: "10 octobre 2025",
     title: "Midi MedTech\u00A0: Transformons la santé par la DATA",
-    speaker: "Montaine Marteau",
+    speaker: "Montaine MARTEAU",
     description:
-      "Le tout premier meetup Tech Speak'Her\u00A0! Présenté par Montaine Marteau au HarryCow à Toulouse.",
+      "Le tout premier meetup Tech Speak'Her\u00A0! Présenté par Montaine MARTEAU au HarryCow à Toulouse.",
     tag: "Passé",
     category: "Meetup & Talk",
     externalLink: "https://www.meetup.com/fr-FR/gdg-toulouse/events/310951200/",
@@ -101,7 +101,7 @@ export const allActualites: ActuItem[] = [
   },
   {
     date: "23 mars 2026",
-    title: "Interview de Rachel Dubois",
+    title: "Interview de Rachel DUBOIS",
     description:
       "«\u00A0On t'a prise parce que t'étais la seule fille.\u00A0» Notre première interview Behind the Scenes.",
     tag: "Passé",
@@ -154,7 +154,7 @@ export function parseFrenchDate(d: string): number {
  */
 export const behindTheScenes: BehindTheScenes[] = [
   {
-    name: "Rachel Dubois",
+    name: "Rachel DUBOIS",
     role: "Senior Consultant & Full Stack Enterprise Coach",
     quote:
       "Il y aura presque toujours ce mec qui n’accepte pas, qui interrompt, qui pose son point de vue en plein talk pour montrer que ce n’est pas carré. Devant toute la salle.",

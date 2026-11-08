@@ -39,7 +39,7 @@ export const verbatimsRecueillis: VerbatimRecueilli[] = [
     consentement: "libre",
   },
   {
-    auteur: "Aurélie Vache",
+    auteur: "Aurélie VACHE",
     qualite: "Jurée du Tremplin 2026",
     // Reçu : « tremplin » (minuscule), « rendez vous », « la qualité et la
     // diversité était », « elles ont tenues bon », suivis d'un emoji 💪.
@@ -55,7 +55,7 @@ export const verbatimsRecueillis: VerbatimRecueilli[] = [
     consentement: "libre",
   },
   {
-    auteur: "Magali Germond",
+    auteur: "Magali GERMOND",
     qualite: "Jurée du Tremplin 2026",
     // Reçu : sans virgule après « projets », et « bravo !! ».
     citation:
@@ -70,7 +70,7 @@ export const verbatimsRecueillis: VerbatimRecueilli[] = [
     consentement: "libre",
   },
   {
-    auteur: "Céline Chantry-Darmon",
+    auteur: "Céline CHANTRY-DARMON",
     qualite: "Jurée du Tremplin 2026",
     // Reçu : « la Tech » (capitale), aligné sur la typographie du site.
     citation:
@@ -88,7 +88,7 @@ export const verbatimsRecueillis: VerbatimRecueilli[] = [
     consentement: "libre",
   },
   {
-    auteur: "Sophie Lagarde",
+    auteur: "Sophie LAGARDE",
     qualite: "Jurée du Tremplin 2026",
     // Reçu : se terminait sur « Bravo » sans ponctuation.
     citation:

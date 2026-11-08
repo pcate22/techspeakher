@@ -32,6 +32,9 @@ export interface SpeakerProfile {
   slug: string | null;
   /** Nom du compte (Google/LinkedIn) — lu sur users, non éditable ici. */
   name: string | null;
+  /** Nom de famille désigné par la membre quand la coupe devinée dans `name`
+   *  est fausse (`nom-famille.ts`) ; `null` = la coupe devinée suffit. */
+  nomFamille: string | null;
   /** LE nom affiché partout (name réel, sinon titre du profil, sinon libellé
    *  générique) — calculé au bord, jamais recomposé par un écran : `??` sur
    *  `name` laissait passer `""` et `"   "` (dette P1). */
@@ -202,6 +205,7 @@ export interface ProfileRow {
   userId: number;
   slug: string | null;
   name: string | null;
+  nom_famille?: string | null;
   image: string | null;
   titre_profil: string | null;
   poste: string | null;
@@ -238,7 +242,8 @@ export function mapRow(r: ProfileRow): SpeakerProfile {
     userId: r.userId,
     slug: r.slug ?? null,
     name: r.name ?? null,
-    nomAffiche: nomAffiche(r.name ?? null, r.titre_profil),
+    nomFamille: r.nom_famille ?? null,
+    nomAffiche: nomAffiche(r.name ?? null, r.titre_profil, r.nom_famille ?? null),
     image: r.image ?? null,
     titreProfil: r.titre_profil,
     poste: r.poste,
@@ -284,7 +289,7 @@ export const PROFILE_COLUMNS = `sp.id, sp."userId", sp.slug, sp.titre_profil, sp
             sp.regions, sp.langues, sp.secteurs, sp.sujets, sp.status,
             sp.published_at, sp.updated_at, sp.submitted_at, sp.validated_by,
             sp.validated_at, sp.refus_motif, sp.contact_email_ok, sp.is_woman,
-            sp.cfp_sync_mode, u.name, u.image`;
+            sp.cfp_sync_mode, u.name, u.nom_famille, u.image`;
 
 /**
  * La fiche PUBLIÉE d'un compte, réduite au lien public (byline d'un article,

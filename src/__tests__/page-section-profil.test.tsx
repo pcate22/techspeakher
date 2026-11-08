@@ -85,7 +85,7 @@ describe("« Ma fiche » — ce que le public lit, avec un crayon par section", 
    */
   it("rend le CONTENU de la fiche, pas des noms de rubriques", async () => {
     render(await sommaire());
-    expect(screen.getByText("Léa Dubois")).toBeInTheDocument();
+    expect(screen.getByText("Léa DUBOIS")).toBeInTheDocument();
     expect(screen.getByText(/développeuse plateforme/i)).toBeInTheDocument();
     expect(screen.getByText(/dix ans de systèmes distribués/i)).toBeInTheDocument();
     expect(screen.getByText("Industrie / Manufacturing")).toBeInTheDocument();
