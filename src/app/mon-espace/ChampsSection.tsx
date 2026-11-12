@@ -11,10 +11,10 @@ import { moissonnageConsenti } from "@/lib/cfp-consentement";
 import MoissonneurExplainer from "@/components/MoissonneurExplainer";
 import ChampPhoto from "./ChampPhoto";
 import VilleField from "./VilleField";
+import ChoixThemes from "./ChoixThemes";
 import type { SpeakerProfile } from "@/lib/profiles";
 import {
   SECTEURS,
-  THEMES,
   REGIONS,
   LANGUES,
   REGIONS_METROPOLE,
@@ -239,13 +239,16 @@ export function ChampsSecteurs({ initial }: { initial: SpeakerProfile | null }) 
 
 export function ChampsSujets({ initial }: { initial: SpeakerProfile | null }) {
   return (
-    <CheckboxGrid
-      name="sujets"
-      legend="Sujets / métiers"
-      hint="tes thèmes tech"
-      options={THEMES}
-      defaultSelected={initial?.sujets}
-    />
+    <fieldset>
+      <legend id="legende-themes" className={labelClass}>
+        Tes thèmes
+      </legend>
+      <ChoixThemes
+        name="sujets"
+        initial={initial?.sujets ?? []}
+        legendId="legende-themes"
+      />
+    </fieldset>
   );
 }
 
