@@ -127,7 +127,7 @@ describe("saveProfileSection — n'écrit que sa section", () => {
 
   /**
    * LE contrôle qui compte : le périmètre vient de la PAGE, jamais du POST.
-   * Une bio glissée dans le formulaire « Tes sujets » n'a aucun effet.
+   * Une bio glissée dans le formulaire « Tes thèmes » n'a aucun effet.
    */
   it("un champ hors section glissé dans le POST est ignoré", async () => {
     await expect(

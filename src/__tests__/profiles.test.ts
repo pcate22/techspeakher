@@ -438,16 +438,26 @@ describe("mapRow — le nom affiché se calcule AU BORD", () => {
 describe("publierFiche", () => {
   it("crée la fiche avec attestation, contact et le statut demandé", async () => {
     query.mockResolvedValue({ rowCount: 1 });
-    expect(await publierFiche(7, "publie", { sujets: ["Cloud"], slug: "lea" })).toBe(true);
+    expect(
+      await publierFiche(7, "publie", { nom: "Léa Martin", sujets: ["Cloud"], slug: "lea" }),
+    ).toBe(true);
     const [sql, params] = query.mock.calls[0];
     expect(sql).toMatch(/contact_email_ok, is_woman, status/);
     expect(sql).toMatch(/\$3, true, true, \$4::text/);
     expect(sql).toMatch(/ON CONFLICT \("userId"\) DO NOTHING/);
     expect(params).toEqual([7, ["Cloud"], "lea", "publie"]);
+    expect(query.mock.calls[1]).toEqual([
+      "UPDATE users SET name = $2 WHERE id = $1",
+      [7, "Léa Martin"],
+    ]);
   });
 
   it("fiche déjà là → false, rien de réécrit", async () => {
     query.mockResolvedValue({ rowCount: 0 });
-    expect(await publierFiche(7, "en_attente", { sujets: ["Cloud"], slug: null })).toBe(false);
+    expect(
+      await publierFiche(7, "en_attente", { nom: "Autre", sujets: ["Cloud"], slug: null }),
+    ).toBe(false);
+    // Fiche déjà là : le nom du compte reste inchangé.
+    expect(query).toHaveBeenCalledTimes(1);
   });
 });

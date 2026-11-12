@@ -41,7 +41,7 @@ import { nb, formatDateFr } from "@/lib/format";
  */
 const ERREUR_SOUMISSION: Record<BlocageAnnuaire, string> = {
   nom: "Renseigne ton prénom et ton nom à l'étape Profil avant de soumettre : une fiche sans nom s'afficherait sans ton nom dans l'annuaire.",
-  themes: "Choisis au moins un thème dans « Tes sujets » avant de soumettre : ce sont eux qui te rendent trouvable dans l'annuaire.",
+  themes: "Choisis au moins un thème dans «\u00a0Tes thèmes\u00a0» avant de soumettre.",
   contact:
     "Ajoute au moins un moyen de contact (LinkedIn ou contact par e-mail) avant de soumettre.",
   attestation:

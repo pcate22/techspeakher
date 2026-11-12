@@ -156,7 +156,7 @@ describe("normaliserProfil — les règles qui traversent les sections", () => {
 
 describe("Fusion section + existant — rien d'autre ne bouge", () => {
   /**
-   * Le scénario réel : elle ouvre « Tes sujets », change ses sujets, enregistre.
+   * Le scénario réel : elle ouvre « Tes thèmes », change ses sujets, enregistre.
    * Tout le reste de sa fiche doit être STRICTEMENT identique après coup.
    */
   it("enregistrer une section ne modifie que les colonnes de cette section", () => {

@@ -76,13 +76,18 @@ export default function BienvenueForm({ nomInitial }: { nomInitial: string }) {
       </div>
 
       <div hidden={etape !== 2}>
-        <fieldset>
+        <fieldset aria-describedby={state.errors?.sujets ? "err-bienvenue-themes" : undefined}>
           <legend className="sr-only" id="bienvenue-themes">
             Tes thèmes
           </legend>
           <h2 ref={titre2} tabIndex={-1} className="text-2xl font-bold mb-4 focus-visible:outline-none">
             De quoi parles-tu&nbsp;?
           </h2>
+          {state.errors?.form && (
+            <p role="alert" className={errorClass}>
+              {state.errors.form}
+            </p>
+          )}
           <ChoixThemes
             name="sujets"
             initial={state.valeurs?.sujets ?? []}
@@ -90,7 +95,7 @@ export default function BienvenueForm({ nomInitial }: { nomInitial: string }) {
           />
         </fieldset>
         {state.errors?.sujets && (
-          <p role="alert" className={errorClass}>
+          <p id="err-bienvenue-themes" role="alert" className={errorClass}>
             {state.errors.sujets}
           </p>
         )}

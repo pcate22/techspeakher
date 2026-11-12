@@ -1041,14 +1041,18 @@ export async function submitForValidation(userId: number): Promise<void> {
  * contactée par le site (e-mail jamais affiché) : les deux sont posés ici, en
  * dur. `ON CONFLICT DO NOTHING` borne l'écriture à la création : une fiche
  * existante n'est ni republiée ni dépubliée par ce parcours. Rend `false` si
- * la fiche existait déjà.
+ * la fiche existait déjà (le nom du compte reste alors inchangé). `nom` arrive
+ * normalisé par `parseFicheExpress`.
  */
 export async function publierFiche(
   userId: number,
   statut: "publie" | "en_attente",
-  data: { sujets: string[]; slug: string | null },
+  data: { nom: string; sujets: string[]; slug: string | null },
 ): Promise<boolean> {
-  const { rowCount } = await pool.query(
+  // Fiche et nom du compte dans UNE transaction : le nom ne change que si la
+  // fiche est bien créée.
+  return withTransaction(async (q) => {
+  const { rowCount } = await q.query(
     `INSERT INTO speaker_profiles
        ("userId", sujets, slug, contact_email_ok, is_woman, status,
         published_at, submitted_at, updated_at)
@@ -1059,7 +1063,10 @@ export async function publierFiche(
      ON CONFLICT ("userId") DO NOTHING`,
     [userId, data.sujets, data.slug, statut],
   );
-  return (rowCount ?? 0) > 0;
+  if (!rowCount) return false;
+  await q.query(`UPDATE users SET name = $2 WHERE id = $1`, [userId, data.nom]);
+  return true;
+  });
 }
 
 /** Nombre de speakeuses PUBLIÉES (= visibles dans l'annuaire public). Sert au

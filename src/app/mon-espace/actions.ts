@@ -45,7 +45,7 @@ import {
   type OccurrenceInput,
   type TalkOccurrence,
 } from "@/lib/talks";
-import { setUserName, getUserById } from "@/lib/users";
+import { setUserName, getUserById, getCompte, peutCreerFiche } from "@/lib/users";
 import { reprendrePhotoLinkedIn } from "@/lib/linkedin-photo";
 import type { ActionState } from "@/lib/action-state";
 // `estIdValide` vit dans `@/lib/id-url` depuis le 2026-08-21 : la copie locale
@@ -310,6 +310,10 @@ export async function publierFicheExpressAction(
 ): Promise<SaveState> {
   const id = await requireUserId();
 
+  // Même règle que la page (« jamais de CTA impossible ») : un POST direct
+  // d'un compte « homme » ne crée rien.
+  const compte = await getCompte(id);
+  if (!peutCreerFiche(compte?.genre)) redirect("/mon-espace");
   if (await getProfileByUserId(id)) redirect("/mon-espace");
 
   const result = parseFicheExpress(formData);
@@ -325,12 +329,27 @@ export async function publierFicheExpressAction(
   }
   const { nom, sujets } = result.data;
 
-  const compte = await getUserById(id);
   const statut = doitEtreRelue(nom, compte?.name ?? null) ? "en_attente" : "publie";
 
-  await setUserName(id, nom);
-  const slug = await deriveAvailableSlug(nom, id);
-  const creee = await publierFiche(id, statut, { sujets, slug });
+  // Le slug est vérifié libre puis écrit : une autre fiche peut le prendre
+  // entre les deux. Un second essai avec un slug recalculé suffit ; au-delà,
+  // un message plutôt qu'une erreur serveur.
+  let creee = false;
+  for (let essai = 0; ; essai++) {
+    const slug = await deriveAvailableSlug(nom, id);
+    try {
+      creee = await publierFiche(id, statut, { nom, sujets, slug });
+      break;
+    } catch (e) {
+      if (!isUniqueViolation(e)) throw e;
+      if (essai >= 1)
+        return {
+          ok: false,
+          errors: { form: "La publication a échoué, réessaie dans un instant." },
+          valeurs: { nom: [nom], sujets },
+        };
+    }
+  }
   if (!creee) redirect("/mon-espace");
 
   if (statut === "publie") revalidatePublicProfile();

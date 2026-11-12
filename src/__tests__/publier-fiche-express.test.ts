@@ -24,7 +24,12 @@ vi.mock("@/lib/profiles", async (importOriginal) => {
     deriveAvailableSlug: vi.fn(async () => "lea-martin"),
   };
 });
-vi.mock("@/lib/users", () => ({ setUserName: vi.fn(), getUserById: vi.fn() }));
+vi.mock("@/lib/users", () => ({
+  setUserName: vi.fn(),
+  getUserById: vi.fn(),
+  getCompte: vi.fn(),
+  peutCreerFiche: (g: string | null | undefined) => g !== "homme",
+}));
 
 import { auth } from "@/auth";
 import {
@@ -33,7 +38,7 @@ import {
   upsertProfile,
   submitForValidation,
 } from "@/lib/profiles";
-import { setUserName, getUserById } from "@/lib/users";
+import { setUserName, getCompte } from "@/lib/users";
 import { publierFicheExpressAction } from "@/app/mon-espace/actions";
 
 const THEME = "Accessibilité";
@@ -56,11 +61,11 @@ beforeEach(() => {
   vi.clearAllMocks();
   vi.mocked(auth).mockResolvedValue({ user: { id: "7" } } as never);
   vi.mocked(getProfileByUserId).mockResolvedValue(null);
-  vi.mocked(getUserById).mockResolvedValue({
-    id: 7,
+  vi.mocked(getCompte).mockResolvedValue({
     name: "Léa Martin",
-    email: "lea@example.org",
-  } as never);
+    genre: null,
+    image: null,
+  });
 });
 
 describe("publierFicheExpressAction", () => {
@@ -88,11 +93,13 @@ describe("publierFicheExpressAction", () => {
     await expect(
       publierFicheExpressAction({}, form({ nom: "Léa Martin", sujets: [THEME, "x"] })),
     ).rejects.toThrow("REDIRECT:/mon-espace?ok=fiche_publiee");
+    // Le nom s'écrit DANS la transaction de `publierFiche`, jamais avant.
     expect(publierFiche).toHaveBeenCalledWith(7, "publie", {
+      nom: "Léa Martin",
       sujets: [THEME],
       slug: "lea-martin",
     });
-    expect(setUserName).toHaveBeenCalledWith(7, "Léa Martin");
+    expect(setUserName).not.toHaveBeenCalled();
   });
 
   it("nom modifié → en relecture", async () => {
@@ -118,5 +125,32 @@ describe("publierFicheExpressAction", () => {
       ),
     ).rejects.toThrow("REDIRECT:/mon-espace?ok=fiche_envoyee");
     expect(vi.mocked(publierFiche).mock.calls[0][1]).toBe("en_attente");
+  });
+
+  it("compte « homme » → /mon-espace, rien d'écrit (POST direct)", async () => {
+    vi.mocked(getCompte).mockResolvedValue({ name: "Paul", genre: "homme", image: null } as never);
+    await expect(
+      publierFicheExpressAction({}, form({ nom: "Paul", sujets: THEME })),
+    ).rejects.toThrow("REDIRECT:/mon-espace");
+    rienEcrit();
+  });
+
+  it("slug pris entre la vérification et l'écriture → second essai", async () => {
+    vi.mocked(publierFiche)
+      .mockRejectedValueOnce(Object.assign(new Error("dup"), { code: "23505" }))
+      .mockResolvedValueOnce(true);
+    await expect(
+      publierFicheExpressAction({}, form({ nom: "Léa Martin", sujets: THEME })),
+    ).rejects.toThrow("REDIRECT:/mon-espace?ok=fiche_publiee");
+    expect(publierFiche).toHaveBeenCalledTimes(2);
+  });
+
+  it("deux collisions → message, pas d'erreur serveur", async () => {
+    vi.mocked(publierFiche).mockRejectedValue(
+      Object.assign(new Error("dup"), { code: "23505" }),
+    );
+    const r = await publierFicheExpressAction({}, form({ nom: "Léa Martin", sujets: THEME }));
+    expect(r.errors?.form).toBeTruthy();
+    expect(publierFiche).toHaveBeenCalledTimes(2);
   });
 });
