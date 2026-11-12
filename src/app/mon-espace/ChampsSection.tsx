@@ -357,8 +357,8 @@ export function ChampsContact({
         <h2 className="text-base font-bold text-white">Comment on te contacte</h2>
         <p className="text-sm text-gray-light mt-1">
           Choisis comment les organisatrices et organisateurs de conférences
-          peuvent te joindre : ton profil LinkedIn et/ou un message par e-mail. Il en faut au moins un pour
-          figurer dans l&apos;annuaire.
+          peuvent te joindre : ton profil LinkedIn et/ou un message par e-mail.
+          Il en faut au moins un pour figurer dans l&apos;annuaire.
         </p>
       </div>
       <ChampTexte

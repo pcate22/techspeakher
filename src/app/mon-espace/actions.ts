@@ -172,6 +172,8 @@ export async function saveProfile(
   // publication express compare le nom tapé à users.name pour sauter la
   // relecture ; un nom écrit ici par un enregistrement refusé lui ouvrirait la
   // publication directe d'un nom libre. D'où l'écriture APRÈS tout refus possible.
+  // Exception : les chemins orga de `admin/tremplins` posent un nom sans fiche,
+  // la saisie venant d'une organisatrice, donc de confiance.
   if (nomComplet) await setUserName(id, nomComplet);
   revalidateEspacePerso();
   // Revalider aussi la fiche + l'annuaire : sans ça, « Prévisualiser ma fiche »

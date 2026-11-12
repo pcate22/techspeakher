@@ -4,12 +4,13 @@
 > (`docs/superpowers/specs/2026-11-12-inscription-express-design.md`, migration
 > 077). Aucun P0 touché ; le **3** n'a pas été relu ce jour. SOLDÉ dans le
 > geste : compteur du titre masqué par l'erreur ; titres de 300 caractères
-> dans les cartes (vérifiés à 375 px). NOUVEAU, en P1 (§ « Publication express :
+> dans les cartes (vérifiés à 375 px) ; libellé « Aucun sujet choisi. » déjà passé
+> à « Aucun thème choisi. » dans `src/lib/profil-sections.ts` (vérifié le
+> 2026-11-12). NOUVEAU, en P1 (§ « Publication express :
 > le nom OAuth se lit dans `users.name` ») : la relecture express tient à un
 > invariant, une colonne dédiée la rendrait solide. NOUVEAU, en P2 (§ « Inscription
 > express : ce que les revues laissent ») : récapitulatif des thèmes relu en
-> entier à chaque clic, libellé « Aucun sujet choisi. », réécriture à vide de
-> deux sujets par la synchro, titres de 300 caractères dans l'OG et les
+> entier à chaque clic, réécriture à vide de deux sujets par la synchro, titres de 300 caractères dans l'OG et les
 > e-mails, fiches héritées sans thème bloquées avant « Soumettre », et en P3
 > le tri des fiches express dans « Publiées ».
 >
@@ -772,7 +773,9 @@ ci-dessous, listées ici pour la traçabilité :
   Google ou LinkedIn. Or `saveProfile` et `saveProfileSection` écrivent aussi
   `users.name`. Ce qui tient aujourd'hui : un invariant, écrire le nom du
   compte va toujours avec une fiche (écriture placée après tout refus
-  possible), et l'express exige l'absence de fiche. Un futur chemin qui
+  possible), et l'express exige l'absence de fiche. Seule exception : les chemins
+  orga de `admin/tremplins` (`setUserNameIfEmpty`, `getOrCreateUserByEmail`)
+  posent un nom sans fiche, leur saisie étant de confiance. Un futur chemin qui
   écrirait le nom sans fiche rouvrirait la publication directe d'un nom libre.
   Correctif solide : garder le nom du fournisseur à part (par exemple
   `users.oauth_name`, posé au callback d'authentification) et comparer à lui.
@@ -825,9 +828,9 @@ l'écran.
   « Publiées » de l'admin trie sur cette colonne. À trancher : trier sur
   `published_at`, ou montrer à part les fiches publiées sans relecture.
   **Effort : XS** une fois tranché.
-- **« Aucun sujet choisi. » sous le titre « Tes thèmes ».** Le libellé vide de
-  la section (`src/lib/profil-sections.ts`) garde l'ancien mot. À passer à
-  « Aucun thème choisi. ». **Effort : XS.**
+- ~~**« Aucun sujet choisi. » sous le titre « Tes thèmes ».**~~ **SOLDÉ le 2026-11-12.**
+  Le libellé vide de la section (`src/lib/profil-sections.ts`, ligne 125) dit
+  déjà « Aucun thème choisi. ».
 
 ### CI : le job E2E épinglé sur `ubuntu-24.04` (2026-11-04)
 
