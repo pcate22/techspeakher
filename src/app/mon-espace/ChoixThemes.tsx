@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { Fragment, useId, useState } from "react";
 import { CATEGORIES_THEMES } from "@/data/domaines";
 import { checkboxClass } from "@/components/CheckboxGrid";
 
@@ -44,55 +44,60 @@ export default function ChoixThemes({
           const nb = c.themes.filter((t) => choisis.has(t)).length;
           const estOuverte = ouverte === c.categorie;
           return (
-            <button
-              key={c.categorie}
-              type="button"
-              aria-expanded={estOuverte}
-              aria-controls={`${base}-${i}`}
-              onClick={() => setOuverte(estOuverte ? null : c.categorie)}
-              className={`min-h-[44px] rounded-full border px-4 py-2 text-sm text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan hover:border-cyan ${
-                estOuverte || nb > 0
-                  ? "border-cyan bg-navy"
-                  : "border-field-border bg-navy"
-              }`}
-            >
-              {c.categorie}
-              {nb > 0 && <span className="ml-2 font-semibold text-cyan">{nb}</span>}
-            </button>
+            <Fragment key={c.categorie}>
+              <button
+                type="button"
+                aria-expanded={estOuverte}
+                aria-controls={`${base}-${i}`}
+                onClick={() => setOuverte(estOuverte ? null : c.categorie)}
+                className={`min-h-[44px] rounded-full border px-4 py-2 text-sm text-white bg-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan hover:border-cyan ${
+                  estOuverte || nb > 0 ? "border-cyan" : "border-field-border"
+                }`}
+              >
+                {c.categorie}
+                {nb > 0 && (
+                  <>
+                    <span aria-hidden="true" className="ml-2 font-semibold text-cyan">
+                      {nb}
+                    </span>
+                    <span className="sr-only">
+                      , {nb} {nb > 1 ? "thèmes cochés" : "thème coché"}
+                    </span>
+                  </>
+                )}
+              </button>
+              <fieldset
+                id={`${base}-${i}`}
+                hidden={!estOuverte}
+                className="basis-full"
+              >
+                <legend className="sr-only">{c.categorie}</legend>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {c.themes.map((theme) => (
+                    <label
+                      key={theme}
+                      className="flex min-h-[44px] items-center gap-2 text-sm text-white bg-navy border border-field-border rounded-lg px-3 py-2 cursor-pointer hover:border-cyan has-[:checked]:border-cyan has-[:checked]:bg-cyan/10 focus-within:ring-2 focus-within:ring-cyan"
+                    >
+                      <input
+                        type="checkbox"
+                        name={name}
+                        value={theme}
+                        checked={choisis.has(theme)}
+                        onChange={() => basculer(theme)}
+                        className={checkboxClass}
+                      />
+                      {theme}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            </Fragment>
           );
         })}
       </div>
 
-      {CATEGORIES_THEMES.map((c, i) => (
-        <fieldset
-          key={c.categorie}
-          id={`${base}-${i}`}
-          hidden={ouverte !== c.categorie}
-        >
-          <legend className="sr-only">{c.categorie}</legend>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {c.themes.map((theme) => (
-              <label
-                key={theme}
-                className="flex min-h-[44px] items-center gap-2 text-sm text-white bg-navy border border-field-border rounded-lg px-3 py-2 cursor-pointer hover:border-cyan"
-              >
-                <input
-                  type="checkbox"
-                  name={name}
-                  value={theme}
-                  checked={choisis.has(theme)}
-                  onChange={() => basculer(theme)}
-                  className={checkboxClass}
-                />
-                {theme}
-              </label>
-            ))}
-          </div>
-        </fieldset>
-      ))}
-
       <p aria-live="polite" className="text-sm text-gray-light">
-        Tes thèmes ({liste.length}){liste.length > 0 && ` : ${liste.join(", ")}`}
+        Tes thèmes ({liste.length}){liste.length > 0 && ` : ${liste.join(", ")}`}
       </p>
     </div>
   );

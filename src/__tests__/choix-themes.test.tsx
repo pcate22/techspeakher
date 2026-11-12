@@ -86,10 +86,39 @@ describe("ChoixThemes", () => {
     design.focus();
     await user.keyboard("{Enter}");
     expect(design.getAttribute("aria-expanded")).toBe("true");
-    for (let i = 0; i < 10 && (document.activeElement as HTMLInputElement).type !== "checkbox"; i++) {
-      await user.tab();
-    }
+    await user.tab();
+    expect((document.activeElement as HTMLInputElement).type).toBe("checkbox");
+    expect(document.activeElement!.closest("fieldset")!.id).toBe(
+      design.getAttribute("aria-controls"),
+    );
     await user.keyboard(" ");
     expect(soumis(container)).toHaveLength(1);
+  });
+
+  it("le nom accessible du bouton dit le nombre de thèmes cochés", () => {
+    rendre(["Accessibilité", "UX / UI"]);
+    expect(
+      screen.getByRole("button", { name: "Design, 2 thèmes cochés" }),
+    ).toBeTruthy();
+    cleanup();
+    rendre(["UX / UI"]);
+    expect(screen.getByRole("button", { name: "Design, 1 thème coché" })).toBeTruthy();
+  });
+
+  it("espace insécable avant les deux-points du récapitulatif", () => {
+    const { container } = rendre(["UX / UI"]);
+    expect(container.querySelector('[aria-live="polite"]')!.textContent).toContain(
+      "(1)\u00a0: UX / UI",
+    );
+  });
+
+  it("chaque aria-controls désigne un élément existant", () => {
+    const { container } = rendre();
+    const boutons = screen.getAllByRole("button");
+    expect(boutons).toHaveLength(7);
+    for (const b of boutons) {
+      const id = b.getAttribute("aria-controls")!;
+      expect(container.ownerDocument.getElementById(id)).not.toBeNull();
+    }
   });
 });
