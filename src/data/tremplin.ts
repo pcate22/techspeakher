@@ -317,8 +317,12 @@ export const editionEditoriale = {
   confNom: "Devoxx France",
 } as const;
 
-/** L'éditorial de l'édition en cours (un test garde qu'il existe). */
-export const editorialEnCours: EditorialEdition = editorialDevoxx2027;
+/** L'éditorial de l'édition en cours, dérivé du repère : les deux bougent ensemble. */
+export const editorialEnCours: EditorialEdition = (() => {
+  const e = editorialDe(editionEditoriale.confSlug, editionEditoriale.annee);
+  if (!e) throw new Error("editionEditoriale désigne une édition sans éditorial");
+  return e;
+})();
 
 export const tremplinSteps: TremplinStep[] = [
   {
