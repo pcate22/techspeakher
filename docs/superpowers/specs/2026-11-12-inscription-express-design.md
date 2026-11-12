@@ -23,6 +23,7 @@ Principes tirés des sources de la page Notion « Profils autistes et accessibil
 | Mots libres | Aucun : ce sont les talks qui affinent |
 | Secteurs | Facultatifs, sur leur page de la fiche |
 | Attestation | Phrase sous le bouton « Publier ma fiche » ; le clic pose `is_woman = true` côté serveur |
+| Contact | Le clic sur « Publier ma fiche » vaut accord pour être contactée par le site (`contact_email_ok = true`) ; phrase sous le bouton : « Les organisateurs pourront t'écrire par le site, ton e-mail reste caché. » |
 | Publication | Immédiate si aucun texte écrit à la main ; relecture orga sinon |
 | Le nom | Compte comme texte écrit à la main, sauf s'il vient tel quel de Google ou LinkedIn |
 | Titre de talk | 300 caractères (au lieu de 200), champ qui s'agrandit avec le texte |
