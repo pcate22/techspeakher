@@ -2263,3 +2263,30 @@ END $$;
 -- ─── 075 — Invitation à adhérer, une fois par fiche ───
 -- Miroir de db/migrations/075_invitation_adhesion.sql.
 ALTER TABLE speaker_profiles ADD COLUMN IF NOT EXISTS adhesion_invitee_le TIMESTAMPTZ;
+
+-- ─── 077 — Anciens sujets vers les thèmes ───
+-- Miroir de db/migrations/077_themes_categories.sql.
+UPDATE speaker_profiles
+SET sujets = ARRAY(
+  SELECT u.t
+  FROM unnest(sujets) WITH ORDINALITY AS s(sujet, rang)
+  CROSS JOIN LATERAL unnest(
+    CASE s.sujet
+        WHEN 'IA / Machine Learning / Data' THEN ARRAY['IA / Machine Learning', 'Data / BI']::text[]
+        WHEN 'Développement web / Front-end' THEN ARRAY['Web / Front-end']::text[]
+        WHEN 'Mobile' THEN ARRAY['Mobile']::text[]
+        WHEN 'Cloud / DevOps / Infra' THEN ARRAY['Cloud', 'DevOps']::text[]
+        WHEN 'Cybersécurité' THEN ARRAY['Cybersécurité']::text[]
+        WHEN 'UX / Design / Accessibilité' THEN ARRAY['UX / UI', 'Accessibilité']::text[]
+        WHEN 'Produit / Agilité' THEN ARRAY['Product management', 'Agilité']::text[]
+        WHEN 'Leadership / Soft skills' THEN ARRAY['Leadership', 'Soft skills']::text[]
+        WHEN 'Recherche / Académique (PhD)' THEN ARRAY['Recherche / PhD']::text[]
+        WHEN 'Innovation / R&D' THEN ARRAY['R&D']::text[]
+        WHEN 'Autre' THEN ARRAY[]::text[]
+        ELSE ARRAY[s.sujet]
+    END
+  ) WITH ORDINALITY AS u(t, pos)
+  GROUP BY u.t
+  ORDER BY min(s.rang), min(u.pos)
+)
+WHERE sujets && ARRAY['IA / Machine Learning / Data', 'Développement web / Front-end', 'Mobile', 'Cloud / DevOps / Infra', 'Cybersécurité', 'UX / Design / Accessibilité', 'Produit / Agilité', 'Leadership / Soft skills', 'Recherche / Académique (PhD)', 'Innovation / R&D', 'Autre']::text[];
