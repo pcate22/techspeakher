@@ -80,6 +80,15 @@ describe("parseProfileForm", () => {
     if (res.ok) expect(res.data.bio).toBe("Premier paragraphe.\n\nSecond.");
   });
 
+  // La liste blanche borne déjà les thèmes : un plafond en couperait sans un
+  // mot (une fiche migrée en porte jusqu'à 19).
+  it("garde tous les thèmes choisis, sans plafond", () => {
+    const douze = THEMES.slice(0, 12);
+    const res = parseProfileForm(fd({}, { sujets: douze }));
+    expect(res.ok).toBe(true);
+    if (res.ok) expect(res.data.sujets).toEqual(douze);
+  });
+
   it("ignore secteurs/sujets hors des listes cadrées (liste blanche)", () => {
     const res = parseProfileForm(
       fd({}, { secteurs: [SECTEURS[1], "secteur bidon"], sujets: ["sujet bidon"] }),

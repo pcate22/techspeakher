@@ -11,8 +11,8 @@ const schema = z.object({
   nom: z
     .string()
     .transform(normaliserNomCompte)
-    .pipe(z.string().min(1, "Indique ton prénom et ton nom")),
-  sujets: z.array(z.string()).min(1, "Choisis au moins un thème"),
+    .pipe(z.string().min(1, "Indique ton prénom et ton nom.")),
+  sujets: z.array(z.string()).min(1, "Choisis au moins un thème."),
 });
 
 export type FicheExpressResult =

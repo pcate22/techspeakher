@@ -40,6 +40,7 @@ import {
 } from "@/lib/profiles";
 import { setUserName, getCompte } from "@/lib/users";
 import { publierFicheExpressAction } from "@/app/mon-espace/actions";
+import { THEMES } from "@/data/domaines";
 
 const THEME = "Accessibilité";
 
@@ -79,14 +80,22 @@ describe("publierFicheExpressAction", () => {
 
   it("nom vide → erreur sur le nom, rien d'écrit", async () => {
     const r = await publierFicheExpressAction({}, form({ nom: "   ", sujets: THEME }));
-    expect(r.errors?.nom).toBeTruthy();
+    expect(r.errors?.nom).toBe("Indique ton prénom et ton nom.");
     rienEcrit();
   });
 
-  it("aucun thème valide → « Choisis au moins un thème »", async () => {
+  it("aucun thème valide → « Choisis au moins un thème. »", async () => {
     const r = await publierFicheExpressAction({}, form({ nom: "Léa Martin", sujets: ["x"] }));
-    expect(r.errors?.sujets).toBe("Choisis au moins un thème");
+    expect(r.errors?.sujets).toBe("Choisis au moins un thème.");
     rienEcrit();
+  });
+
+  it("douze thèmes → les douze sont écrits (même règle que la fiche complète)", async () => {
+    const douze = THEMES.slice(0, 12);
+    await expect(
+      publierFicheExpressAction({}, form({ nom: "Léa Martin", sujets: douze })),
+    ).rejects.toThrow("REDIRECT:/mon-espace?ok=fiche_publiee");
+    expect(publierFiche).toHaveBeenCalledWith(7, "publie", expect.objectContaining({ sujets: douze }));
   });
 
   it("nom du compte → publiée, attestation et contact posés", async () => {
