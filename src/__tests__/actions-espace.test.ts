@@ -251,6 +251,33 @@ describe("saveProfile — garde-fous", () => {
     expect(res).toEqual({ ok: false, errors: { slug: expect.any(String) } });
   });
 
+  // La publication express compare le nom tapé à users.name pour décider de la
+  // relecture : un nom écrit sans fiche créée ouvrirait la publication directe.
+  it("slug pris → le nom du compte reste inchangé", async () => {
+    vi.mocked(auth).mockResolvedValue({ user: { id: "7" } } as never);
+    vi.mocked(parseProfileForm).mockReturnValue({
+      ok: true,
+      data: { bio: "ok", slug: "marie-curie" },
+    } as never);
+    vi.mocked(isSlugAvailable).mockResolvedValue(false as never);
+    await saveProfile({}, fd({ nomComplet: "Nom Inventé" }));
+    expect(setUserName).not.toHaveBeenCalled();
+  });
+
+  it("collision d'index (course) → le nom du compte reste inchangé", async () => {
+    vi.mocked(auth).mockResolvedValue({ user: { id: "7" } } as never);
+    vi.mocked(parseProfileForm).mockReturnValue({
+      ok: true,
+      data: { bio: "ok", slug: "marie-curie" },
+    } as never);
+    vi.mocked(isSlugAvailable).mockResolvedValue(true as never);
+    vi.mocked(upsertProfile).mockRejectedValueOnce(
+      Object.assign(new Error("duplicate"), { code: "23505" }),
+    );
+    await saveProfile({}, fd({ nomComplet: "Nom Inventé" }));
+    expect(setUserName).not.toHaveBeenCalled();
+  });
+
   it("panne base : l'erreur remonte (pas de succès trompeur, pas de redirect)", async () => {
     vi.mocked(auth).mockResolvedValue({ user: { id: "7" } } as never);
     vi.mocked(parseProfileForm).mockReturnValue({ ok: true, data: { bio: "ok" } } as never);

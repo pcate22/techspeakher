@@ -135,19 +135,15 @@ export async function saveProfile(
   const result = parseProfileForm(formData);
   if (!result.ok) return { ok: false, errors: result.errors };
 
-  // Le nom vit sur le COMPTE (users.name) : affiché sur la fiche et dans
-  // l'annuaire. Saisi ici pour la cohorte lien-magique (aucun nom OAuth) ;
-  // vide = inchangé (on n'efface jamais un nom).
-  // Le nom vit sur le COMPTE, pas sur la fiche : normalisation et borne sont
-  // tenues par `users.ts` (bord de la colonne), et un nom vide n'écrase jamais
-  // celui qui existe. On le normalise ici seulement pour dériver l'adresse.
+  // Le nom vit sur le COMPTE (users.name), saisi ici pour la cohorte lien
+  // magique (aucun nom OAuth). Normalisation, borne et « vide = inchangé » sont
+  // tenues par `users.ts` ; on le normalise ici seulement pour dériver l'adresse.
   const nomComplet = normaliserNomCompte(formString(formData, "nomComplet"));
 
   // Profil existant (nom + slug actuels) lu AVANT l'écriture : le nom sert de
   // repli pour dériver l'adresse, et un slug existant est préservé si le champ
   // reste vide (on ne casse jamais une URL déjà partagée en silence).
   const existant = await getProfileByUserId(id);
-  if (nomComplet) await setUserName(id, nomComplet);
   const nomEffectif = nomComplet || existant?.name || "";
 
   // Adresse (slug) définitive : saisie explicite → contrôle d'unicité (message
@@ -172,6 +168,11 @@ export async function saveProfile(
     }
     throw err;
   }
+  // Invariant : écrire le nom du compte va toujours avec une fiche. La
+  // publication express compare le nom tapé à users.name pour sauter la
+  // relecture ; un nom écrit ici par un enregistrement refusé lui ouvrirait la
+  // publication directe d'un nom libre. D'où l'écriture APRÈS tout refus possible.
+  if (nomComplet) await setUserName(id, nomComplet);
   revalidateEspacePerso();
   // Revalider aussi la fiche + l'annuaire : sans ça, « Prévisualiser ma fiche »
   // (navigation client) ressert la version en cache (Router Cache) avec les
@@ -237,14 +238,6 @@ export async function saveProfileSection(
     }
   }
 
-  // Le nom vit sur le COMPTE (users.name), pas sur la fiche : seule la section
-  // qui l'affiche a le droit de l'écrire, et un nom vide n'écrase jamais celui
-  // qui existe.
-  if (section.champs.includes("nomComplet")) {
-    const nomComplet = normaliserNomCompte(formString(formData, "nomComplet"));
-    if (nomComplet) await setUserName(id, nomComplet);
-  }
-
   // La section repose SES colonnes sur celles déjà en base, puis les règles de
   // cohérence du profil entier s'appliquent (elles traversent les sections).
   const fusion = normaliserProfil({
@@ -258,6 +251,13 @@ export async function saveProfileSection(
   } catch (err) {
     if (isUniqueViolation(err)) return refuser({ slug: SLUG_PRIS });
     throw err;
+  }
+  // Le nom vit sur le COMPTE (users.name), pas sur la fiche : seule la section
+  // qui l'affiche a le droit de l'écrire, et seulement une fois l'enregistrement
+  // acquis (même invariant que `saveProfile`).
+  if (section.champs.includes("nomComplet")) {
+    const nomComplet = normaliserNomCompte(formString(formData, "nomComplet"));
+    if (nomComplet) await setUserName(id, nomComplet);
   }
   revalidateEspacePerso();
   revalidatePublicProfile();

@@ -762,6 +762,21 @@ ci-dessous, listées ici pour la traçabilité :
   utilisé que 3 fois. Faire retourner `{ base, editionId }` et généraliser le
   helper. **Effort : S/M** (refactor sûr, les redirects sont testés).
 
+### Publication express : le nom OAuth se lit dans `users.name` (2026-11-12)
+
+- **La relecture express compare le nom tapé à un nom que la membre peut
+  écrire.** `publierFicheExpressAction` (`src/app/mon-espace/actions.ts`)
+  publie sans relecture quand le nom tapé égale `users.name`, censé venir de
+  Google ou LinkedIn. Or `saveProfile` et `saveProfileSection` écrivent aussi
+  `users.name`. Ce qui tient aujourd'hui : un invariant, écrire le nom du
+  compte va toujours avec une fiche (écriture placée après tout refus
+  possible), et l'express exige l'absence de fiche. Un futur chemin qui
+  écrirait le nom sans fiche rouvrirait la publication directe d'un nom libre.
+  Correctif solide : garder le nom du fournisseur à part (par exemple
+  `users.oauth_name`, posé au callback d'authentification) et comparer à lui.
+  Demande une migration, donc hors de la PR de l'inscription express.
+  **Effort : S.**
+
 ## 🟡 P2 — nice-to-have
 
 ### Inscription express : ce que les revues laissent (2026-11-12)
