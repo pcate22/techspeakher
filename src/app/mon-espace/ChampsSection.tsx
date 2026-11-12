@@ -237,19 +237,11 @@ export function ChampsSecteurs({ initial }: { initial: SpeakerProfile | null }) 
   );
 }
 
-const LEGENDE_THEMES_ID = "legende-themes";
-
 export function ChampsSujets({ initial }: { initial: SpeakerProfile | null }) {
   return (
     <fieldset>
-      <legend id={LEGENDE_THEMES_ID} className={labelClass}>
-        Tes thèmes
-      </legend>
-      <ChoixThemes
-        name="sujets"
-        initial={initial?.sujets ?? []}
-        legendId={LEGENDE_THEMES_ID}
-      />
+      <legend className={labelClass}>Tes thèmes</legend>
+      <ChoixThemes name="sujets" initial={initial?.sujets ?? []} />
     </fieldset>
   );
 }
@@ -364,8 +356,8 @@ export function ChampsContact({
             sous-page « Où te trouver » comme à l'étape 4 de la création. */}
         <h2 className="text-base font-bold text-white">Comment on te contacte</h2>
         <p className="text-sm text-gray-light mt-1">
-          Choisis comment les organisateurs peuvent te joindre : ton profil
-          LinkedIn et/ou un message par e-mail. Il en faut au moins un pour
+          Choisis comment les organisatrices et organisateurs de conférences
+          peuvent te joindre : ton profil LinkedIn et/ou un message par e-mail. Il en faut au moins un pour
           figurer dans l&apos;annuaire.
         </p>
       </div>

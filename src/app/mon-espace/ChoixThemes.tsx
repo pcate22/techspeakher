@@ -11,15 +11,16 @@ import { checkboxClass } from "@/components/CheckboxGrid";
  * Une catégorie fermée garde ses cases dans le DOM (`hidden`, pas de
  * démontage) : un thème coché y reste soumis avec le formulaire. Les cases
  * sont contrôlées pour tenir les compteurs et le récapitulatif.
+ *
+ * Aucun groupe nommé ici : le fieldset et la légende de l'appelant nomment
+ * déjà l'ensemble, un second groupe ferait annoncer le nom deux fois.
  */
 export default function ChoixThemes({
   name,
   initial,
-  legendId,
 }: {
   name: string;
   initial: string[];
-  legendId: string;
 }) {
   const base = useId();
   const [choisis, setChoisis] = useState<Set<string>>(() => new Set(initial));
@@ -38,7 +39,7 @@ export default function ChoixThemes({
   );
 
   return (
-    <div role="group" aria-labelledby={legendId} className="space-y-3">
+    <div className="space-y-3">
       <div className="flex flex-wrap gap-2">
         {CATEGORIES_THEMES.map((c, i) => {
           const nb = c.themes.filter((t) => choisis.has(t)).length;
@@ -97,7 +98,9 @@ export default function ChoixThemes({
       </div>
 
       <p aria-live="polite" className="text-sm text-gray-light">
-        Tes thèmes ({liste.length}){liste.length > 0 && ` : ${liste.join(", ")}`}
+        {liste.length > 0
+          ? `Tes thèmes (${liste.length}) : ${liste.join(", ")}`
+          : "Aucun thème choisi."}
       </p>
     </div>
   );

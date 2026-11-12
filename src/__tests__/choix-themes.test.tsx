@@ -8,8 +8,7 @@ import { CATEGORIES_THEMES } from "@/data/domaines";
 function rendre(initial: string[] = []) {
   return render(
     <form>
-      <p id="leg">Tes thèmes</p>
-      <ChoixThemes name="sujets" initial={initial} legendId="leg" />
+      <ChoixThemes name="sujets" initial={initial} />
     </form>,
   );
 }
@@ -61,10 +60,10 @@ describe("ChoixThemes", () => {
     expect(recap.textContent).toContain("Accessibilité");
   });
 
-  it("récapitulatif à zéro et pas de compteur sans thème", () => {
+  it("récapitulatif vide et pas de compteur sans thème", () => {
     const { container } = rendre();
-    expect(container.querySelector('[aria-live="polite"]')!.textContent).toContain(
-      "Tes thèmes (0)",
+    expect(container.querySelector('[aria-live="polite"]')!.textContent).toBe(
+      "Aucun thème choisi.",
     );
     expect(screen.getByRole("button", { name: /^Design/ }).textContent).not.toMatch(
       /\d/,
@@ -110,6 +109,13 @@ describe("ChoixThemes", () => {
     expect(container.querySelector('[aria-live="polite"]')!.textContent).toContain(
       "(1)\u00a0: UX / UI",
     );
+  });
+
+  // Le fieldset parent nomme déjà le groupe : un second groupe du même nom
+  // ferait annoncer « Tes thèmes » deux fois.
+  it("ne pose pas de second groupe nommé", () => {
+    const { container } = rendre();
+    expect(container.querySelector('[role="group"]')).toBeNull();
   });
 
   it("chaque aria-controls désigne un élément existant", () => {

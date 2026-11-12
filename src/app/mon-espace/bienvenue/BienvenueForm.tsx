@@ -24,6 +24,8 @@ export default function BienvenueForm({ nomInitial }: { nomInitial: string }) {
   const [nom, setNom] = useState(nomInitial);
   const titre2 = useRef<HTMLHeadingElement>(null);
   const champNom = useRef<HTMLInputElement>(null);
+  // Refus local de « Continuer » : le serveur n'a encore rien vu.
+  const [nomManquant, setNomManquant] = useState(false);
 
   useEffect(() => {
     if (state.errors?.nom) champNom.current?.focus();
@@ -31,14 +33,16 @@ export default function BienvenueForm({ nomInitial }: { nomInitial: string }) {
 
   function continuer() {
     if (!nom.trim()) {
+      setNomManquant(true);
       champNom.current?.focus();
       return;
     }
+    setNomManquant(false);
     setEtape(2);
     setTimeout(() => titre2.current?.focus(), 0);
   }
 
-  const erreurNom = state.errors?.nom;
+  const erreurNom = nomManquant ? "Indique ton prénom et ton nom." : state.errors?.nom;
 
   return (
     <form action={action} className="flex flex-col gap-6">
@@ -54,7 +58,10 @@ export default function BienvenueForm({ nomInitial }: { nomInitial: string }) {
           autoComplete="name"
           required
           value={nom}
-          onChange={(e) => setNom(e.target.value)}
+          onChange={(e) => {
+            setNom(e.target.value);
+            setNomManquant(false);
+          }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();
@@ -77,9 +84,7 @@ export default function BienvenueForm({ nomInitial }: { nomInitial: string }) {
 
       <div hidden={etape !== 2}>
         <fieldset aria-describedby={state.errors?.sujets ? "err-bienvenue-themes" : undefined}>
-          <legend className="sr-only" id="bienvenue-themes">
-            Tes thèmes
-          </legend>
+          <legend className="sr-only">Tes thèmes</legend>
           <h2 ref={titre2} tabIndex={-1} className="text-2xl font-bold mb-4 focus-visible:outline-none">
             De quoi parles-tu&nbsp;?
           </h2>
@@ -88,11 +93,7 @@ export default function BienvenueForm({ nomInitial }: { nomInitial: string }) {
               {state.errors.form}
             </p>
           )}
-          <ChoixThemes
-            name="sujets"
-            initial={state.valeurs?.sujets ?? []}
-            legendId="bienvenue-themes"
-          />
+          <ChoixThemes name="sujets" initial={state.valeurs?.sujets ?? []} />
         </fieldset>
         {state.errors?.sujets && (
           <p id="err-bienvenue-themes" role="alert" className={errorClass}>
@@ -106,7 +107,8 @@ export default function BienvenueForm({ nomInitial }: { nomInitial: string }) {
           En publiant, j&apos;atteste être une femme ou une personne non binaire.
         </p>
         <p className="text-sm text-gray-light mt-1">
-          Les organisateurs pourront t&apos;écrire par le site, ton e-mail reste caché.
+          Les organisatrices et organisateurs de conférences pourront t&apos;écrire par
+          le site, ton e-mail reste caché.
         </p>
       </div>
     </form>

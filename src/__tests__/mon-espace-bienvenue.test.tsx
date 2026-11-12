@@ -97,14 +97,36 @@ describe("Mon espace : après publication", () => {
     expect(liens).toEqual([
       "/mon-espace/talks/nouveau",
       "/mon-espace/fiche/identite",
-      "/mon-espace/fiche/identite",
-      "/mon-espace/fiche/identite",
       "/mon-espace/fiche/secteurs",
       "/mon-espace/fiche/contact",
     ]);
-    expect(within(section).getByRole("link", { name: /photo/i })).toBeInTheDocument();
-    expect(within(section).getByRole("link", { name: /ville/i })).toBeInTheDocument();
-    expect(within(section).getByRole("link", { name: /présentation/i })).toBeInTheDocument();
+    // Trois manques d'identité → une seule ligne qui les nomme.
+    expect(
+      within(section).getByRole("link", {
+        name: "Complète ton identité (photo, ville, présentation)",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("deux manques d'identité → une ligne qui ne nomme qu'eux", async () => {
+    vi.mocked(getProfileByUserId).mockResolvedValue({ ...ficheVide(), ville: "Toulouse" });
+    await rendu("fiche_publiee");
+    const section = screen.getByRole("region", { name: "Pour aller plus loin" });
+    expect(
+      within(section).getByRole("link", { name: "Complète ton identité (photo, présentation)" }),
+    ).toBeInTheDocument();
+  });
+
+  it("un seul manque d'identité → sa ligne à lui", async () => {
+    vi.mocked(getProfileByUserId).mockResolvedValue({
+      ...ficheVide(),
+      ville: "Toulouse",
+      bio: "Je parle de cloud.",
+    });
+    await rendu("fiche_publiee");
+    const section = screen.getByRole("region", { name: "Pour aller plus loin" });
+    expect(within(section).getByRole("link", { name: "Ajoute une photo" })).toBeInTheDocument();
+    expect(within(section).queryByRole("link", { name: /Complète ton identité/ })).toBeNull();
   });
 
   it("une fiche sans thème → « Choisis tes thèmes » en premier, même sans message", async () => {
