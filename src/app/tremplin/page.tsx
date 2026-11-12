@@ -55,7 +55,7 @@ export default async function TremplinConcept() {
   const editorial = editorialDe(confSlug, annee);
   // La plus récente de N éditions publiques est la Nᵉ (liste triée récentes
   // d'abord) ; sans base, on ignore le rang : on dit seulement qu'elle est en cours.
-  const kicker = enAvant ? `${rangOrdinal(editions.length)} édition` : "Édition en cours";
+  const surtitre = enAvant ? `${rangOrdinal(editions.length)} édition` : "Édition en cours";
   // Quand le nom manque, le segment disparaît (même convention que le h1 de
   // la page cible : jamais de « × » orphelin, jamais un « Conférence » neutre
   // qui contredirait la page à l'arrivée).
@@ -164,7 +164,7 @@ export default async function TremplinConcept() {
         <div className="max-w-3xl mx-auto">
           <div className="bg-navy border border-gold/30 rounded-2xl p-6 sm:p-8">
             <p className="text-xs font-bold text-gold uppercase tracking-wider mb-2">
-              {kicker}
+              {surtitre}
             </p>
             <h2 id="edition-title" className="text-xl sm:text-2xl font-bold mb-3">
               Tremplin <span className="text-gold">{nomConf ? `× ${nomConf} ${annee}` : annee}</span>

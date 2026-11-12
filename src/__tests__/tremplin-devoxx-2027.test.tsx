@@ -73,17 +73,34 @@ describe("Tremplin Devoxx France 2027 — candidater", () => {
     // Les deux rendez-vous à Paris, et la date limite.
     expect(section.textContent).toMatch(/19 janvier/);
     expect(section.textContent).toMatch(/7 au 9 avril/);
-    expect(section.textContent).toMatch(/30 novembre/);
   });
 
   it("le héros mène aux conditions avant le formulaire", async () => {
     await rendre(devoxx);
     const hero = screen.getByRole("region", { name: /Tremplin 2027/ });
-    expect(within(hero).getByRole("link", { name: /candidater/i })).toHaveAttribute("href", "#candidater");
+    expect(within(hero).getByRole("link", { name: /conditions pour candidater/i })).toHaveAttribute("href", "#candidater");
   });
 
   it("fenêtre fermée : plus de bouton vers le formulaire", async () => {
-    await rendre({ ...devoxx, inscriptionsFin: "2026-01-01" });
+    await rendre({ ...devoxx, inscriptionsDebut: "2020-11-09", inscriptionsFin: "2020-11-30" });
+    expect(screen.queryByRole("region", { name: /candidater/i })).toBeNull();
+    expect(document.body.innerHTML).not.toContain(TREMPLIN_DEVOXX_2027_FORM_URL);
+    expect(screen.queryByText(/Comment candidater/)).toBeNull();
+  });
+
+  it("la date limite vient de la base : une fenêtre prolongée s'affiche telle quelle", async () => {
+    await rendre({ ...devoxx, inscriptionsFin: "2099-12-07" });
+    const hero = screen.getByRole("region", { name: /Tremplin 2027/ });
+    expect(hero.textContent).toMatch(/7\s+décembre 2099/);
+  });
+
+  it("fenêtre pas encore ouverte : pas de bouton", async () => {
+    await rendre({ ...devoxx, inscriptionsDebut: "2099-01-01", inscriptionsFin: "2099-02-01" });
+    expect(screen.queryByRole("region", { name: /candidater/i })).toBeNull();
+  });
+
+  it("édition close, même avec une fenêtre ouverte en base : pas de bouton", async () => {
+    await rendre({ ...devoxx, statut: "clos" });
     expect(screen.queryByRole("region", { name: /candidater/i })).toBeNull();
     expect(document.body.innerHTML).not.toContain(TREMPLIN_DEVOXX_2027_FORM_URL);
   });

@@ -1,4 +1,4 @@
-import { editorialDe, editionEditoriale } from "@/data/tremplin";
+import { editorialEnCours, editionEditoriale } from "@/data/tremplin";
 import { CATEGORIES } from "@/data/categories-contenus";
 import { foldRecherche } from "@/lib/normalise-recherche";
 
@@ -93,11 +93,9 @@ export const searchIndex: SearchItem[] = dedupeSearchItems([
   // /api/search/contenus, fusionnés côté client (cf. SearchBar). L'index
   // statique ne couvre que ce qui vit dans le code : les pages et la FAQ.
 
-  // FAQ — ses réponses sont l'éditorial d'UNE édition, et l'ancre #faq ne vit
-  // que sur la page de celle-ci (le lien pointait /tremplin#faq, une ancre
-  // absente ; dette P1). Dérivée d'`editionEditoriale` : le jour où
-  // l'éditorial déménage, ce lien suit tout seul.
-  ...(editorialDe(editionEditoriale.confSlug, editionEditoriale.annee)?.faq ?? []).map((f) => ({
+  // FAQ : l'éditorial de l'édition en cours, dont l'ancre #faq ne vit que
+  // sur la page de cette édition.
+  ...editorialEnCours.faq.map((f) => ({
     title: f.q,
     description: f.a,
     url: `/tremplin/${editionEditoriale.confSlug}/${editionEditoriale.annee}#faq`,

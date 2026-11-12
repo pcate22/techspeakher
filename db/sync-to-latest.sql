@@ -2305,32 +2305,32 @@ SELECT
   'publication',
   'tremplin-2027-devoxx-france',
   $t$Le Tremplin repart, avec Devoxx France$t$,
-  $c$Tu n'as encore jamais pris la parole dans une conférence tech ? Le Tremplin Tech Speak'Her t'accompagne de la salle à la scène, et cette année, la gagnante donnera sa conférence au Devoxx France 2027. Candidatures ouvertes jusqu'au 30 novembre.$c$,
-  $corps$## Le Tremplin, c'est quoi ?
+  $c$Envie de donner ton premier talk dans une conférence tech ? Le Tremplin Tech Speak'Her t'accompagne de la salle à la scène, et cette année, la gagnante donnera sa conférence au Devoxx France 2027. Candidatures ouvertes jusqu'au 30 novembre.$c$,
+  $corps$## Le Tremplin, c'est quoi ?
 
-Un programme pour les femmes de la tech qui ne sont encore jamais montées sur la scène d'une conférence. On t'accompagne pendant plusieurs semaines pour trouver ton sujet, construire ton talk et travailler ta prise de parole, puis tu le présentes devant un jury bienveillant. La gagnante monte sur une vraie scène.
+Un programme pour les femmes de la tech qui visent leur première scène en conférence. On t'accompagne pendant plusieurs semaines pour trouver ton sujet, construire ton talk et travailler ta prise de parole, puis tu le présentes devant un jury bienveillant.
 
-La première édition s'est faite avec le DevFest Toulouse : 8 finalistes, 3 gagnantes, et des talks au DevFest en novembre 2026. Cette année, on part à Paris : la gagnante donnera sa conférence au **Devoxx France 2027**, du 7 au 9 avril au Palais des Congrès.
+La première édition s'est faite avec le DevFest Toulouse : 8 finalistes, 3 gagnantes, et des talks au DevFest en novembre 2026. Cette année, on part à Paris : la gagnante donnera sa conférence au **Devoxx France 2027**, du 7 au 9 avril au Palais des Congrès.
 
 ## Le programme
 
-- **Du 9 au 30 novembre 2026** : les candidatures.
-- **En décembre et janvier** : cinq ateliers en groupe, à distance, sur le temps de midi, les 1er, 8 et 15 décembre puis les 5 et 12 janvier. Trouver son sujet, construire son plan, rédiger son CFP, travailler son pitch, affiner sa prise de parole.
-- **Le mardi 19 janvier 2027, en soirée** : la soirée Tremplin, à Paris. Trois minutes de pitch, cinq minutes d'échange avec le jury.
-- **Jusqu'en avril** : on accompagne la gagnante pour préparer sa conférence.
+- **Du 9 au 30 novembre 2026** : les candidatures.
+- **En décembre et janvier** : cinq ateliers en groupe, à distance, sur le temps de midi, les 1er, 8 et 15 décembre puis les 5 et 12 janvier. Trouver son sujet, construire son plan, rédiger son CFP, travailler son pitch, affiner sa prise de parole.
+- **Le mardi 19 janvier 2027, en soirée** : la soirée Tremplin, à Paris. Trois minutes de pitch, cinq minutes d'échange avec le jury.
+- **Jusqu'en avril** : on accompagne la gagnante pour préparer sa conférence.
 
 ## Ce que tu y gagnes
 
 La gagnante donne sa conférence au Devoxx France 2027, et on l'accompagne jusqu'au jour J. Toutes les participantes repartent avec le retour écrit du jury, la vidéo de leur pitch et, si elles le veulent, un post sur nos réseaux.
 
-## Qui peut candidater ?
+## Qui peut candidater ?
 
 - Les femmes de la tech, ou les personnes qui se reconnaissent comme telles, tous métiers et tous niveaux.
-- Qui n'ont encore jamais donné de talk dans une conférence publique avec appel à orateurs (CFP) et sélection. Tu peux candidater même si tu as déjà fait des présentations internes, des lightning talks en entreprise, des cours, des formations, des podcasts ou des webinaires.
-- Adhérentes de Tech Speak'Her : [adhérer à l'association](/adherer).
-- Disponibles à Paris le 19 janvier au soir, et du 7 au 9 avril pour Devoxx France en cas de victoire. Le transport et le logement restent à la charge des candidates : nous cherchons des financements pour les prendre en charge.
+- Qui donneront leur premier talk dans une conférence publique avec appel à orateurs (CFP) et sélection. Tu peux candidater même si tu as déjà fait des présentations internes, des lightning talks en entreprise, des cours, des formations, des podcasts ou des webinaires.
+- Adhérentes de Tech Speak'Her : [adhérer à l'association](/adherer).
+- Disponibles à Paris le 19 janvier au soir, et du 7 au 9 avril pour Devoxx France en cas de victoire. Le transport et le logement restent à la charge des candidates : nous cherchons des financements pour les prendre en charge.
 
-Un doute sur ta situation ? [Écris-nous](/contact).
+Un doute sur ta situation ? [Écris-nous](/contact).
 
 ## Une idée vague suffit
 
@@ -2338,7 +2338,7 @@ Et si tu pars d'une page blanche, le premier atelier sert justement à trouver t
 
 [Tout savoir et candidater](/tremplin/devoxx-france/2027)
 
-Tu connais quelqu'une qui hésite encore ? Envoie-lui cet article.$corps$,
+Tu connais quelqu'une qui hésite encore ? Envoie-lui cet article.$corps$,
   'Tremplin', 'En cours', '/tremplin/devoxx-france/2027', 'publie', CURRENT_DATE, TRUE
  WHERE NOT EXISTS (SELECT 1 FROM seeds_appliques WHERE cle = '076_tremplin_devoxx_2027')
 ON CONFLICT (slug) DO NOTHING;

@@ -19,7 +19,7 @@ import {
 import { getNouvellesVenues, type NouvelleVenue } from "@/lib/fil-communaute";
 import CarteNouvelleVenue from "@/components/CarteNouvelleVenue";
 import { aujourdhuiParis } from "@/lib/tremplin-statut";
-import { editorialDe, editionEditoriale } from "@/data/tremplin";
+import { editorialEnCours, editionEditoriale } from "@/data/tremplin";
 
 export const metadata: Metadata = {
   title: "Tech Speak'Her | Une communauté de femmes de la tech pour oser passer de la salle à la scène",
@@ -103,8 +103,6 @@ export default async function Home() {
     aujourdhui,
     3,
   );
-
-  const tremplin = editorialDe(editionEditoriale.confSlug, editionEditoriale.annee);
 
   const stats = [
     {
@@ -247,23 +245,19 @@ export default async function Home() {
       </section>
 
       {/* Le Tremplin en cours, juste après celles qui l'ont vécu : la preuve,
-          puis l'invitation. Le titre et l'accroche suivent l'édition éditoriale
-          en cours (`src/data/tremplin.ts`) : ouvrir une édition met l'accueil
-          à jour sans retoucher cette page. */}
-      {tremplin && (
-        <section className="py-16 px-4 bg-navy-light" aria-labelledby="tremplin-cta-title">
+          puis l'invitation. Le bloc suit l'édition éditoriale en cours. */}
+      <section className="py-16 px-4 bg-navy-light" aria-labelledby="tremplin-cta-title">
           <div className="max-w-4xl mx-auto bg-gradient-to-r from-magenta/10 to-cyan/10 border border-navy-lighter rounded-2xl p-8 sm:p-12 text-center">
             <p className="text-xs font-bold text-gold uppercase tracking-wider mb-3">Le Tremplin</p>
             <h2 id="tremplin-cta-title" className="text-2xl sm:text-3xl font-bold mb-4">
               Ton premier talk au {editionEditoriale.confNom} {editionEditoriale.annee}&nbsp;?
             </h2>
-            <p className="text-gray-light mb-6 max-w-2xl mx-auto">{tremplin.accroche}</p>
+            <p className="text-gray-light mb-6 max-w-2xl mx-auto">{editorialEnCours.accroche}</p>
             <Button href={`/tremplin/${editionEditoriale.confSlug}/${editionEditoriale.annee}`}>
               Découvrir le Tremplin {editionEditoriale.annee}
             </Button>
           </div>
         </section>
-      )}
 
       {/* Bientôt en scène — un bloc VIVANT de la home : il vient des fiches
           des speakeuses, pas d'un contenu rédigé. Placé juste après les chiffres,

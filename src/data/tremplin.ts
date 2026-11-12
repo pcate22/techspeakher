@@ -52,13 +52,7 @@ export const accompagnement: AccompagnementTheme[] = [
   },
 ];
 
-/**
- * ÉDITION DEVFEST TOULOUSE 2026 : les exports `jury`, `prix`, `partenaires`,
- * `retoursPourTous` et `faq` décrivent cette édition (enregistrée plus bas dans
- * `editoriaux`). Les thèmes d'ateliers ci-dessus servent aux tests du seed.
- */
-
-/** Le jury 100% féminin de la soirée Tremplin du 4 juin 2026. */
+/** Le jury 100% féminin de la soirée Tremplin du 4 juin 2026 (DevFest Toulouse). */
 export const jury: Jure[] = [
   { name: "Aline Paponaud", role: "DSI Sud-Ouest, Inovie" },
   { name: "Aurélie Vache", role: "Developer Advocate, OVHcloud" },
@@ -133,12 +127,14 @@ export const partenaires: Partenaire[] = [
   },
 ];
 
+/** Promis à toutes les participantes, en 2026 comme en 2027. */
 export const retoursPourTous: string[] = [
   "Feedback écrit du jury",
   "Vidéo de ton pitch",
   "Un post sur nos réseaux (si tu veux)",
 ];
 
+/** La FAQ de l'édition DevFest Toulouse 2026. */
 export const faq: FAQ[] = [
   {
     q: "Je n'ai jamais donné de talk, c'est grave\u00A0?",
@@ -164,6 +160,7 @@ export const faq: FAQ[] = [
     lien: { href: YOUTUBE_URL, label: "Voir notre chaîne YouTube" },
   },
   {
+    id: "grille",
     q: "Sur quoi le jury évalue les pitchs\u00A0?",
     a: "Sur 5 critères notés /28, répartis en deux axes. Axe Sujet\u00A0: clarté et pertinence (×2), apport pour l'audience, angle distinctif. Axe Personne\u00A0: légitimité sur ce sujet, capacité à porter le sujet (×2). On évalue le potentiel d'un super talk avec accompagnement, pas le pitch fini. L'objectif est de donner à chacune un retour bienveillant et exploitable, gagnante ou pas.",
   },
@@ -191,17 +188,17 @@ const DEVOXX_URL = "https://www.devoxx.fr/";
 
 /** Le critère « primo-speakeuse », tel qu'il se lit sur la page et dans la FAQ. */
 const CRITERE_PRIMO =
-  "Tu n'as encore jamais donné de talk dans une conférence publique avec appel à orateurs (CFP) et sélection. Tu peux candidater même si tu as déjà fait des présentations internes, des lightning talks en entreprise, des cours, des formations, des podcasts ou des webinaires.";
+  "Ce sera ton premier talk dans une conférence publique avec appel à orateurs (CFP) et sélection. Tu peux candidater même si tu as déjà fait des présentations internes, des lightning talks en entreprise, des cours, des formations, des podcasts ou des webinaires.";
 
 const DEPLACEMENTS =
   "Tu peux venir à Paris le soir du mardi 19\u00A0janvier 2027 pour la soirée Tremplin, et du 7 au 9\u00A0avril 2027 pour Devoxx France si tu gagnes. Le transport et le logement restent à ta charge\u00A0: nous cherchons des financements pour les prendre en charge.";
 
-const grille = faq.find((f) => f.q.startsWith("Sur quoi le jury"));
+const grille = faq.find((f) => f.id === "grille");
 
 const faqDevoxx2027: FAQ[] = [
   {
     q: "Qui peut candidater\u00A0?",
-    a: `Les femmes de la tech, tous métiers et tous niveaux. ${CRITERE_PRIMO}`,
+    a: `Les femmes de la tech, ou les personnes qui se reconnaissent comme telles, tous métiers et tous niveaux. ${CRITERE_PRIMO}`,
     lien: { href: "/contact", label: "Un doute\u00A0? Écris-nous" },
   },
   {
@@ -223,20 +220,21 @@ const faqDevoxx2027: FAQ[] = [
   },
   {
     q: "Qu'est-ce qu'on gagne\u00A0?",
-    a: "La gagnante donne sa conférence au Devoxx France 2027, du 7 au 9\u00A0avril au Palais des Congrès de Paris, et on l'accompagne pour la préparer jusqu'au jour J. Toutes les finalistes repartent avec le retour écrit du jury, la vidéo de leur pitch et, si elles le veulent, un post sur nos réseaux.",
+    a: "La gagnante donne sa conférence au Devoxx France 2027, du 7 au 9\u00A0avril au Palais des Congrès de Paris, et on l'accompagne pour la préparer jusqu'au jour J. Toutes les participantes repartent avec le retour écrit du jury, la vidéo de leur pitch et, si elles le veulent, un post sur nos réseaux.",
   },
   {
     q: "Je dois habiter à Paris\u00A0?",
     a: `Non, les ateliers se font à distance. ${DEPLACEMENTS}`,
   },
-  ...(grille ? [grille] : []),
+  ...(grille ? [grille] : []), // présente : un test garde la FAQ 2027 entière
   {
     q: "Qui compose le jury\u00A0?",
-    a: "Un jury 100\u00A0% féminin, annoncé bientôt sur cette page.",
+    a: "Le jury sera annoncé sur cette page.",
   },
   {
+    id: "candidater",
     q: "Comment candidater\u00A0?",
-    a: "Adhère à Tech Speak'Her, puis remplis le formulaire de candidature jusqu'au 30\u00A0novembre 2026.",
+    a: "Adhère à Tech Speak'Her, puis remplis le formulaire de candidature avant la date limite indiquée en haut de cette page.",
     lien: { href: TREMPLIN_DEVOXX_2027_FORM_URL, label: "Ouvrir le formulaire de candidature" },
   },
   {
@@ -267,10 +265,9 @@ const editorialDevoxx2027: EditorialEdition = {
   ],
   retoursPourTous,
   accroche:
-    "Cinq ateliers à distance, une soirée finale le 19\u00A0janvier 2027 à Paris, et une conférence au Devoxx France 2027 pour la gagnante. Candidatures jusqu'au 30\u00A0novembre.",
+    "Cinq ateliers à distance, une soirée finale le 19\u00A0janvier 2027 à Paris, et une conférence au Devoxx France 2027 pour la gagnante.",
   candidature: {
     formUrl: TREMPLIN_DEVOXX_2027_FORM_URL,
-    dateLimite: "30\u00A0novembre 2026",
     conditions: [
       { texte: "Tu es une femme, ou tu te reconnais comme telle." },
       { texte: CRITERE_PRIMO, lien: { href: "/contact", label: "Un doute\u00A0? Écris-nous" } },
@@ -282,16 +279,18 @@ const editorialDevoxx2027: EditorialEdition = {
 
 // ─── Registre des éditions qui ont un éditorial ────────────────────────────
 
+const editorialDevfest2026: EditorialEdition = {
+  faq,
+  prix,
+  jury,
+  partenaires,
+  retoursPourTous,
+  accroche: "8 finalistes, 3 gagnantes, un jury 100\u00A0% féminin lors de la soirée du 4\u00A0juin à Toulouse.",
+  lienFinalistes: true,
+};
+
 const editoriaux: Record<string, EditorialEdition> = {
-  "devfest-toulouse/2026": {
-    faq,
-    prix,
-    jury,
-    partenaires,
-    retoursPourTous,
-    accroche: "8 finalistes, 3 gagnantes, un jury 100\u00A0% féminin lors de la soirée du 4\u00A0juin à Toulouse.",
-    lienFinalistes: true,
-  },
+  "devfest-toulouse/2026": editorialDevfest2026,
   "devoxx-france/2027": editorialDevoxx2027,
 };
 
@@ -317,6 +316,9 @@ export const editionEditoriale = {
   annee: 2027,
   confNom: "Devoxx France",
 } as const;
+
+/** L'éditorial de l'édition en cours (un test garde qu'il existe). */
+export const editorialEnCours: EditorialEdition = editorialDevoxx2027;
 
 export const tremplinSteps: TremplinStep[] = [
   {

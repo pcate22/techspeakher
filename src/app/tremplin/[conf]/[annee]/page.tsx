@@ -9,7 +9,7 @@ import DateFr from "@/components/DateFr";
 import VideoCard from "@/components/VideoCard";
 import Accompagnantes from "@/components/Accompagnantes";
 import { BASE_URL } from "@/constants/site";
-import { formatDateFr, nb, quandFr } from "@/lib/format";
+import { dateLongueFr, formatDateFr, nb, quandFr } from "@/lib/format";
 import { aujourdhuiParis, getEditionByConfAndYear, paramsEditionsPubliques } from "@/lib/tremplin-editions";
 import { estPasse, inscriptionsEtat } from "@/lib/tremplin-statut";
 import {
@@ -27,7 +27,6 @@ import {
   aUnTremplinADecrire,
 } from "@/lib/recit-edition";
 import RecitConference from "@/components/RecitConference";
-// Blocs éditoriaux (constantes du programme, v1 — cf. docs/tremplin-edition-publique.md §3).
 import { editorialDe } from "@/data/tremplin";
 import { replayDe } from "@/data/videos";
 
@@ -113,7 +112,6 @@ export default async function EditionPublique({ params }: { params: Promise<Para
   // L'éditorial de `src/data/tremplin.ts` (FAQ, jury nommé, lots, partenaires)
   // décrit UNE édition : celle-là, ou aucune.
   const editorial = editorialDe(conf, ed.annee);
-  const editorialDeCetteEdition = editorial !== null;
   const { faq = [], prix = [], jury = [], partenaires = [], retoursPourTous = [] } = editorial ?? {};
   // Le bouton du formulaire vit tant que la fenêtre de candidature est ouverte,
   // et seulement là : après la date limite, il mènerait à un formulaire fermé.
@@ -123,6 +121,9 @@ export default async function EditionPublique({ params }: { params: Promise<Para
     inscriptionsEtat(ed, todayStr) === "ouvertes"
       ? editorial.candidature
       : null;
+  // La date limite vient de la base : prolonger la fenêtre dans l'admin la
+  // met à jour ici sans toucher l'éditorial.
+  const dateLimite = dateLongueFr(ed.inscriptionsFin);
   // CHAPITRE 1 — cette page raconte le Tremplin JUSQU'À la soirée finale.
   // L'accompagnement d'après (la montée sur scène vers la conférence) a sa
   // propre page : autre calendrier, autres coachs, autre cohorte. Tant que les
@@ -184,17 +185,15 @@ export default async function EditionPublique({ params }: { params: Promise<Para
   // et un objet JSON-LD jetés. C'est ICI, où l'on sait de quelle édition il
   // s'agit, que la question du replay reçoit la bonne vidéo (sans replay, le
   // lien vers la chaîne reste).
-  const replay = editorialDeCetteEdition ? replayDe(conf, ed.annee) : null;
-  // Hors fenêtre, la FAQ perd aussi son lien vers le formulaire : la réponse
-  // reste, le chemin vers un formulaire fermé part.
-  const formFerme = !candidature ? editorial?.candidature?.formUrl : undefined;
+  const replay = editorial ? replayDe(conf, ed.annee) : null;
+  // Hors fenêtre, la question « Comment candidater » part avec le bouton : sa
+  // réponse renvoie à un formulaire fermé.
   const faqAffichee = faq.map((f) => {
     if (replay && f.id === "replay") {
       return { ...f, lien: { href: replay.url, label: "Revoir la soirée sur YouTube" } };
     }
-    if (formFerme && f.lien?.href === formFerme) return { ...f, lien: undefined };
     return f;
-  });
+  }).filter((f) => candidature || f.id !== "candidater");
 
   const faqPageSchema = {
     "@context": "https://schema.org",
@@ -216,7 +215,7 @@ export default async function EditionPublique({ params }: { params: Promise<Para
   // Le palmarès vient de la base, les lots aussi ; à défaut on montre les lots
   // éditoriaux, qui datent. Sans aucun des trois, la section n'aurait qu'un titre.
   const aQuelqueChoseAuPalmares =
-    ed.palmares.length > 0 || ed.recompenses.length > 0 || editorialDeCetteEdition;
+    ed.palmares.length > 0 || ed.recompenses.length > 0 || editorial;
   // Jury : la base fait foi dès qu'un juré y est saisi (accord recueilli) ;
   // sinon on garde la liste éditoriale (même logique que les prix). On ne
   // sérialise que nom + fonction/entreprise — l'e-mail n'existe pas dans le DTO.
@@ -225,7 +224,7 @@ export default async function EditionPublique({ params }: { params: Promise<Para
   const juryAffiche =
     ed.jury.length > 0
       ? ed.jury.map((j) => ({ name: juryLabel(j), role: juryRole(j) }))
-      : editorialDeCetteEdition
+      : editorial
         ? jury
         : [];
 
@@ -240,7 +239,7 @@ export default async function EditionPublique({ params }: { params: Promise<Para
         ]}
       />
       {/* Le JSON-LD ne publie la FAQ que sous l'adresse de SON édition. */}
-      {editorialDeCetteEdition && (
+      {editorial && (
         <script
           type="application/ld+json"
           // `<` échappé : un « </script> » dans une réponse fermerait la balise.
@@ -282,9 +281,13 @@ export default async function EditionPublique({ params }: { params: Promise<Para
           {/* Le CTA du héros mène d'abord aux conditions : on candidate en
               sachant qu'il faut adhérer et venir à Paris. */}
           {candidature && (
-            <div className="mt-8">
-              <Button href="#candidater">Candidater</Button>
-              <p className="text-sm text-gray-light mt-3">Jusqu&apos;au {candidature.dateLimite}</p>
+            <div className="mt-8 flex flex-col items-center gap-2">
+              <p className="text-base font-semibold text-cream">
+                {dateLimite ? <>Candidatures ouvertes jusqu&apos;au {dateLimite}</> : "Candidatures ouvertes"}
+              </p>
+              <Button href="#candidater" variant="secondary" size="sm">
+                Voir les conditions pour candidater
+              </Button>
             </div>
           )}
         </div>
@@ -293,9 +296,8 @@ export default async function EditionPublique({ params }: { params: Promise<Para
       {candidature && (
         <section id="candidater" className="py-16 px-4 scroll-mt-20" aria-labelledby="candidater-title">
           <div className="max-w-3xl mx-auto bg-navy-light border border-cyan/30 rounded-2xl p-6 sm:p-8">
-            <p className="text-xs font-bold text-cyan uppercase tracking-wider mb-3">Jusqu&apos;au {candidature.dateLimite}</p>
             <h2 id="candidater-title" className="text-2xl sm:text-3xl font-bold mb-6">Candidater</h2>
-            <p className="text-gray-light mb-4">Pour candidater, il faut que ces conditions soient réunies&nbsp;:</p>
+            <p className="text-gray-light mb-4">Les conditions&nbsp;:</p>
             <ul role="list" className="space-y-4 list-none mb-8">
               {candidature.conditions.map((c) => (
                 <li key={c.texte} className="flex gap-3 text-gray-light leading-relaxed">
@@ -305,7 +307,7 @@ export default async function EditionPublique({ params }: { params: Promise<Para
                     {c.lien && (
                       <>
                         {" "}
-                        <Link href={c.lien.href} className="text-cyan hover:text-cyan-light underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan rounded">
+                        <Link href={c.lien.href} className={LIEN_TEXTE}>
                           {c.lien.label}
                         </Link>
                       </>
@@ -431,7 +433,7 @@ export default async function EditionPublique({ params }: { params: Promise<Para
                   // Lot éditorial statique : SECOURS des éditions sans
                   // récompenses en base (la section ci-dessous prime sinon).
                   const lot =
-                    ed.recompenses.length > 0 || !editorialDeCetteEdition
+                    ed.recompenses.length > 0 || !editorial
                       ? undefined
                       : prix.find((x) => x.place === p.recompense);
                   return (
@@ -529,7 +531,7 @@ export default async function EditionPublique({ params }: { params: Promise<Para
           {/* Retours pour toutes — éditorial : le retour jury écrit et la vidéo
               sont des promesses de 2026, pas un dû de toute édition à venir.
               Le dernier bloc éditorial qui fuyait hors de son édition (P1). */}
-          {editorialDeCetteEdition && (
+          {editorial && (
           <div className="mt-8 bg-gradient-to-r from-cyan/10 to-magenta/10 rounded-xl p-6 sm:p-8 border border-navy-lighter">
             <h3 className="text-lg font-bold text-center mb-4">
               Pour <span className="text-magenta">toutes</span> les participantes
@@ -708,7 +710,7 @@ export default async function EditionPublique({ params }: { params: Promise<Para
       {/* Partenaires — éditoriaux, et datés : « nous accueille pour la soirée »,
           « co-animatrice de l'atelier CFP ». Ils remercient les partenaires d'UNE
           édition, pas d'une année où rien de tout ça n'a eu lieu. */}
-      {editorialDeCetteEdition && (
+      {editorial && (
       <section className="py-16 px-4 bg-navy-light" aria-labelledby="merci-title">
         <div className="max-w-3xl mx-auto">
           <h2 id="merci-title" className="text-xl font-bold text-center text-white mb-8">Merci à nos <span className="text-cyan">partenaires</span></h2>
@@ -729,7 +731,7 @@ export default async function EditionPublique({ params }: { params: Promise<Para
       )}
 
       {/* FAQ — éditoriale, et propre à l'édition qu'elle décrit */}
-      {editorialDeCetteEdition && (
+      {editorial && (
       <section className="py-16 px-4" id="faq" aria-labelledby="faq-title">
         <div className="max-w-3xl mx-auto">
           <h2 id="faq-title" className="text-2xl font-bold text-center mb-10"><span className="text-magenta">FAQ</span></h2>
@@ -745,11 +747,11 @@ export default async function EditionPublique({ params }: { params: Promise<Para
                       {/* Un lien du site reste dans l'onglet ; un lien externe
                           s'ouvre à part et le dit. */}
                       {item.lien.href.startsWith("/") ? (
-                        <Link href={item.lien.href} className={LIEN_FAQ}>
+                        <Link href={item.lien.href} className={LIEN_TEXTE}>
                           {item.lien.label}
                         </Link>
                       ) : (
-                        <ExternalLink href={item.lien.href} className={LIEN_FAQ}>
+                        <ExternalLink href={item.lien.href} className={LIEN_TEXTE}>
                           {item.lien.label}
                         </ExternalLink>
                       )}
@@ -784,7 +786,7 @@ export default async function EditionPublique({ params }: { params: Promise<Para
   );
 }
 
-const LIEN_FAQ =
+const LIEN_TEXTE =
   "text-cyan hover:text-cyan-light underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan rounded transition-colors";
 
 function StatCard({ n, label, tone }: { n: number; label: string; tone: "cyan" | "magenta" | "gold" }) {

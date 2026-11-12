@@ -64,7 +64,7 @@ export interface FAQ {
    * page d'une édition remplace le lien du replay par la vidéo de CETTE
    * édition). Sans identifiant, l'entrée s'affiche telle quelle.
    */
-  id?: "replay";
+  id?: "replay" | "grille" | "candidater";
   q: string;
   a: string;
   /** Lien optionnel affiché après la réponse (ex. inscription à la soirée). */
@@ -130,8 +130,6 @@ export interface ConditionCandidature {
 /** Ce qu'il faut pour candidater à une édition : le formulaire et les règles. */
 export interface Candidature {
   formUrl: string;
-  /** Date limite, déjà rédigée (« 30 novembre 2026 »). */
-  dateLimite: string;
   conditions: ConditionCandidature[];
 }
 
