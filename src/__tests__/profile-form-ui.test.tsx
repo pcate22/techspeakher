@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { SECTEURS, SUJETS } from "@/data/domaines";
+import { SECTEURS, THEMES } from "@/data/domaines";
 import { BIO_MAX } from "@/lib/profile-limits";
 import { ETAPES } from "@/app/mon-espace/profil-etapes";
 
@@ -41,11 +41,11 @@ describe("ProfileForm (assistant)", () => {
     // flottaison, sans rien pour signaler qu'elle existait.
     await u.click(suivant);
     expect(screen.getByRole("checkbox", { name: SECTEURS[0] })).toBeInTheDocument();
-    expect(screen.queryByRole("checkbox", { name: SUJETS[0] })).toBeNull();
+    expect(screen.queryByRole("checkbox", { name: THEMES[0] })).toBeNull();
 
     // Étape 3 : sujets SEULS
     await u.click(screen.getByRole("button", { name: /suivant/i }));
-    expect(screen.getByRole("checkbox", { name: SUJETS[0] })).toBeInTheDocument();
+    expect(screen.getByRole("checkbox", { name: THEMES[0] })).toBeInTheDocument();
     expect(screen.queryByRole("checkbox", { name: SECTEURS[0] })).toBeNull();
 
     // Étape 4 : localisation
@@ -127,7 +127,7 @@ describe("ProfileForm (assistant)", () => {
           bio: "Ma bio",
           linkedin: "https://lk/moi",
           secteurs: [SECTEURS[0]],
-          sujets: [SUJETS[0]],
+          sujets: [THEMES[0]],
         })}
       />,
     );
@@ -136,7 +136,7 @@ describe("ProfileForm (assistant)", () => {
     await u.click(screen.getByRole("button", { name: /suivant/i }));
     expect(screen.getByRole("checkbox", { name: SECTEURS[0] })).toBeChecked();
     await u.click(screen.getByRole("button", { name: /suivant/i }));
-    expect(screen.getByRole("checkbox", { name: SUJETS[0] })).toBeChecked();
+    expect(screen.getByRole("checkbox", { name: THEMES[0] })).toBeChecked();
   });
 });
 

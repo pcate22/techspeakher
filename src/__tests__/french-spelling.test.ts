@@ -8,7 +8,7 @@ import { landingBenevole, missionsBenevoles } from "@/data/benevole";
 import { codeDeConduite } from "@/data/charte";
 import { aSavoirAdhesion, introAdhesion, landingAdhesion, tarifsAdhesion } from "@/data/adhesion";
 import { verbatims } from "@/data/verbatims";
-import { SECTEURS, SUJETS, REGIONS, LANGUES } from "@/data/domaines";
+import { SECTEURS, THEMES, REGIONS, LANGUES } from "@/data/domaines";
 import {
   MOISSONNEUR_TITRE,
   MOISSONNEUR_INTRO,
@@ -149,7 +149,7 @@ function collectAllTexts(): { source: string; text: string }[] {
     for (const text of chainesDe(valeur)) texts.push({ source, text });
   }
   // Taxonomies : libellés affichés au profil, en filtres et sur les fiches.
-  for (const v of [...SECTEURS, ...SUJETS, ...REGIONS, ...LANGUES]) {
+  for (const v of [...SECTEURS, ...THEMES, ...REGIONS, ...LANGUES]) {
     texts.push({ source: `taxonomie: ${v}`, text: v });
   }
   // Moissonneur : explication affichée dans les pages internes.

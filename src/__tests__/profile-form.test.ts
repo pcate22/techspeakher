@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { parseProfileForm, normalizeProfileSlug } from "@/lib/profile-form";
-import { SECTEURS, SUJETS } from "@/data/domaines";
+import { SECTEURS, THEMES } from "@/data/domaines";
 
 function fd(
   fields: Record<string, string>,
@@ -26,7 +26,7 @@ describe("parseProfileForm", () => {
           linkedin: "https://www.linkedin.com/in/moi",
           instagram: "",
         },
-        { secteurs: [SECTEURS[0]], sujets: [SUJETS[0], SUJETS[3]] },
+        { secteurs: [SECTEURS[0]], sujets: [THEMES[0], THEMES[3]] },
       ),
     );
     expect(res.ok).toBe(true);
@@ -35,7 +35,7 @@ describe("parseProfileForm", () => {
       expect(res.data.poste).toBe("Dev");
       expect(res.data.instagram).toBeNull();
       expect(res.data.secteurs).toEqual([SECTEURS[0]]);
-      expect(res.data.sujets).toEqual([SUJETS[0], SUJETS[3]]);
+      expect(res.data.sujets).toEqual([THEMES[0], THEMES[3]]);
     }
   });
 

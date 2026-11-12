@@ -14,7 +14,7 @@ import VilleField from "./VilleField";
 import type { SpeakerProfile } from "@/lib/profiles";
 import {
   SECTEURS,
-  SUJETS,
+  THEMES,
   REGIONS,
   LANGUES,
   REGIONS_METROPOLE,
@@ -243,7 +243,7 @@ export function ChampsSujets({ initial }: { initial: SpeakerProfile | null }) {
       name="sujets"
       legend="Sujets / métiers"
       hint="tes thèmes tech"
-      options={SUJETS}
+      options={THEMES}
       defaultSelected={initial?.sujets}
     />
   );
