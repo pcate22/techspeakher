@@ -25,8 +25,8 @@ import { categorieDuTheme } from "@/data/domaines";
 /** Catégories de filtres, affichées par groupes (pas une rangée à plat). */
 const FILTER_GROUPS: { label: string; get: (p: PublicSpeaker) => string[] }[] = [
   { label: "Secteurs", get: (p) => p.secteurs },
-  // On filtre par CATÉGORIE (« Design ») : vingt-huit sous-catégories en
-  // puces noieraient le volet, et la catégorie se déduit du thème stocké.
+  // On filtre par catégorie (« Design ») : les sous-catégories en puces
+  // noieraient le volet, et la catégorie se déduit du thème stocké.
   { label: "Thèmes", get: (p) => categoriesDesThemes(p.sujets) },
   { label: "Zones", get: (p) => p.regions },
   { label: "Langues", get: (p) => p.langues },

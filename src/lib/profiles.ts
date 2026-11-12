@@ -1049,23 +1049,23 @@ export async function publierFiche(
   statut: "publie" | "en_attente",
   data: { nom: string; sujets: string[]; slug: string | null },
 ): Promise<boolean> {
-  // Fiche et nom du compte dans UNE transaction : le nom ne change que si la
+  // Fiche et nom du compte dans une seule transaction : le nom ne change que si la
   // fiche est bien créée.
   return withTransaction(async (q) => {
-  const { rowCount } = await q.query(
-    `INSERT INTO speaker_profiles
-       ("userId", sujets, slug, contact_email_ok, is_woman, status,
-        published_at, submitted_at, updated_at)
-     VALUES ($1, $2, $3, true, true, $4::text,
-        CASE WHEN $4::text = 'publie' THEN now() END,
-        CASE WHEN $4::text = 'en_attente' THEN now() END,
-        now())
-     ON CONFLICT ("userId") DO NOTHING`,
-    [userId, data.sujets, data.slug, statut],
-  );
-  if (!rowCount) return false;
-  await q.query(`UPDATE users SET name = $2 WHERE id = $1`, [userId, data.nom]);
-  return true;
+    const { rowCount } = await q.query(
+      `INSERT INTO speaker_profiles
+         ("userId", sujets, slug, contact_email_ok, is_woman, status,
+          published_at, submitted_at, updated_at)
+       VALUES ($1, $2, $3, true, true, $4::text,
+          CASE WHEN $4::text = 'publie' THEN now() END,
+          CASE WHEN $4::text = 'en_attente' THEN now() END,
+          now())
+       ON CONFLICT ("userId") DO NOTHING`,
+      [userId, data.sujets, data.slug, statut],
+    );
+    if (!rowCount) return false;
+    await q.query(`UPDATE users SET name = $2 WHERE id = $1`, [userId, data.nom]);
+    return true;
   });
 }
 

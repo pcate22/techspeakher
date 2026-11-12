@@ -237,16 +237,18 @@ export function ChampsSecteurs({ initial }: { initial: SpeakerProfile | null }) 
   );
 }
 
+const LEGENDE_THEMES_ID = "legende-themes";
+
 export function ChampsSujets({ initial }: { initial: SpeakerProfile | null }) {
   return (
     <fieldset>
-      <legend id="legende-themes" className={labelClass}>
+      <legend id={LEGENDE_THEMES_ID} className={labelClass}>
         Tes thèmes
       </legend>
       <ChoixThemes
         name="sujets"
         initial={initial?.sujets ?? []}
-        legendId="legende-themes"
+        legendId={LEGENDE_THEMES_ID}
       />
     </fieldset>
   );

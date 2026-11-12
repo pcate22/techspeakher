@@ -114,63 +114,63 @@ export default function TalkForm({
       )}
 
       {!express && (
-      <div>
-        <label htmlFor="talk-type" className={labelClass}>
-          Type
-        </label>
-        <select
-          id="talk-type"
-          name="type"
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-          className={inputClass}
-        >
-          {TALK_TYPES.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
-        {isProposal && (
-          <p className="text-xs text-cyan mt-1.5">
-            Un sujet que tu aimerais présenter, encore à donner. Décris-le
-            ci-dessous, la communauté pourra t&apos;aider à te lancer&nbsp;!
-          </p>
-        )}
-      </div>
+        <div>
+          <label htmlFor="talk-type" className={labelClass}>
+            Type
+          </label>
+          <select
+            id="talk-type"
+            name="type"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            className={inputClass}
+          >
+            {TALK_TYPES.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+          {isProposal && (
+            <p className="text-xs text-cyan mt-1.5">
+              Un sujet que tu aimerais présenter, encore à donner. Décris-le
+              ci-dessous, la communauté pourra t&apos;aider à te lancer&nbsp;!
+            </p>
+          )}
+        </div>
       )}
 
       {!express && (
-      <div>
-        <label htmlFor="talk-description" className={labelClass}>
-          Description
-        </label>
-        <textarea
-          id="talk-description"
-          name="description"
-          rows={6}
-          maxLength={DESCRIPTION_MAX}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          aria-invalid={state.errors?.description ? true : undefined}
-          aria-describedby={
-            state.errors?.description ? "err-description" : "hint-description"
-          }
-          className={`${inputClass} leading-relaxed`}
-        />
-        {/* Compteur vivant plutôt qu'une limite figée : `maxLength` tronque la
-            frappe en silence, on montre donc où on en est. Pas de région live
-            (ce serait bavard à chaque touche) : l'indice reste lu à la prise de
-            focus via aria-describedby. */}
-        <p id="hint-description" className="text-xs text-gray-light mt-1">
-          {description.length} / {DESCRIPTION_MAX} caractères
-        </p>
-        {state.errors?.description && (
-          <p id="err-description" role="alert" className={errorClass}>
-            {state.errors.description}
+        <div>
+          <label htmlFor="talk-description" className={labelClass}>
+            Description
+          </label>
+          <textarea
+            id="talk-description"
+            name="description"
+            rows={6}
+            maxLength={DESCRIPTION_MAX}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            aria-invalid={state.errors?.description ? true : undefined}
+            aria-describedby={
+              state.errors?.description ? "err-description" : "hint-description"
+            }
+            className={`${inputClass} leading-relaxed`}
+          />
+          {/* Compteur vivant plutôt qu'une limite figée : `maxLength` tronque la
+              frappe en silence, on montre donc où on en est. Pas de région live
+              (ce serait bavard à chaque touche) : l'indice reste lu à la prise de
+              focus via aria-describedby. */}
+          <p id="hint-description" className="text-xs text-gray-light mt-1">
+            {description.length} / {DESCRIPTION_MAX} caractères
           </p>
-        )}
-      </div>
+          {state.errors?.description && (
+            <p id="err-description" role="alert" className={errorClass}>
+              {state.errors.description}
+            </p>
+          )}
+        </div>
       )}
 
       {/* CTA principal de la page : taille `md` (py-3 → 48 px, au-dessus des

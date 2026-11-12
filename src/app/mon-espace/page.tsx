@@ -44,7 +44,7 @@ const MESSAGE_OK: Record<string, string> = {
  * L'ACCUEIL CONNECTÉ = LE FIL, PUR (conception v2 §4, lot N2 — maquette
  * v5.1 validée le 2026-08-07) : ce qui se passe chez nous, et l'envie qui va
  * avec. L'incitation passe PAR L'EXEMPLE (« Léa · sur scène »), jamais par
- * des injonctions — ZÉRO carte personnelle : le perso vit sur « Mon profil »
+ * des injonctions — aucune carte personnelle : le perso vit sur « Mon profil »
  * (marche, accès) et sur « Ma fiche publique » (complétude, soumission) ;
  * la redistribution du hub est tracée dans conception-lot-n2-fil.md §4.
  * Seule exception : « Pour aller plus loin », juste après une publication ou
