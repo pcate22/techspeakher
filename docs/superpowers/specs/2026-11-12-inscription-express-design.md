@@ -1,6 +1,6 @@
 # Inscription express à l'annuaire : design
 
-Statut : à relire par Cateline (2026-11-12). Maquettes : https://claude.ai/artifact/WnaUodkdb9pwaMTvyntdsm (lien privé).
+Statut : livré sur la branche `claude/simplify-speaker-directory-328845` (2026-11-12), en attente de revue avant PR. Deux écarts tranchés pendant le plan, notés plus bas (relecture et contact). Maquettes : https://claude.ai/artifact/WnaUodkdb9pwaMTvyntdsm (lien privé).
 
 ## Pourquoi
 
@@ -23,8 +23,8 @@ Principes tirés des sources de la page Notion « Profils autistes et accessibil
 | Mots libres | Aucun : ce sont les talks qui affinent |
 | Secteurs | Facultatifs, sur leur page de la fiche |
 | Attestation | Phrase sous le bouton « Publier ma fiche » ; le clic pose `is_woman = true` côté serveur |
-| Contact | Le clic sur « Publier ma fiche » vaut accord pour être contactée par le site (`contact_email_ok = true`) ; phrase sous le bouton : « Les organisateurs pourront t'écrire par le site, ton e-mail reste caché. » |
-| Publication | Immédiate si aucun texte écrit à la main ; relecture orga sinon |
+| Contact | Confirmé par Cateline le 2026-11-12 (« Oui, au clic »). Le clic sur « Publier ma fiche » vaut accord pour être contactée par le site (`contact_email_ok = true`) ; phrase sous le bouton : « Les organisateurs pourront t'écrire par le site, ton e-mail reste caché. » |
+| Publication | Immédiate si aucun texte écrit à la main ; relecture orga sinon. Cette règle vaut pour la **première** publication seulement (voir « Écarts tranchés ») |
 | Le nom | Compte comme texte écrit à la main, sauf s'il vient tel quel de Google ou LinkedIn |
 | Titre de talk | 300 caractères (au lieu de 200), champ qui s'agrandit avec le texte |
 | Import de talks | Hors du parcours principal (Sessionize et autres bloquent en 403) ; lien discret « Importer » |
@@ -75,10 +75,15 @@ Routage : une connectée sans fiche qui arrive sur `/mon-espace` est envoyée ve
 ## Composants et fonctions
 
 - **`ChoixThemes`** (client) : catégories en boutons `aria-expanded` + `aria-controls`, thèmes en vraies cases à cocher stylées en pastilles, récapitulatif en `aria-live="polite"`, `fieldset`/`legend` par catégorie, `focus-visible` partout.
-- **`doitEtreRelue(avant, apres, nomCompte)`** (`src/lib/`, pure) : vrai dès qu'un champ libre change (nom, titre de profil, poste, entreprise, présentation, titre ou description de talk), sauf un nom égal au nom du compte OAuth. Les listes (thèmes, secteurs, régions, langues) et la photo ne déclenchent rien.
+- **`doitEtreRelue(nomSaisi, nomCompte)`** (`src/lib/relecture.ts`, pure) : vrai si le nom saisi diffère du nom du compte, ou si le compte n'a pas de nom. Elle ne juge que la première publication (voir « Écarts tranchés »).
 - **Server Action `publierFicheExpress`** : identité depuis la session, validation Zod (nom requis, au moins un thème, thèmes dans la liste), pose `is_woman = true`, puis publie ou met en relecture selon `doitEtreRelue`. Le client ne transmet jamais la décision.
-- **Talk** : `TITRE_MAX` passe à 300 dans `src/lib/talk-limits.ts` (colonne `TEXT`, pas de migration). Si on crée un talk, ou si on change son titre ou sa description, la fiche passe en relecture.
+- **Talk** : `TITRE_MAX` passe à 300 dans `src/lib/talk-limits.ts` (colonne `TEXT`, pas de migration). Créer un talk ou changer son texte ne dépublie pas une fiche déjà en ligne.
 - **Annuaire** : les filtres « Sujets » deviennent « Thèmes » par catégorie ; filtrer « Design » trouve toute fiche ayant une sous-catégorie Design.
+
+## Écarts tranchés
+
+- **Relecture à la première publication seulement.** Une fiche publiée qui change reste visible (`upsertProfile`, `src/lib/profiles.ts`), et la modification se repère par `updated_at` plus récent que `validated_at`. On garde ce comportement : `doitEtreRelue` ne décide qu'au clic sur « Publier ma fiche ». La version initiale de cette spec prévoyait une relecture à chaque texte modifié ou talk créé ; elle est abandonnée.
+- **Contact au clic.** Le clic sur « Publier ma fiche » pose `contact_email_ok = true`, avec la phrase sous le bouton. Cateline l'a confirmé le 2026-11-12.
 
 ## Données
 
@@ -94,7 +99,7 @@ Routage : une connectée sans fiche qui arrive sur `/mon-espace` est envoyée ve
 
 ## Tests
 
-- Vitest : `doitEtreRelue` (chaque champ libre, chaque liste, nom OAuth inchangé ou modifié) ; correspondance des sujets (chaque ancien sujet a une destination, pas de doublon) ; unicité des sous-catégories ; `publierFicheExpress` (refus sans session, refus sans thème, attestation posée, relecture décidée côté serveur) ; `ChoixThemes` (compteurs, récapitulatif, clavier).
+- Vitest : `doitEtreRelue` (nom du compte inchangé, modifié ou absent) ; correspondance des sujets (chaque ancien sujet a une destination, pas de doublon) ; unicité des sous-catégories ; `publierFicheExpress` (refus sans session, refus sans thème, attestation posée, relecture décidée côté serveur) ; `ChoixThemes` (compteurs, récapitulatif, clavier).
 - Playwright (`npm run e2e:db`) : inscription complète en 2 écrans avec un compte jetable ; talk créé avec son titre seul ; fiche visible ou en relecture selon le cas.
 - Chaque garde est cassée une fois pour vérifier que son test tombe (`docs/principes-tests.md`).
 

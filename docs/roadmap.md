@@ -4,7 +4,8 @@
 > la dette technique : `docs/dette-technique.md`. Pour l'étude d'import des
 > talks : `docs/faisabilite-import-talks.md`.
 >
-> Dernière mise à jour : **2026-11-04** (section « Header Nous rejoindre,
+> Dernière mise à jour : **2026-11-12** (section « Inscription express à
+> l'annuaire » seule) ; **2026-11-04** (section « Header Nous rejoindre,
 > page bénévole » seule : conditions des coachs et du jury) ; **2026-10-16**
 > (section « Reprise humaine du code » seule) ; **2026-10-15** (sections « Navigation connectée »,
 > « Chantiers repris des PR fermées », « Adhésions HelloAsso », « Partenaires
@@ -16,7 +17,8 @@
 > ce fichier est la première chose que lit la session suivante.
 >
 > **Chantiers ouverts, chacun avec son état daté ci-dessous** (décompte à
-> vérifier au 2026-10-16 : les sections du 15/10 n'y figurent pas) : la reprise
+> vérifier au 2026-10-16 : les sections du 15/10 n'y figurent pas) :
+> l'inscription express à l'annuaire (en revue avant PR le 12/11), la reprise
 > humaine du code (porte d'entrée en PR le 16/10, le reste reporté),
 > l'import et l'annuaire (le détecteur d'id Sessionize est livré depuis le 21/08 ; restent la
 > ligne de dette `.invalid` et l'écoute d'un profil Notist), l'agenda public
@@ -25,6 +27,39 @@
 > déclenché. Aucune passation ne s'empile sur une autre : `CLAUDE.md` §Clore
 > une session. La **licence** est tranchée le 23/08 : voir la section dédiée
 > ci-dessous, qui ferme la piste « une autre communauté déploie la plateforme ».
+
+## Inscription express à l'annuaire — en revue avant PR le 2026-11-12
+
+Des speakeuses trouvaient la fiche trop longue à remplir : six étapes, dont une
+qui demandait à elle seule titre, poste, entreprise, présentation, ville et cinq
+liens. Conception : `docs/superpowers/specs/2026-11-12-inscription-express-design.md` ;
+plan : `docs/superpowers/plans/2026-11-12-inscription-express.md`.
+
+**Fait sur la branche `claude/simplify-speaker-directory-328845`** (pas encore
+en PR) : deux écrans sur `/mon-espace/bienvenue` (le nom, puis les thèmes en
+sept catégories), et la fiche paraît au clic sur « Publier ma fiche ». Un nom
+retapé part en relecture, le nom du compte publie tout de suite. Le talk se
+crée avec son titre seul (300 caractères). Les anciens sujets sont repris en
+thèmes par la migration 077 ; « Autre » est retiré. Mon espace propose ensuite
+« Pour aller plus loin ». L'annuaire filtre par catégorie. Parcours E2E :
+`e2e/parcours-inscription-express.spec.ts`.
+
+**Tranché le 2026-11-12 par Cateline** : le clic vaut accord pour être
+contactée par le site (e-mail caché). **Tranché dans le plan** : la relecture
+ne juge que la première publication ; une fiche en ligne qui change reste
+visible, comme avant.
+
+**Où reprendre** :
+
+- finir la revue avant PR (quatre passes), puis ouvrir la PR ;
+- **rebase en attente** : si la branche Tremplin Devoxx
+  (`claude/tech-speakher-devoxx-669331`) est fusionnée avant, se rebaser sur
+  `main` et refaire l'union de `docs/dette-technique.md`, `docs/roadmap.md` et
+  `src/__tests__/french-spelling.test.ts` item par item (sa migration porte le
+  numéro 076, la nôtre 077) ;
+- après la fusion, regarder en vrai un titre de talk de 300 caractères dans
+  les cartes et l'image OG, et une fiche héritée sans thème (dette P2,
+  § « Inscription express »).
 
 ## Reprise humaine du code — porte d'entrée en PR le 2026-10-16, le reste reporté
 

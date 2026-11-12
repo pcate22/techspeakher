@@ -1,5 +1,15 @@
 # Dette technique — Tech Speak'Her
 
+> **Session du 2026-11-12 — inscription express à l'annuaire**
+> (`docs/superpowers/specs/2026-11-12-inscription-express-design.md`, migration
+> 077). Aucun P0 touché ; le **3** n'a pas été relu ce jour. Rien de soldé :
+> la course sur le slug à la publication express est traitée dans le geste
+> (un second essai), elle n'était pas en dette. NOUVEAU, en P2 (§ « Inscription
+> express : ce que les revues laissent ») : compteur du titre masqué par
+> l'erreur, récapitulatif des thèmes relu en entier à chaque clic, libellé
+> « Aucun sujet choisi. », titres de 300 caractères jamais vus dans les cartes,
+> l'OG et les e-mails, fiches héritées sans thème bloquées avant « Soumettre ».
+>
 > **Session du 2026-11-04 — conditions des coachs et du jury bénévoles**
 > (`/benevole`, FAQ `/partenaires`). Aucun P0 touché ; le **3** n'a pas été
 > relu ce jour. SOLDÉ en partie dans le geste : le P2 « `french-spelling.test.ts`
@@ -752,6 +762,40 @@ ci-dessous, listées ici pour la traçabilité :
   helper. **Effort : S/M** (refactor sûr, les redirects sont testés).
 
 ## 🟡 P2 — nice-to-have
+
+### Inscription express : ce que les revues laissent (2026-11-12)
+
+Relevés par les revues des tâches du plan
+`docs/superpowers/plans/2026-11-12-inscription-express.md`, laissés hors de la
+PR parce qu'ils touchent un composant partagé ou demandent une vérification à
+l'écran.
+
+- **Titres de talk à 300 caractères jamais vus ailleurs que dans le
+  formulaire.** `TITRE_MAX` est passé de 200 à 300 (`src/lib/talk-limits.ts`).
+  Personne n'a regardé un titre de 300 caractères dans `TalkCard`, l'image OG
+  des pages talk, ni les e-mails qui citent un titre. À vérifier à l'écran,
+  puis tronquer à l'affichage si une mise en page casse. **Effort : S.**
+- **Fiches héritées sans thème : « Soumettre » disparaît.**
+  `raisonBlocageAnnuaire` (`src/lib/profiles.ts`) exige désormais au moins un
+  thème. Un brouillon ancien dont le seul sujet était « Autre » (retiré par la
+  migration 077) perd le bouton jusqu'à ce qu'il choisisse un thème. Mon espace
+  propose « Choisis tes thèmes » en tête, mais l'écran de la fiche ne dit pas
+  encore pourquoi le bouton manque. À vérifier sur une fiche réelle de ce cas.
+  **Effort : XS.**
+- **Le compteur du titre disparaît quand une erreur s'affiche.**
+  `ChampTexte` (`src/components/ChampTexte.tsx`) n'affiche l'indice que sans
+  erreur (`hint && !error`) : sur un titre trop long, la speakeuse perd le
+  compteur au moment où il servirait. Le compteur dit aussi « 12 / 300 » sans
+  le mot « caractères », à la différence de la description. Touche tous les
+  champs qui ont un indice. **Effort : XS.**
+- **Le récapitulatif des thèmes est relu en entier à chaque case.**
+  `ChoixThemes` (`src/app/mon-espace/ChoixThemes.tsx`) porte
+  `aria-live="polite"` sur « Tes thèmes (n) : … » : à dix thèmes, chaque clic
+  fait relire la liste complète. N'annoncer que le thème ajouté ou retiré.
+  **Effort : S.**
+- **« Aucun sujet choisi. » sous le titre « Tes thèmes ».** Le libellé vide de
+  la section (`src/lib/profil-sections.ts`) garde l'ancien mot. À passer à
+  « Aucun thème choisi. ». **Effort : XS.**
 
 ### CI : le job E2E épinglé sur `ubuntu-24.04` (2026-11-04)
 
