@@ -105,7 +105,7 @@ describe("« Ma fiche » — ce que le public lit, avec un crayon par section", 
     const attendus: [RegExp, string][] = [
       [/qui tu es/i, "/mon-espace/fiche/identite"],
       [/tes secteurs/i, "/mon-espace/fiche/secteurs"],
-      [/tes sujets/i, "/mon-espace/fiche/sujets"],
+      [/tes thèmes/i, "/mon-espace/fiche/sujets"],
       [/où tu interviens/i, "/mon-espace/fiche/interventions"],
       [/où te trouver/i, "/mon-espace/fiche/contact"],
       [/ton attestation/i, "/mon-espace/fiche/attestation"],

@@ -7,7 +7,8 @@
 > (un second essai), elle n'était pas en dette. NOUVEAU, en P2 (§ « Inscription
 > express : ce que les revues laissent ») : compteur du titre masqué par
 > l'erreur, récapitulatif des thèmes relu en entier à chaque clic, libellé
-> « Aucun sujet choisi. », titres de 300 caractères jamais vus dans les cartes,
+> « Aucun sujet choisi. », réécriture à vide de deux sujets par la synchro,
+> titres de 300 caractères jamais vus dans les cartes,
 > l'OG et les e-mails, fiches héritées sans thème bloquées avant « Soumettre ».
 >
 > **Session du 2026-11-04 — conditions des coachs et du jury bénévoles**
@@ -793,6 +794,12 @@ l'écran.
   `aria-live="polite"` sur « Tes thèmes (n) : … » : à dix thèmes, chaque clic
   fait relire la liste complète. N'annoncer que le thème ajouté ou retiré.
   **Effort : S.**
+- **La reprise des sujets réécrit pour rien les fiches « Mobile » et
+  « Cybersécurité ».** Dans `db/sync-to-latest.sql`, ces deux libellés gardent
+  le même nom en thème, donc le `WHERE sujets && ARRAY[…]` les reprend à chaque
+  passage et l'`UPDATE` réécrit la ligne à l'identique. Sans effet visible
+  (aucun déclencheur sur `updated_at`), seulement des écritures inutiles. Les retirer de la liste du
+  `WHERE`. **Effort : XS.**
 - **« Aucun sujet choisi. » sous le titre « Tes thèmes ».** Le libellé vide de
   la section (`src/lib/profil-sections.ts`) garde l'ancien mot. À passer à
   « Aucun thème choisi. ». **Effort : XS.**

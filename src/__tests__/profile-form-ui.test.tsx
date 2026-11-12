@@ -44,7 +44,9 @@ describe("ProfileForm (assistant)", () => {
     expect(screen.queryByRole("checkbox", { name: THEMES[0] })).toBeNull();
 
     // Étape 3 : sujets SEULS
+    // Les thèmes vivent dans des catégories fermées : on ouvre la première.
     await u.click(screen.getByRole("button", { name: /suivant/i }));
+    await u.click(screen.getByRole("button", { name: /^Développement/ }));
     expect(screen.getByRole("checkbox", { name: THEMES[0] })).toBeInTheDocument();
     expect(screen.queryByRole("checkbox", { name: SECTEURS[0] })).toBeNull();
 
@@ -136,6 +138,8 @@ describe("ProfileForm (assistant)", () => {
     await u.click(screen.getByRole("button", { name: /suivant/i }));
     expect(screen.getByRole("checkbox", { name: SECTEURS[0] })).toBeChecked();
     await u.click(screen.getByRole("button", { name: /suivant/i }));
+    // La catégorie fermée annonce déjà le thème coché, la case le confirme une fois ouverte.
+    await u.click(screen.getByRole("button", { name: "Développement, 1 thème coché" }));
     expect(screen.getByRole("checkbox", { name: THEMES[0] })).toBeChecked();
   });
 });

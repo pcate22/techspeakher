@@ -277,7 +277,7 @@ Le `noindex` plutôt qu'un `503` est une contrainte assumée : une page App Rout
 ne peut renvoyer que 404 ou 307/308. Il empêche un incident d'une heure de se
 graver dans l'index, sans priver la visiteuse d'une page lisible.
 
-### 4.2 Membre connectée — **23 pages, ~28 actions, 0 test E2E**
+### 4.2 Membre connectée — **23 pages, ~28 actions** (0 test E2E au moment de l'audit ; couverture actuelle dans le tableau)
 
 | # | Parcours | Statut |
 |---|---|---|
@@ -692,8 +692,13 @@ la fiche `publie` en base ; puis « Ajoute un talk », le titre seul,
 envoyée… » et la fiche `en_attente`. Le statut se décide côté serveur à partir
 du nom lu en base, d'où les deux cas joués ici et pas seulement en unitaire.
 
+On juge sur le message et jamais sur `?ok=` : le bandeau de confirmation
+retire le paramètre de l'URL dès l'hydratation. Chaque test vérifie aussi que
+l'autre message est absent.
+
 **Cassé une fois** : `doitEtreRelue` forcée à `false`
-(`src/lib/relecture.ts`), le second test tombe sur l'URL attendue.
+(`src/lib/relecture.ts`), le second test tombe sur « Ta fiche est envoyée. »
+introuvable.
 
 **Instrument** : les cases de thème sont contrôlées par React, et
 `locator.check()` relisait l'état avant le rendu qui la coche (« Clicking the

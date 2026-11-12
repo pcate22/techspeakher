@@ -17,6 +17,9 @@ import {
  * décision se prend côté serveur, à partir du nom lu en base : aucun test
  * unitaire ne voit le formulaire, l'action et la redirection ensemble.
  *
+ * On juge sur le message, pas sur `?ok=` : le bandeau de confirmation retire
+ * ce paramètre de l'URL dès l'hydratation, et l'attendre serait une course.
+ *
  * Chaque test a son compte jetable, créé sans fiche (`fiche: "aucune"`).
  */
 
@@ -90,8 +93,9 @@ test("nom du compte gardé : la fiche est en ligne, puis un talk avec son titre 
 
   await remplirBienvenue(page, "Inès Express");
 
-  await expect(page).toHaveURL(/\/mon-espace\?ok=fiche_publiee$/);
+  await expect(page).toHaveURL(/\/mon-espace(\?|$)/);
   await expect(page.getByText("Ta fiche est en ligne.")).toBeVisible();
+  await expect(page.getByText("Ta fiche est envoyée.", { exact: false })).toHaveCount(0);
   const fiche = await ficheEnBase(jetable.userId);
   expect(fiche?.status).toBe("publie");
   expect([...(fiche?.sujets ?? [])].sort()).toEqual(["Accessibilité", "Back-end"]);
@@ -102,7 +106,7 @@ test("nom du compte gardé : la fiche est en ligne, puis un talk avec son titre 
   await page.getByRole("button", { name: "Enregistrer" }).click();
 
   await expect(page).toHaveURL(/\/mon-espace\/talks\/\d+$/);
-  await expect(page.getByText("Mon premier talk express").first()).toBeVisible();
+  await expect(page.getByLabel("Titre du talk")).toHaveValue("Mon premier talk express");
 });
 
 test("nom retapé : la fiche part en relecture", async ({ page, context }) => {
@@ -111,7 +115,8 @@ test("nom retapé : la fiche part en relecture", async ({ page, context }) => {
 
   await remplirBienvenue(page, "Jeanne Scène");
 
-  await expect(page).toHaveURL(/\/mon-espace\?ok=fiche_envoyee$/);
+  await expect(page).toHaveURL(/\/mon-espace(\?|$)/);
   await expect(page.getByText("Ta fiche est envoyée.", { exact: false })).toBeVisible();
+  await expect(page.getByText("Ta fiche est en ligne.")).toHaveCount(0);
   expect((await ficheEnBase(jetable.userId))?.status).toBe("en_attente");
 });
