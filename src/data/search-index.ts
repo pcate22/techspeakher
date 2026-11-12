@@ -1,4 +1,4 @@
-import { faq, editionEditoriale } from "@/data/tremplin";
+import { editorialDe, editionEditoriale } from "@/data/tremplin";
 import { CATEGORIES } from "@/data/categories-contenus";
 import { foldRecherche } from "@/lib/normalise-recherche";
 
@@ -69,7 +69,8 @@ export const searchIndex: SearchItem[] = dedupeSearchItems([
   // Pages statiques
   { title: "Accueil", description: "Tech Speak'Her, communauté de femmes de la tech toulousaine", url: "/", category: "Page" },
   { title: "À propos", description: "Notre mission, nos valeurs, qui on est", url: "/a-propos", category: "Page" },
-  { title: "Tremplin DevFest 2026", description: "Programme, inscriptions, prix, FAQ du Tremplin", url: "/tremplin", category: "Page" },
+  { title: "Le Tremplin", description: "Le programme qui accompagne les femmes de la tech jusqu'à leur premier talk en conférence", url: "/tremplin", category: "Page" },
+  { title: "Tremplin Devoxx France 2027", description: "Candidatures, ateliers, soirée finale à Paris et conférence au Devoxx France pour la gagnante", url: "/tremplin/devoxx-france/2027", category: "Page" },
   {
     title: "Montée sur scène 2026",
     description:
@@ -96,7 +97,7 @@ export const searchIndex: SearchItem[] = dedupeSearchItems([
   // que sur la page de celle-ci (le lien pointait /tremplin#faq, une ancre
   // absente ; dette P1). Dérivée d'`editionEditoriale` : le jour où
   // l'éditorial déménage, ce lien suit tout seul.
-  ...faq.map((f) => ({
+  ...(editorialDe(editionEditoriale.confSlug, editionEditoriale.annee)?.faq ?? []).map((f) => ({
     title: f.q,
     description: f.a,
     url: `/tremplin/${editionEditoriale.confSlug}/${editionEditoriale.annee}#faq`,

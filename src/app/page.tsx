@@ -19,16 +19,18 @@ import {
 import { getNouvellesVenues, type NouvelleVenue } from "@/lib/fil-communaute";
 import CarteNouvelleVenue from "@/components/CarteNouvelleVenue";
 import { aujourdhuiParis } from "@/lib/tremplin-statut";
+import { editorialDe, editionEditoriale } from "@/data/tremplin";
 
 export const metadata: Metadata = {
   title: "Tech Speak'Her | Une communauté de femmes de la tech pour oser passer de la salle à la scène",
   description:
-    "Tech Speak'Her est une communauté toulousaine de femmes dans la tech. Meetups, conférences, talks, Tremplin DevFest Toulouse 2026. Rejoignez-nous pour oser prendre la parole\u00A0!",
+    "Tech Speak'Her est une communauté toulousaine de femmes dans la tech. Meetups, conférences, talks, et le Tremplin avec Devoxx France. Rejoignez-nous pour oser prendre la parole\u00A0!",
   keywords: [
     "Tech Speak'Her",
     "femmes tech Toulouse",
     "speakeuses conférences",
     "DevFest Toulouse",
+    "Devoxx France",
     "GDG Toulouse",
     "women in tech",
     "meetup tech Toulouse",
@@ -41,7 +43,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Tech Speak'Her | De la salle à la scène",
     description:
-      "Une communauté de femmes de la tech pour oser passer de la salle à la scène. Meetups, conférences, talks et Tremplin DevFest Toulouse.",
+      "Une communauté de femmes de la tech pour oser passer de la salle à la scène. Meetups, conférences, talks et le Tremplin avec Devoxx France.",
     type: "website",
   },
 };
@@ -101,6 +103,8 @@ export default async function Home() {
     aujourdhui,
     3,
   );
+
+  const tremplin = editorialDe(editionEditoriale.confSlug, editionEditoriale.annee);
 
   const stats = [
     {
@@ -242,6 +246,25 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Le Tremplin en cours, juste après celles qui l'ont vécu : la preuve,
+          puis l'invitation. Le titre et l'accroche suivent l'édition éditoriale
+          en cours (`src/data/tremplin.ts`) : ouvrir une édition met l'accueil
+          à jour sans retoucher cette page. */}
+      {tremplin && (
+        <section className="py-16 px-4 bg-navy-light" aria-labelledby="tremplin-cta-title">
+          <div className="max-w-4xl mx-auto bg-gradient-to-r from-magenta/10 to-cyan/10 border border-navy-lighter rounded-2xl p-8 sm:p-12 text-center">
+            <p className="text-xs font-bold text-gold uppercase tracking-wider mb-3">Le Tremplin</p>
+            <h2 id="tremplin-cta-title" className="text-2xl sm:text-3xl font-bold mb-4">
+              Ton premier talk au {editionEditoriale.confNom} {editionEditoriale.annee}&nbsp;?
+            </h2>
+            <p className="text-gray-light mb-6 max-w-2xl mx-auto">{tremplin.accroche}</p>
+            <Button href={`/tremplin/${editionEditoriale.confSlug}/${editionEditoriale.annee}`}>
+              Découvrir le Tremplin {editionEditoriale.annee}
+            </Button>
+          </div>
+        </section>
+      )}
+
       {/* Bientôt en scène — un bloc VIVANT de la home : il vient des fiches
           des speakeuses, pas d'un contenu rédigé. Placé juste après les chiffres,
           il les prouve : « 12 speakeuses » devient « et voilà où elles parlent ».
@@ -357,26 +380,6 @@ export default async function Home() {
           </div>
         </section>
       )}
-      <section className="py-16 px-4 bg-navy-light" aria-labelledby="tremplin-cta-title">
-        <div className="max-w-4xl mx-auto bg-gradient-to-r from-magenta/10 to-cyan/10 border border-navy-lighter rounded-2xl p-8 sm:p-12 text-center">
-          <h2 id="tremplin-cta-title" className="text-2xl sm:text-3xl font-bold mb-4">
-            Tremplin Tech Speak&apos;Her x DevFest Toulouse 2026
-          </h2>
-          <p className="text-gray-light mb-6 max-w-2xl mx-auto">
-            Vous rêvez de donner votre premier talk en conférence&nbsp;? Le Tremplin
-            vous accompagne du pitch à la scène du DevFest Toulouse&nbsp;!
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button href="/tremplin">
-              Découvrir le Tremplin
-            </Button>
-            <Button href="/devfest-toulouse" variant="secondary">
-              C&apos;est quoi le DevFest Toulouse&nbsp;?
-            </Button>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Organisateurs */}
       <section className="py-16 px-4 bg-navy-light" aria-labelledby="orga-title">
         <div className="max-w-4xl mx-auto text-center">

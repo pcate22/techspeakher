@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { allActualites, behindTheScenes } from "@/data/actualites";
 import { COULEURS_TAG } from "@/components/TagBadge";
 import { CATEGORIES, TAGS } from "@/lib/contenu-form";
-import { prix, faq, accompagnement, jury } from "@/data/tremplin";
+import { prix, faq, accompagnement, jury, tousLesEditoriaux } from "@/data/tremplin";
 import { TREMPLIN1_PARTICIPANTES, TREMPLIN1_RESULTATS } from "@/lib/tremplin-seed";
 import { SOIREE_TREMPLIN_URL } from "@/constants/site";
 import { pourquoi, partenaires, typesSoutien } from "@/data/partenaires";
@@ -206,7 +206,7 @@ describe("Sécurité", () => {
       allTexts.push({ source: `actualites: ${a.title}`, text: a.description });
       if (a.externalLinkLabel) allTexts.push({ source: `actualites: ${a.title}`, text: a.externalLinkLabel });
     }
-    for (const f of faq) {
+    for (const f of tousLesEditoriaux.flatMap((ed) => ed.faq)) {
       allTexts.push({ source: `FAQ: ${f.q}`, text: f.q });
       allTexts.push({ source: `FAQ: ${f.q}`, text: f.a });
     }

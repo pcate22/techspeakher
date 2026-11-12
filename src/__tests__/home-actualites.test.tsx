@@ -161,3 +161,17 @@ describe("Home — plus d'encart Behind the Scenes codé en dur", () => {
     expect(screen.queryByRole("link", { name: /lire l'interview complète/i })).toBeNull();
   });
 });
+
+describe("home — le Tremplin en cours", () => {
+  it("annonce l'édition éditoriale en cours et mène à sa page, sans le DevFest 2026", async () => {
+    vi.mocked(listPublicationsRecentes).mockResolvedValue([]);
+    render(await Home());
+    const bloc = screen.getByRole("region", { name: /premier talk au Devoxx France 2027/i });
+    expect(within(bloc).getByRole("link", { name: /découvrir le tremplin 2027/i })).toHaveAttribute(
+      "href",
+      "/tremplin/devoxx-france/2027",
+    );
+    expect(bloc.textContent).toMatch(/19 janvier 2027/);
+    expect(screen.queryByText(/DevFest Toulouse 2026/)).toBeNull();
+  });
+});

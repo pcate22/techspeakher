@@ -121,6 +121,39 @@ export interface Partenaire {
   pending?: boolean;
 }
 
+/** Une condition pour candidater, avec son lien interne éventuel. */
+export interface ConditionCandidature {
+  texte: string;
+  lien?: { href: string; label: string };
+}
+
+/** Ce qu'il faut pour candidater à une édition : le formulaire et les règles. */
+export interface Candidature {
+  formUrl: string;
+  /** Date limite, déjà rédigée (« 30 novembre 2026 »). */
+  dateLimite: string;
+  conditions: ConditionCandidature[];
+}
+
+/**
+ * Le texte éditorial d'UNE édition du Tremplin : ce que la base ne porte pas
+ * (FAQ, lots à gagner, jury nommé, partenaires remerciés, promesses faites à
+ * toutes). Il est daté : il ne s'affiche que sur la page de son édition.
+ */
+export interface EditorialEdition {
+  faq: FAQ[];
+  prix: Prix[];
+  jury: Jure[];
+  partenaires: Partenaire[];
+  retoursPourTous: string[];
+  /** Une phrase pour la vitrine `/tremplin` : la preuve, ou ce qui attend. */
+  accroche: string;
+  /** La vitrine renvoie vers la galerie des finalistes (édition passée). */
+  lienFinalistes?: boolean;
+  /** Présente tant que l'édition recrute. */
+  candidature?: Candidature;
+}
+
 /** Une structure partenaire : qui elle est. CE QU'ELLE FAIT pour nous vit
  * dans `typesSoutien` (src/data/partenaires.ts), une ligne par façon d'aider. */
 export interface StructurePartenaire {

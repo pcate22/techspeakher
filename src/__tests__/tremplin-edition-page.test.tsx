@@ -1,7 +1,6 @@
 import { describe, it, expect, afterEach, vi } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import type { PublicEdition, PublicRecompense } from "@/lib/tremplin-public";
-import { editionEditoriale } from "@/data/tremplin";
 
 /**
  * Rend la page d'édition publique avec un DTO mocké pour couvrir la logique de
@@ -348,21 +347,21 @@ describe("page d'édition — une année sans Tremplin n'affiche pas son règlem
  */
 describe("page d'édition — la FAQ appartient à l'édition qu'elle décrit", () => {
   it("sur son année : la FAQ est là, et le schéma FAQPage avec", async () => {
-    await renderPage({ ...base, annee: editionEditoriale.annee });
+    await renderPage({ ...base, annee: 2026 });
 
     expect(screen.getByRole("heading", { name: "FAQ" })).toBeTruthy();
     expect(document.body.innerHTML).toContain("FAQPage");
   });
 
   it("sur une autre année : ni la FAQ, ni son schéma", async () => {
-    await renderPage({ ...base, annee: editionEditoriale.annee - 1 });
+    await renderPage({ ...base, annee: 2025 });
 
     expect(screen.queryByRole("heading", { name: "FAQ" })).toBeNull();
     expect(document.body.innerHTML).not.toContain("FAQPage");
   });
 
   it("et la sortie de page survit : code de conduite et retour aux éditions restent", async () => {
-    await renderPage({ ...base, annee: editionEditoriale.annee - 1 });
+    await renderPage({ ...base, annee: 2025 });
 
     expect(screen.getByRole("link", { name: /code de conduite/i })).toBeTruthy();
     expect(screen.getByRole("link", { name: /Toutes les éditions/i })).toBeTruthy();

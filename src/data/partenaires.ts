@@ -15,6 +15,7 @@ export const partenaires: StructurePartenaire[] = [
   { name: "Flupa Toulouse", url: "https://flupa.eu/" },
   { name: "Agile Toulouse", url: "https://www.agiletoulouse.fr/" },
   { name: "DevFest Toulouse", pageInterne: "/devfest-toulouse" },
+  { name: "Devoxx France", url: "https://www.devoxx.fr/" },
   { name: "La Mêlée", url: "https://lamelee.com/" },
   { name: "Digital 113", url: "https://www.digital113.fr/" },
   { name: "Numeum", url: "https://numeum.fr/" },
@@ -69,6 +70,7 @@ export const typesSoutien: TypeSoutien[] = [
     aide: "Vous organisez un événement et réservez une place à nos speakeuses dans le programme.",
     membres: [
       { nom: "DevFest Toulouse", role: "Accueille le talk de la gagnante du Tremplin dans la salle des communautés, en novembre." },
+      { nom: "Devoxx France", role: "Accueille le talk de la gagnante du Tremplin 2027 au Devoxx France, du 7 au 9\u00A0avril 2027 à Paris." },
       { nom: "La Mêlée", role: "Nous a invitées à participer à La Mêlée Numérique, son événement annuel." },
     ],
   },

@@ -1,7 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { searchIndex, dedupeSearchItems, type SearchItem } from "@/data/search-index";
 import { CATEGORIES } from "@/data/categories-contenus";
-import { faq, editionEditoriale } from "@/data/tremplin";
+import { editorialDe, editionEditoriale } from "@/data/tremplin";
+
+const faq = editorialDe(editionEditoriale.confSlug, editionEditoriale.annee)?.faq ?? [];
 import { foldRecherche } from "@/lib/normalise-recherche";
 
 /** Clé d'identité affichée d'un item (ce qui fait qu'on le perçoit en doublon).
