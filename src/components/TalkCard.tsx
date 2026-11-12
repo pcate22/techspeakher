@@ -28,7 +28,11 @@ export default function TalkCard({
       {/* Saisie d'une membre : le nom de l'asso y arrive en espace ordinaire.
           Replié à l'affichage (jamais en base). L'aria-label plus bas garde,
           lui, la graphie des statuts : il est lu, pas mis en page. */}
-      <p className="text-white font-semibold leading-snug">{nomInsecable(talk.titre)}</p>
+      {/* `min-w-0 break-words` : un titre va jusqu'à 300 caractères, parfois
+          avec une URL ou un mot collé qui déborderait la carte sur téléphone. */}
+      <p className="min-w-0 break-words text-white font-semibold leading-snug">
+        {nomInsecable(talk.titre)}
+      </p>
       <div className="flex flex-wrap items-center gap-2 mt-1.5">
         <span className="text-[11px] uppercase tracking-wide text-magenta bg-magenta/10 border border-magenta/40 rounded-full px-2 py-0.5">
           {talk.type}

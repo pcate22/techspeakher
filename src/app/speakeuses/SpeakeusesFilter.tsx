@@ -19,7 +19,7 @@ import { categorieDuTheme } from "@/data/domaines";
  * Île-de-France), ET entre catégories (une zone ET une langue). Cocher un
  * second filtre n'en décoche donc plus un autre.
  *
- * Les filtres vivent dans un VOLET latéral (drawer) plutôt qu'en ligne : une
+ * Les filtres vivent dans un volet latéral (drawer) plutôt qu'en ligne : une
  * surface clairement délimitée, qui ne repousse pas la liste.
  */
 /** Catégories de filtres, affichées par groupes (pas une rangée à plat). */
