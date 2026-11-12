@@ -3,7 +3,7 @@
 // les importe d'ici pour NE PAS embarquer Zod dans le bundle navigateur.
 
 /** Limite partagée avec l'import CFP : un talk importé doit repasser ici. */
-export const TITRE_MAX = 200;
+export const TITRE_MAX = 300;
 // Un résumé de conférence (abstract) fait couramment 1500 à 2500 caractères :
 // une limite trop basse (1000) rejetait des saisies légitimes, en silence.
 export const DESCRIPTION_MAX = 3000;

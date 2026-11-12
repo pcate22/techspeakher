@@ -31,7 +31,11 @@ export default function TalkForm({
   addAction = addTalkAction,
   updateAction = updateTalkAction,
   hidden,
+  mode,
 }: {
+  /** `creation` : titre seul, le reste se complète sur la page du talk.
+   * Absent : formulaire complet (édition, et création côté orga). */
+  mode?: "creation" | "edition";
   initial?: Talk;
   /** Action d'ajout (défaut : la speakeuse sur son espace). L'orga passe la
    * sienne pour rattacher le talk depuis la fiche participante. */
@@ -50,6 +54,8 @@ export default function TalkForm({
   // Description contrôlée : le compteur doit suivre la frappe, et la saisie
   // survit ainsi à un aller-retour d'erreur serveur (§6).
   const [description, setDescription] = useState(initial?.description ?? "");
+  const [titre, setTitre] = useState(initial?.titre ?? "");
+  const express = mode === "creation";
   const isProposal = type === TALK_PROPOSAL;
   const errorEntries = Object.entries(state.errors ?? {});
 
@@ -96,10 +102,18 @@ export default function TalkForm({
         required
         multiligne
         maxLength={TITRE_MAX}
-        defaultValue={initial?.titre}
+        {...(express
+          ? { value: titre, onChange: setTitre, hint: `${titre.length} / ${TITRE_MAX}` }
+          : { defaultValue: initial?.titre })}
         error={state.errors?.titre}
       />
+      {express && (
+        <p className="text-sm text-gray-light -mt-2">
+          Le reste s&apos;ajoute après, si tu veux.
+        </p>
+      )}
 
+      {!express && (
       <div>
         <label htmlFor="talk-type" className={labelClass}>
           Type
@@ -124,7 +138,9 @@ export default function TalkForm({
           </p>
         )}
       </div>
+      )}
 
+      {!express && (
       <div>
         <label htmlFor="talk-description" className={labelClass}>
           Description
@@ -155,6 +171,7 @@ export default function TalkForm({
           </p>
         )}
       </div>
+      )}
 
       {/* CTA principal de la page : taille `md` (py-3 → 48 px, au-dessus des
           44 px COGA ; `sm` plafonnait à 36 px) et seul aplat magenta de
@@ -162,9 +179,11 @@ export default function TalkForm({
       <Button type="submit" disabled={pending} className="self-start">
         {pending
           ? "Enregistrement…"
-          : editing
-            ? "Enregistrer les modifications"
-            : "Créer le talk"}
+          : express
+            ? "Enregistrer"
+            : editing
+              ? "Enregistrer les modifications"
+              : "Créer le talk"}
       </Button>
     </form>
   );
