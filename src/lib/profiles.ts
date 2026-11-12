@@ -890,7 +890,7 @@ export async function ensureProfileId(userId: number): Promise<number> {
  * via formulaire, e-mail jamais affiché).
  */
 /** Ce qui manque à une fiche pour rejoindre l'annuaire, ou `null` si rien. */
-export type BlocageAnnuaire = "nom" | "contact" | "attestation";
+export type BlocageAnnuaire = "nom" | "themes" | "contact" | "attestation";
 
 /**
  * MOTIF du blocage, source unique de la règle de publication. Un booléen
@@ -899,12 +899,14 @@ export type BlocageAnnuaire = "nom" | "contact" | "attestation";
  * action, à trois lignes d'écart.
  *
  * Le nom du compte en fait partie : sans lui, la fiche s'afficherait sans nom
- * dans un annuaire de personnes.
+ * dans un annuaire de personnes. Les thèmes viennent juste après : ce sont eux
+ * qui rendent une speakeuse trouvable par les filtres.
  */
 export function raisonBlocageAnnuaire(
   profile: SpeakerProfile | null,
 ): BlocageAnnuaire | null {
   if (!profile?.name?.trim()) return "nom";
+  if (!profile.sujets?.length) return "themes";
   if (!profile.linkedin && !profile.contactEmailOk) return "contact";
   if (!profile.isWoman) return "attestation";
   return null;
@@ -1029,6 +1031,35 @@ export async function submitForValidation(userId: number): Promise<void> {
     if (avecPurge)
       for (const r of res.rows as { id: number }[]) await purgerReactionsDeFiche(q, r.id);
   });
+}
+
+/**
+ * Crée la fiche du parcours express, publiée ou envoyée en relecture. Le
+ * statut est décidé par l'appelant côté serveur, jamais par le formulaire.
+ *
+ * Le clic sur « Publier ma fiche » vaut attestation et accord pour être
+ * contactée par le site (e-mail jamais affiché) : les deux sont posés ici, en
+ * dur. `ON CONFLICT DO NOTHING` borne l'écriture à la création : une fiche
+ * existante n'est ni republiée ni dépubliée par ce parcours. Rend `false` si
+ * la fiche existait déjà.
+ */
+export async function publierFiche(
+  userId: number,
+  statut: "publie" | "en_attente",
+  data: { sujets: string[]; slug: string | null },
+): Promise<boolean> {
+  const { rowCount } = await pool.query(
+    `INSERT INTO speaker_profiles
+       ("userId", sujets, slug, contact_email_ok, is_woman, status,
+        published_at, submitted_at, updated_at)
+     VALUES ($1, $2, $3, true, true, $4::text,
+        CASE WHEN $4::text = 'publie' THEN now() END,
+        CASE WHEN $4::text = 'en_attente' THEN now() END,
+        now())
+     ON CONFLICT ("userId") DO NOTHING`,
+    [userId, data.sujets, data.slug, statut],
+  );
+  return (rowCount ?? 0) > 0;
 }
 
 /** Nombre de speakeuses PUBLIÉES (= visibles dans l'annuaire public). Sert au

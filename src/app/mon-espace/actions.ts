@@ -25,7 +25,10 @@ import {
   isSlugAvailable,
   deriveAvailableSlug,
   profilVersInput,
+  publierFiche,
 } from "@/lib/profiles";
+import { parseFicheExpress } from "@/lib/fiche-express-form";
+import { doitEtreRelue } from "@/lib/relecture";
 import { supprimerCompte } from "@/lib/suppression-compte";
 import { isUniqueViolation } from "@/lib/pg-errors";
 import {
@@ -290,6 +293,49 @@ export async function submitProfileAction(): Promise<void> {
   revalidatePublicProfile();
   revalidateEspacePerso();
   redirect("/mon-espace/fiche");
+}
+
+/**
+ * Publication express (`/mon-espace/bienvenue`) : nom et thèmes, puis la fiche
+ * paraît, ou part en relecture si le nom a été écrit à la main.
+ *
+ * Ce parcours ne sert qu'à CRÉER une fiche : une fiche existante renvoie vers
+ * Mon espace sans rien écrire (le SQL de `publierFiche` le garantit aussi). Le
+ * statut se décide ici, à partir du nom du compte lu en base ; le formulaire
+ * n'en transmet aucun.
+ */
+export async function publierFicheExpressAction(
+  _prev: SaveState,
+  formData: FormData,
+): Promise<SaveState> {
+  const id = await requireUserId();
+
+  if (await getProfileByUserId(id)) redirect("/mon-espace");
+
+  const result = parseFicheExpress(formData);
+  if (!result.ok) {
+    return {
+      ok: false,
+      errors: result.errors,
+      valeurs: {
+        nom: [(formData.get("nom") ?? "").toString()],
+        sujets: formData.getAll("sujets").map(String),
+      },
+    };
+  }
+  const { nom, sujets } = result.data;
+
+  const compte = await getUserById(id);
+  const statut = doitEtreRelue(nom, compte?.name ?? null) ? "en_attente" : "publie";
+
+  await setUserName(id, nom);
+  const slug = await deriveAvailableSlug(nom, id);
+  const creee = await publierFiche(id, statut, { sujets, slug });
+  if (!creee) redirect("/mon-espace");
+
+  if (statut === "publie") revalidatePublicProfile();
+  revalidateEspacePerso();
+  redirect(`/mon-espace?ok=${statut === "publie" ? "fiche_publiee" : "fiche_envoyee"}`);
 }
 
 /**

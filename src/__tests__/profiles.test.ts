@@ -20,6 +20,7 @@ import {
   upsertProfile,
   canSubmitToDirectory,
   raisonBlocageAnnuaire,
+  publierFiche,
   toPublicSpeaker,
   effacerCompteEnBase,
   type SpeakerProfile,
@@ -30,7 +31,7 @@ import { makeProfile } from "./test-helpers";
 
 beforeEach(() => query.mockReset());
 
-const baseProfile: SpeakerProfile = makeProfile({ titreProfil: "Spécialiste IA" });
+const baseProfile: SpeakerProfile = makeProfile({ titreProfil: "Spécialiste IA", sujets: ["Cloud"] });
 
 describe("canSubmitToDirectory", () => {
   it("refuse un profil null", () => {
@@ -85,6 +86,10 @@ describe("raisonBlocageAnnuaire", () => {
     for (const name of [null, "", "   "]) {
       expect(raisonBlocageAnnuaire({ ...complet, name })).toBe("nom");
     }
+  });
+
+  it("nomme les thèmes manquants juste après le nom", () => {
+    expect(raisonBlocageAnnuaire({ ...complet, sujets: [], isWoman: false })).toBe("themes");
   });
 
   it("nomme le moyen de contact manquant", () => {
@@ -423,5 +428,26 @@ describe("mapRow — le nom affiché se calcule AU BORD", () => {
       status: "publie",
     } as never);
     expect(p.nomAffiche).toBe("Dev & mentor");
+  });
+});
+
+/**
+ * Fiche express : attestation et contact posés en dur, statut paramétré, et
+ * écriture bornée à la création (une fiche existante reste intacte).
+ */
+describe("publierFiche", () => {
+  it("crée la fiche avec attestation, contact et le statut demandé", async () => {
+    query.mockResolvedValue({ rowCount: 1 });
+    expect(await publierFiche(7, "publie", { sujets: ["Cloud"], slug: "lea" })).toBe(true);
+    const [sql, params] = query.mock.calls[0];
+    expect(sql).toMatch(/contact_email_ok, is_woman, status/);
+    expect(sql).toMatch(/\$3, true, true, \$4::text/);
+    expect(sql).toMatch(/ON CONFLICT \("userId"\) DO NOTHING/);
+    expect(params).toEqual([7, ["Cloud"], "lea", "publie"]);
+  });
+
+  it("fiche déjà là → false, rien de réécrit", async () => {
+    query.mockResolvedValue({ rowCount: 0 });
+    expect(await publierFiche(7, "en_attente", { sujets: ["Cloud"], slug: null })).toBe(false);
   });
 });

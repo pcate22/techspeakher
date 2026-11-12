@@ -95,7 +95,7 @@ describe("submitProfileAction — garde-fous de soumission", () => {
 
   // L'action ne réévalue plus les conditions : elle traduit le MOTIF que
   // `raisonBlocageAnnuaire` (source unique de la règle) lui renvoie.
-  it.each(["nom", "contact", "attestation"] as const)(
+  it.each(["nom", "themes", "contact", "attestation"] as const)(
     "motif « %s » → redirige avec ce motif, sans soumettre",
     async (motif) => {
       vi.mocked(auth).mockResolvedValue({ user: { id: "7" } } as never);
