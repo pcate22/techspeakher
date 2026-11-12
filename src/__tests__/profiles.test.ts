@@ -164,7 +164,7 @@ describe("getProfileByUserId", () => {
           linkedin: "https://lk/x",
           instagram: null,
           secteurs: ["MedTech / Santé"],
-          sujets: ["IA / Machine Learning / Data"],
+          sujets: ["IA / Machine Learning"],
           status: "publie",
           published_at: null,
         },
@@ -181,7 +181,7 @@ describe("getProfileByUserId", () => {
     expect(p).not.toBeNull();
     expect(p?.bio).toBe("Salut");
     expect(p?.secteurs).toEqual(["MedTech / Santé"]);
-    expect(p?.sujets).toEqual(["IA / Machine Learning / Data"]);
+    expect(p?.sujets).toEqual(["IA / Machine Learning"]);
   });
 
   it("retourne null si aucune ligne", async () => {
@@ -225,7 +225,7 @@ describe("upsertProfile", () => {
       sessionizeUrl: "https://sessionize.com/moi",
       conferenceHallUrl: null,
       secteurs: ["MedTech / Santé"],
-      sujets: ["IA / Machine Learning / Data"],
+      sujets: ["IA / Machine Learning"],
       contactEmailOk: false,
       isWoman: true,
       cfpSyncMode: "suggestions",
@@ -246,7 +246,7 @@ describe("upsertProfile", () => {
     expect(params).toContain("Spécialiste IA");
     expect(params).toContain("Dev");
     expect(params).toContainEqual(["MedTech / Santé"]);
-    expect(params).toContainEqual(["IA / Machine Learning / Data"]);
+    expect(params).toContainEqual(["IA / Machine Learning"]);
     expect(String(sql)).toMatch(/is_woman/i);
     expect(params[11]).toBe(true);
     // Liens CFP et consentement ajoutés après isWoman (isWoman reste en 11).

@@ -45,7 +45,7 @@ const profil = (o: Partial<ProfileInput> = {}): ProfileInput => ({
   regions: ["Occitanie"],
   langues: ["Français"],
   secteurs: ["Industrie / Manufacturing"],
-  sujets: ["Cloud / DevOps / Infra"],
+  sujets: ["Cloud"],
   contactEmailOk: true,
   isWoman: true,
   cfpSyncMode: "suggestions",
@@ -54,11 +54,11 @@ const profil = (o: Partial<ProfileInput> = {}): ProfileInput => ({
 
 describe("parseProfilChamps — une section ne lit que SES champs", () => {
   it("rend exactement les champs demandés, et aucun autre", () => {
-    const r = parseProfilChamps(fd({ sujets: ["Cloud / DevOps / Infra", "Mobile"] }), ["sujets"]);
+    const r = parseProfilChamps(fd({ sujets: ["Cloud", "Mobile"] }), ["sujets"]);
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(Object.keys(r.data)).toEqual(["sujets"]);
-    expect(r.data.sujets).toEqual(["Cloud / DevOps / Infra", "Mobile"]);
+    expect(r.data.sujets).toEqual(["Cloud", "Mobile"]);
   });
 
   /**
@@ -100,7 +100,7 @@ describe("parseProfilChamps — une section ne lit que SES champs", () => {
    */
   it("ne valide QUE son périmètre : le reste du formulaire est ignoré", () => {
     const r = parseProfilChamps(
-      fd({ sujets: ["Cloud / DevOps / Infra"], linkedin: "pas une url du tout" }),
+      fd({ sujets: ["Cloud"], linkedin: "pas une url du tout" }),
       ["sujets"],
     );
     expect(r.ok).toBe(true);
@@ -161,13 +161,13 @@ describe("Fusion section + existant — rien d'autre ne bouge", () => {
    */
   it("enregistrer une section ne modifie que les colonnes de cette section", () => {
     const existant = profil();
-    const r = parseProfilChamps(fd({ sujets: ["Cloud / DevOps / Infra", "Mobile"] }), [
+    const r = parseProfilChamps(fd({ sujets: ["Cloud", "Mobile"] }), [
       ...sectionParCle("sujets")!.champs,
     ]);
     if (!r.ok) throw new Error("parse en échec");
     const apres = normaliserProfil({ ...existant, ...r.data });
-    expect(apres.sujets).toEqual(["Cloud / DevOps / Infra", "Mobile"]);
-    expect(apres).toEqual({ ...existant, sujets: ["Cloud / DevOps / Infra", "Mobile"] });
+    expect(apres.sujets).toEqual(["Cloud", "Mobile"]);
+    expect(apres).toEqual({ ...existant, sujets: ["Cloud", "Mobile"] });
   });
 
   /**

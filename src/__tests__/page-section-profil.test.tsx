@@ -89,7 +89,7 @@ describe("« Ma fiche » — ce que le public lit, avec un crayon par section", 
     expect(screen.getByText(/développeuse plateforme/i)).toBeInTheDocument();
     expect(screen.getByText(/dix ans de systèmes distribués/i)).toBeInTheDocument();
     expect(screen.getByText("Industrie / Manufacturing")).toBeInTheDocument();
-    expect(screen.getByText("Cloud / DevOps / Infra")).toBeInTheDocument();
+    expect(screen.getByText("Cloud")).toBeInTheDocument();
     expect(screen.getByText("Occitanie")).toBeInTheDocument();
     expect(screen.getByText("Français")).toBeInTheDocument();
   });

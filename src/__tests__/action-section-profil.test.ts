@@ -83,7 +83,7 @@ const fiche = (o: Partial<SpeakerProfile> = {}): SpeakerProfile =>
     regions: ["Occitanie"],
     langues: ["Français"],
     secteurs: ["Industrie / Manufacturing"],
-    sujets: ["Cloud / DevOps / Infra"],
+    sujets: ["Cloud"],
     contactEmailOk: true,
     isWoman: true,
     cfpSyncMode: "suggestions",

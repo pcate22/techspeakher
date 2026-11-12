@@ -132,7 +132,7 @@ describe("l'état vide d'une section, dit par le registre", () => {
       bio: "Dix ans de systèmes distribués.",
       ville: "Toulouse",
       secteurs: ["Industrie / Manufacturing"],
-      sujets: ["Cloud / DevOps / Infra"],
+      sujets: ["Cloud"],
       regions: ["Occitanie"],
       langues: ["Français"],
       linkedin: "https://linkedin.com/in/lea",

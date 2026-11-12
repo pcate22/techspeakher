@@ -8,9 +8,9 @@ const profile = (over: Partial<SpeakerProfile>): SpeakerProfile =>
   makeProfile({ id: 0, userId: 0, name: null, isWoman: true, status: "publie", ...over });
 
 const mockProfiles: SpeakerProfile[] = [
-  profile({ id: 1, name: "Alice Test", secteurs: ["Fintech / Finance / Assurance"], sujets: ["IA / Machine Learning / Data"], regions: ["Occitanie"], langues: ["Anglais"] }),
-  profile({ id: 2, name: "Bob Test", sujets: ["UX / Design / Accessibilité"], regions: ["Île-de-France"] }),
-  profile({ id: 3, name: "Claire Test", sujets: ["IA / Machine Learning / Data", "Mobile"], langues: ["Anglais"] }),
+  profile({ id: 1, name: "Alice Test", secteurs: ["Fintech / Finance / Assurance"], sujets: ["IA / Machine Learning"], regions: ["Occitanie"], langues: ["Anglais"] }),
+  profile({ id: 2, name: "Bob Test", sujets: ["UX / UI"], regions: ["Île-de-France"] }),
+  profile({ id: 3, name: "Claire Test", sujets: ["IA / Machine Learning", "Mobile"], langues: ["Anglais"] }),
 ];
 
 describe("SpeakeusesFilter", () => {
@@ -50,7 +50,7 @@ describe("SpeakeusesFilter", () => {
     render(<SpeakeusesFilter profiles={mockProfiles} />);
     openFilters();
     const names = screen.getAllByRole("button").map((b) => b.textContent);
-    expect(names).toContain("IA / Machine Learning / Data");
+    expect(names).toContain("IA / Machine Learning");
     expect(names).toContain("Fintech / Finance / Assurance");
     expect(names).toContain("Occitanie");
     expect(names).toContain("Île-de-France");
@@ -60,7 +60,7 @@ describe("SpeakeusesFilter", () => {
   it("filtre par sujet quand on active une puce", () => {
     render(<SpeakeusesFilter profiles={mockProfiles} />);
     openFilters();
-    fireEvent.click(chip("UX / Design / Accessibilité"));
+    fireEvent.click(chip("UX / UI"));
     expect(screen.getByText("Bob Test")).toBeInTheDocument();
     expect(screen.queryByText("Alice Test")).not.toBeInTheDocument();
     expect(screen.queryByText("Claire Test")).not.toBeInTheDocument();
@@ -200,10 +200,10 @@ describe("SpeakeusesFilter", () => {
   it("la puce active porte aria-pressed=true", () => {
     render(<SpeakeusesFilter profiles={mockProfiles} />);
     openFilters();
-    const ia = chip("IA / Machine Learning / Data");
+    const ia = chip("IA / Machine Learning");
     expect(ia).toHaveAttribute("aria-pressed", "false");
     fireEvent.click(ia);
-    expect(chip("IA / Machine Learning / Data")).toHaveAttribute("aria-pressed", "true");
+    expect(chip("IA / Machine Learning")).toHaveAttribute("aria-pressed", "true");
   });
 
   it("la section résultats a aria-live=polite", () => {
