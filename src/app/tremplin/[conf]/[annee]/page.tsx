@@ -11,7 +11,7 @@ import Accompagnantes from "@/components/Accompagnantes";
 import { BASE_URL } from "@/constants/site";
 import { dateLongueFr, formatDateFr, nb, quandFr } from "@/lib/format";
 import { aujourdhuiParis, getEditionByConfAndYear, paramsEditionsPubliques } from "@/lib/tremplin-editions";
-import { estPasse, inscriptionsEtat } from "@/lib/tremplin-statut";
+import { estPasse, candidaturesOuvertes } from "@/lib/tremplin-statut";
 import {
   getPublicEdition,
   mentionTransfert,
@@ -116,9 +116,7 @@ export default async function EditionPublique({ params }: { params: Promise<Para
   // Le bouton du formulaire vit tant que la fenêtre de candidature est ouverte,
   // et seulement là : après la date limite, il mènerait à un formulaire fermé.
   const candidature =
-    editorial?.candidature &&
-    (ed.statut === "ouvert" || ed.statut === "en_cours") &&
-    inscriptionsEtat(ed, todayStr) === "ouvertes"
+    editorial?.candidature && candidaturesOuvertes(ed, todayStr)
       ? editorial.candidature
       : null;
   // La date limite vient de la base : prolonger la fenêtre dans l'admin la
@@ -294,7 +292,7 @@ export default async function EditionPublique({ params }: { params: Promise<Para
       </section>
 
       {candidature && (
-        <section id="candidater" className="py-16 px-4 scroll-mt-20" aria-labelledby="candidater-title">
+        <section id="candidater" className="py-16 px-4 scroll-mt-bande-mois" aria-labelledby="candidater-title">
           <div className="max-w-3xl mx-auto bg-navy-light border border-cyan/30 rounded-2xl p-6 sm:p-8">
             <h2 id="candidater-title" className="text-2xl sm:text-3xl font-bold mb-6">Candidater</h2>
             <p className="text-gray-light mb-4">Les conditions&nbsp;:</p>

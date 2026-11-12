@@ -18,7 +18,7 @@ import {
 } from "@/lib/agenda-public";
 import { getNouvellesVenues, type NouvelleVenue } from "@/lib/fil-communaute";
 import CarteNouvelleVenue from "@/components/CarteNouvelleVenue";
-import { aujourdhuiParis, inscriptionsEtat } from "@/lib/tremplin-statut";
+import { aujourdhuiParis, candidaturesOuvertes } from "@/lib/tremplin-statut";
 import { getEditionByConfAndYear } from "@/lib/tremplin-editions";
 import { editorialEnCours, editionEditoriale } from "@/data/tremplin";
 
@@ -106,11 +106,10 @@ export default async function Home() {
   // Pendant les candidatures, le Tremplin prend le bouton principal du héros.
   // La fenêtre vient de la base : base muette ou fenêtre close, le héros
   // revient à l'annuaire.
-  const candidaturesOuvertes =
+  const tremplinRecrute =
     editorialEnCours.candidature !== undefined &&
     editionEnCours !== null &&
-    (editionEnCours.statut === "ouvert" || editionEnCours.statut === "en_cours") &&
-    inscriptionsEtat(editionEnCours, aujourdhui) === "ouvertes";
+    candidaturesOuvertes(editionEnCours, aujourdhui);
   const hrefEditionEnCours = `/tremplin/${editionEditoriale.confSlug}/${editionEditoriale.annee}`;
   const prochainesScenes = prochainesScenesExtrait(
     separerScenes(scenes, aujourdhui).aVenir,
@@ -174,7 +173,7 @@ export default async function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {candidaturesOuvertes ? (
+            {tremplinRecrute ? (
               <>
                 <Button href={`${hrefEditionEnCours}#candidater`}>
                   Candidater au Tremplin {editionEditoriale.confNom}
@@ -275,7 +274,7 @@ export default async function Home() {
           puis l'invitation. Le bloc suit l'édition éditoriale en cours. */}
       <section className="py-16 px-4 bg-navy-light" aria-labelledby="tremplin-cta-title">
           <div className="max-w-4xl mx-auto bg-gradient-to-r from-magenta/10 to-cyan/10 border border-navy-lighter rounded-2xl p-8 sm:p-12 text-center">
-            <p className="text-xs font-bold text-gold uppercase tracking-wider mb-3">Le Tremplin</p>
+            <p className="text-sm font-bold text-gold mb-3">Le Tremplin</p>
             <h2 id="tremplin-cta-title" className="text-2xl sm:text-3xl font-bold mb-4">
               Ton premier talk au {editionEditoriale.confNom} {editionEditoriale.annee}&nbsp;?
             </h2>

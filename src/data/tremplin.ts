@@ -202,9 +202,9 @@ const faqDevoxx2027: FAQ[] = [
     lien: { href: "/contact", label: "Un doute\u00A0? Écris-nous" },
   },
   {
-    q: "Faut-il être membre de Tech Speak'Her\u00A0?",
+    q: "Faut-il être membre de Tech\u00A0Speak'Her\u00A0?",
     a: "Oui\u00A0: le Tremplin est réservé aux adhérentes de l'association. L'adhésion se fait en ligne, sur HelloAsso.",
-    lien: { href: "/adherer", label: "Adhérer à Tech Speak'Her" },
+    lien: { href: "/adherer", label: "Adhérer à Tech\u00A0Speak'Her" },
   },
   {
     q: "Je dois déjà avoir un sujet prêt\u00A0?",
@@ -234,12 +234,12 @@ const faqDevoxx2027: FAQ[] = [
   {
     id: "candidater",
     q: "Comment candidater\u00A0?",
-    a: "Adhère à Tech Speak'Her, puis remplis le formulaire de candidature avant la date limite indiquée en haut de cette page.",
+    a: "Adhère à Tech\u00A0Speak'Her, puis remplis le formulaire de candidature avant la date limite indiquée en haut de cette page.",
     lien: { href: TREMPLIN_DEVOXX_2027_FORM_URL, label: "Ouvrir le formulaire de candidature" },
   },
   {
     q: "Qui organise le Tremplin\u00A0?",
-    a: "Les bénévoles de Tech Speak'Her, association loi 1901, en partenariat avec Devoxx France.",
+    a: "Le Tremplin est organisé par les bénévoles de Tech\u00A0Speak'Her, association loi 1901, en partenariat avec Devoxx France.",
   },
 ];
 
@@ -271,7 +271,7 @@ const editorialDevoxx2027: EditorialEdition = {
     conditions: [
       { texte: "Tu es une femme, ou tu te reconnais comme telle." },
       { texte: CRITERE_PRIMO, lien: { href: "/contact", label: "Un doute\u00A0? Écris-nous" } },
-      { texte: "Tu es adhérente de Tech Speak'Her.", lien: { href: "/adherer", label: "Adhérer à l'association" } },
+      { texte: "Tu es adhérente de Tech\u00A0Speak'Her.", lien: { href: "/adherer", label: "Adhérer à l'association" } },
       { texte: DEPLACEMENTS },
     ],
   },

@@ -69,7 +69,7 @@ export const searchIndex: SearchItem[] = dedupeSearchItems([
   // Pages statiques
   { title: "Accueil", description: "Tech Speak'Her, communauté de femmes de la tech toulousaine", url: "/", category: "Page" },
   { title: "À propos", description: "Notre mission, nos valeurs, qui on est", url: "/a-propos", category: "Page" },
-  { title: "Le Tremplin", description: "Le programme qui accompagne les femmes de la tech jusqu'à leur premier talk en conférence", url: "/tremplin", category: "Page" },
+  { title: "Le Tremplin", description: "Le programme qui mène les femmes de la tech à leur premier talk en conférence, du DevFest Toulouse 2026 au Devoxx France 2027", url: "/tremplin", category: "Page" },
   { title: "Tremplin Devoxx France 2027", description: "Candidatures, ateliers, soirée finale à Paris et conférence au Devoxx France pour la gagnante", url: "/tremplin/devoxx-france/2027", category: "Page" },
   {
     title: "Montée sur scène 2026",
