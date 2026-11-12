@@ -28,24 +28,29 @@ describe("page « Ajouter un talk » (création express)", () => {
     expect(screen.getByLabelText(/titre du talk/i)).toHaveAttribute("name", "titre");
   });
 
-  it("affiche le compteur « 0 / 300 » qui suit la frappe", async () => {
+  it("affiche le compteur « 0 / 300 caractères » qui suit la frappe", async () => {
     await rendre();
-    expect(screen.getByText("0 / 300")).toBeInTheDocument();
+    expect(screen.getByText(/^0 \/ 300 caractères/)).toBeInTheDocument();
     await userEvent.type(screen.getByLabelText(/titre du talk/i), "abc");
-    expect(screen.getByText("3 / 300")).toBeInTheDocument();
+    expect(screen.getByText(/^3 \/ 300 caractères/)).toBeInTheDocument();
   });
 
-  it("propose « Enregistrer » et annonce que le reste vient après", async () => {
+  // Le compteur et « le reste vient après » sont dans l'indice du champ : un
+  // lecteur d'écran les entend en arrivant sur le titre.
+  it("propose « Enregistrer » et le champ annonce que le reste vient après", async () => {
     await rendre();
     expect(screen.getByRole("button", { name: "Enregistrer" })).toBeInTheDocument();
-    expect(screen.getByText(/le reste s'ajoute après, si tu veux/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/titre du talk/i)).toHaveAccessibleDescription(
+      "0 / 300 caractères. Le reste s'ajoute après, si tu veux.",
+    );
   });
 
-  it("lie « Importer » vers /mon-espace/talks/importer", async () => {
+  it("propose l'import par un lien « Importe-les »", async () => {
     await rendre();
-    expect(screen.getByRole("link", { name: "Importer" })).toHaveAttribute(
-      "href",
-      "/mon-espace/talks/importer",
+    const lien = screen.getByRole("link", { name: "Importe-les" });
+    expect(lien).toHaveAttribute("href", "/mon-espace/talks/importer");
+    expect(lien.parentElement!.textContent).toBe(
+      "Tes talks sont sur Notist ou dans un fichier\u00a0? Importe-les",
     );
   });
 });

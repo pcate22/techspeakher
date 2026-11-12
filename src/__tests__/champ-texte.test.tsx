@@ -181,6 +181,18 @@ describe("ChampTexte — mode multiligne (saisie visible en entier)", () => {
     };
   }
 
+  // Sur un titre trop long, le compteur sert justement au moment de l'erreur :
+  // il reste affiché et décrit le champ avec elle.
+  it("garde l'indice visible et décrit avec l'erreur", () => {
+    render(
+      <ChampTexte id="titre" name="titre" label="Titre du talk" hint="301 / 300 caractères" error="Titre trop long" />,
+    );
+    const champ = screen.getByLabelText(/titre du talk/i);
+    expect(screen.getByText("301 / 300 caractères")).toBeInTheDocument();
+    expect(champ).toHaveAttribute("aria-describedby", "err-titre hint-titre");
+    expect(champ).toHaveAccessibleDescription("Titre trop long 301 / 300 caractères");
+  });
+
   it("rend une zone de texte de deux lignes au repos (et garde le câblage aria)", () => {
     render(
       <ChampTexte

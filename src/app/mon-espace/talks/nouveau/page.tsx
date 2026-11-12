@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
-import Link from "next/link";
+import LienTexte from "@/components/LienTexte";
 import Breadcrumb from "@/components/Breadcrumb";
 import TalkForm from "../../TalkForm";
 
@@ -39,9 +39,7 @@ export default async function NouveauTalk() {
             les ressaisissent pas un par un. Lien discret, le CTA reste le champ. */}
         <p className="text-sm text-gray-light mt-8">
           Tes talks sont sur Notist ou dans un fichier&nbsp;?{" "}
-          <Link href="/mon-espace/talks/importer" className="text-cyan underline">
-            Importer
-          </Link>
+          <LienTexte href="/mon-espace/talks/importer">Importe-les</LienTexte>
         </p>
       </section>
       </div>

@@ -103,15 +103,14 @@ export default function TalkForm({
         multiligne
         maxLength={TITRE_MAX}
         {...(express
-          ? { value: titre, onChange: setTitre, hint: `${titre.length} / ${TITRE_MAX}` }
+          ? {
+              value: titre,
+              onChange: setTitre,
+              hint: `${titre.length} / ${TITRE_MAX} caractères. Le reste s'ajoute après, si tu veux.`,
+            }
           : { defaultValue: initial?.titre })}
         error={state.errors?.titre}
       />
-      {express && (
-        <p className="text-sm text-gray-light -mt-2">
-          Le reste s&apos;ajoute après, si tu veux.
-        </p>
-      )}
 
       {!express && (
         <div>
