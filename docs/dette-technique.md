@@ -2,14 +2,16 @@
 
 > **Session du 2026-11-12 — inscription express à l'annuaire**
 > (`docs/superpowers/specs/2026-11-12-inscription-express-design.md`, migration
-> 077). Aucun P0 touché ; le **3** n'a pas été relu ce jour. Rien de soldé :
-> la course sur le slug à la publication express est traitée dans le geste
-> (un second essai), elle n'était pas en dette. NOUVEAU, en P2 (§ « Inscription
-> express : ce que les revues laissent ») : compteur du titre masqué par
-> l'erreur, récapitulatif des thèmes relu en entier à chaque clic, libellé
-> « Aucun sujet choisi. », réécriture à vide de deux sujets par la synchro,
-> titres de 300 caractères jamais vus dans les cartes,
-> l'OG et les e-mails, fiches héritées sans thème bloquées avant « Soumettre ».
+> 077). Aucun P0 touché ; le **3** n'a pas été relu ce jour. SOLDÉ dans le
+> geste : compteur du titre masqué par l'erreur ; titres de 300 caractères
+> dans les cartes (vérifiés à 375 px). NOUVEAU, en P1 (§ « Publication express :
+> le nom OAuth se lit dans `users.name` ») : la relecture express tient à un
+> invariant, une colonne dédiée la rendrait solide. NOUVEAU, en P2 (§ « Inscription
+> express : ce que les revues laissent ») : récapitulatif des thèmes relu en
+> entier à chaque clic, libellé « Aucun sujet choisi. », réécriture à vide de
+> deux sujets par la synchro, titres de 300 caractères dans l'OG et les
+> e-mails, fiches héritées sans thème bloquées avant « Soumettre », et en P3
+> le tri des fiches express dans « Publiées ».
 >
 > **Session du 2026-11-04 — conditions des coachs et du jury bénévoles**
 > (`/benevole`, FAQ `/partenaires`). Aucun P0 touché ; le **3** n'a pas été
@@ -786,11 +788,15 @@ Relevés par les revues des tâches du plan
 PR parce qu'ils touchent un composant partagé ou demandent une vérification à
 l'écran.
 
-- **Titres de talk à 300 caractères jamais vus ailleurs que dans le
-  formulaire.** `TITRE_MAX` est passé de 200 à 300 (`src/lib/talk-limits.ts`).
-  Personne n'a regardé un titre de 300 caractères dans `TalkCard`, l'image OG
-  des pages talk, ni les e-mails qui citent un titre. À vérifier à l'écran,
-  puis tronquer à l'affichage si une mise en page casse. **Effort : S.**
+- **Titres de talk à 300 caractères : l'image OG et les e-mails restent à
+  voir.** `TITRE_MAX` est passé de 200 à 300 (`src/lib/talk-limits.ts`).
+  Vérifié à 375 px le 2026-11-12 avec un titre de 300 caractères dont un mot
+  collé de 60 : sur la fiche publique (`src/components/TalkCard.tsx`) et la
+  carte de l'annuaire (`src/components/SpeakeuseCard.tsx`), le mot débordait
+  la carte de 150 px ; `min-w-0 break-words` le coupe, rien ne déborde plus.
+  Le formulaire est une zone de texte, il passe à la ligne seul. Personne n'a
+  encore regardé l'image OG des pages talk ni les e-mails qui citent un titre.
+  **Effort : S.**
 - **Fiches héritées sans thème : « Soumettre » disparaît.**
   `raisonBlocageAnnuaire` (`src/lib/profiles.ts`) exige désormais au moins un
   thème. Un brouillon ancien dont le seul sujet était « Autre » (retiré par la
@@ -798,12 +804,10 @@ l'écran.
   propose « Choisis tes thèmes » en tête, mais l'écran de la fiche ne dit pas
   encore pourquoi le bouton manque. À vérifier sur une fiche réelle de ce cas.
   **Effort : XS.**
-- **Le compteur du titre disparaît quand une erreur s'affiche.**
-  `ChampTexte` (`src/components/ChampTexte.tsx`) n'affiche l'indice que sans
-  erreur (`hint && !error`) : sur un titre trop long, la speakeuse perd le
-  compteur au moment où il servirait. Le compteur dit aussi « 12 / 300 » sans
-  le mot « caractères », à la différence de la description. Touche tous les
-  champs qui ont un indice. **Effort : XS.**
+- ~~**Le compteur du titre disparaît quand une erreur s'affiche.**~~ **SOLDÉ
+  le 2026-11-12** : `ChampTexte` (`src/components/ChampTexte.tsx`) garde
+  l'indice visible et le lit avec l'erreur (`aria-describedby` porte les
+  deux) ; le compteur dit « n / 300 caractères ».
 - **Le récapitulatif des thèmes est relu en entier à chaque case.**
   `ChoixThemes` (`src/app/mon-espace/ChoixThemes.tsx`) porte
   `aria-live="polite"` sur « Tes thèmes (n) : … » : à dix thèmes, chaque clic
@@ -815,6 +819,12 @@ l'écran.
   passage et l'`UPDATE` réécrit la ligne à l'identique. Sans effet visible
   (aucun déclencheur sur `updated_at`), seulement des écritures inutiles. Les retirer de la liste du
   `WHERE`. **Effort : XS.**
+- **P3, décision produit : une fiche publiée par l'inscription express trie
+  en dernier dans « Publiées ».** `publierFiche` (`src/lib/profiles.ts`) la
+  publie sans relecture, donc avec `validated_at` à NULL, et la liste
+  « Publiées » de l'admin trie sur cette colonne. À trancher : trier sur
+  `published_at`, ou montrer à part les fiches publiées sans relecture.
+  **Effort : XS** une fois tranché.
 - **« Aucun sujet choisi. » sous le titre « Tes thèmes ».** Le libellé vide de
   la section (`src/lib/profil-sections.ts`) garde l'ancien mot. À passer à
   « Aucun thème choisi. ». **Effort : XS.**
