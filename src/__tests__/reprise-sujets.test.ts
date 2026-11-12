@@ -55,13 +55,33 @@ describe("migration SQL 077", () => {
   const sql = readFileSync("db/migrations/077_themes_categories.sql", "utf8");
   const sync = readFileSync("db/sync-to-latest.sql", "utf8");
 
+  const fichiers = { migration: sql, sync };
+  const echapper = (t: string) => t.replaceAll("'", "''");
+
   it("reprend chaque ancien sujet avec ses thèmes, comme la table TS", () => {
-    for (const [ancien, themes] of Object.entries(REPRISE_SUJETS)) {
-      const attendu = `WHEN '${ancien.replaceAll("'", "''")}' THEN ARRAY[${themes
-        .map((t) => `'${t.replaceAll("'", "''")}'`)
-        .join(", ")}]::text[]`;
-      expect(sql, ancien).toContain(attendu);
-      expect(sync, ancien).toContain(attendu);
+    for (const [nom, texte] of Object.entries(fichiers)) {
+      for (const [ancien, themes] of Object.entries(REPRISE_SUJETS)) {
+        const attendu = `WHEN '${echapper(ancien)}' THEN ARRAY[${themes
+          .map((t) => `'${echapper(t)}'`)
+          .join(", ")}]::text[]`;
+        expect(texte, `${nom} : ${ancien}`).toContain(attendu);
+      }
+    }
+  });
+
+  it("filtre le WHERE sur chaque ancien sujet (sinon une fiche reste sans conversion)", () => {
+    for (const [nom, texte] of Object.entries(fichiers)) {
+      const where = texte.slice(texte.lastIndexOf("WHERE sujets && ARRAY["));
+      expect(where, nom).toContain("WHERE sujets && ARRAY[");
+      for (const ancien of Object.keys(REPRISE_SUJETS)) {
+        expect(where, `${nom} : ${ancien}`).toContain(`'${echapper(ancien)}'`);
+      }
+    }
+  });
+
+  it("n'a ni branche WHEN en trop ni en moins", () => {
+    for (const [nom, texte] of Object.entries(fichiers)) {
+      expect(texte.match(/WHEN '/g)?.length, nom).toBe(Object.keys(REPRISE_SUJETS).length);
     }
   });
 });
