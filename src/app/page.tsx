@@ -18,7 +18,8 @@ import {
 } from "@/lib/agenda-public";
 import { getNouvellesVenues, type NouvelleVenue } from "@/lib/fil-communaute";
 import CarteNouvelleVenue from "@/components/CarteNouvelleVenue";
-import { aujourdhuiParis } from "@/lib/tremplin-statut";
+import { aujourdhuiParis, inscriptionsEtat } from "@/lib/tremplin-statut";
+import { getEditionByConfAndYear } from "@/lib/tremplin-editions";
 import { editorialEnCours, editionEditoriale } from "@/data/tremplin";
 
 export const metadata: Metadata = {
@@ -69,7 +70,7 @@ export default async function Home() {
   // base indisponible → le chiffre disparaît (jamais un nombre faux), l'agenda
   // disparaît (jamais une date inventée), les actualités disparaissent (jamais
   // un contenu périmé), la home reste.
-  const [speakerCount, scenes, venues, publications] = await Promise.all([
+  const [speakerCount, scenes, venues, publications, editionEnCours] = await Promise.all([
     countPublishedProfiles().catch((err) => {
       console.error("Compte des speakeuses indisponible", err);
       return null;
@@ -86,6 +87,10 @@ export default async function Home() {
       console.error("Actualités indisponibles", err);
       return [] as Contenu[];
     }),
+    getEditionByConfAndYear(editionEditoriale.confSlug, editionEditoriale.annee).catch((err) => {
+      console.error("Édition Tremplin indisponible", err);
+      return null;
+    }),
   ]);
   // Les actualités de l'accueil viennent de la MÊME table que `/actualites` et
   // passent par le MÊME mapping : une carte mène au même endroit sur les deux
@@ -98,6 +103,15 @@ export default async function Home() {
   // sans ça, le départage alphabétique de `separerScenes` figerait toujours
   // les mêmes noms en tête d'un extrait tronqué.
   const aujourdhui = aujourdhuiParis();
+  // Pendant les candidatures, le Tremplin prend le bouton principal du héros.
+  // La fenêtre vient de la base : base muette ou fenêtre close, le héros
+  // revient à l'annuaire.
+  const candidaturesOuvertes =
+    editorialEnCours.candidature !== undefined &&
+    editionEnCours !== null &&
+    (editionEnCours.statut === "ouvert" || editionEnCours.statut === "en_cours") &&
+    inscriptionsEtat(editionEnCours, aujourdhui) === "ouvertes";
+  const hrefEditionEnCours = `/tremplin/${editionEditoriale.confSlug}/${editionEditoriale.annee}`;
   const prochainesScenes = prochainesScenesExtrait(
     separerScenes(scenes, aujourdhui).aVenir,
     aujourdhui,
@@ -160,12 +174,25 @@ export default async function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button href="/mon-espace">
-              Rejoindre l&apos;annuaire des speakeuses
-            </Button>
-            <Button href="/a-propos" variant="secondary">
-              Découvrir la communauté
-            </Button>
+            {candidaturesOuvertes ? (
+              <>
+                <Button href={`${hrefEditionEnCours}#candidater`}>
+                  Candidater au Tremplin {editionEditoriale.confNom}
+                </Button>
+                <Button href="/mon-espace" variant="secondary">
+                  Rejoindre l&apos;annuaire des speakeuses
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button href="/mon-espace">
+                  Rejoindre l&apos;annuaire des speakeuses
+                </Button>
+                <Button href="/a-propos" variant="secondary">
+                  Découvrir la communauté
+                </Button>
+              </>
+            )}
           </div>
         </div>
 
@@ -253,7 +280,7 @@ export default async function Home() {
               Ton premier talk au {editionEditoriale.confNom} {editionEditoriale.annee}&nbsp;?
             </h2>
             <p className="text-gray-light mb-6 max-w-2xl mx-auto">{editorialEnCours.accroche}</p>
-            <Button href={`/tremplin/${editionEditoriale.confSlug}/${editionEditoriale.annee}`}>
+            <Button href={hrefEditionEnCours}>
               Découvrir le Tremplin {editionEditoriale.annee}
             </Button>
           </div>
