@@ -22,7 +22,7 @@ import ConfirmationBanner from "@/components/ConfirmationBanner";
 import { SECTION_PAR_CLE, type CleSection } from "@/lib/profil-sections";
 import FicheSpeakeuseCorps from "@/components/FicheSpeakeuseCorps";
 import ProfileForm from "../ProfileForm";
-import { indexEtape } from "../profil-etapes";
+import { indexEtape, sectionDeLEtape } from "../profil-etapes";
 import PartagerFiche from "@/components/PartagerFiche";
 import Button from "@/components/Button";
 import ProgressBar from "@/components/ProgressBar";
@@ -118,6 +118,9 @@ export default async function MaFiche({
   const sectionEnregistree = ok ? SECTION_PAR_CLE[ok as CleSection] : undefined;
   const uid = Number(session.user.id);
   const profile = await getProfileByUserId(uid);
+  // Avec une fiche, un ancien lien `?step=` ouvre la page de sa section.
+  const sectionDemandee = profile ? sectionDeLEtape(step) : null;
+  if (sectionDemandee) redirect(`/mon-espace/fiche/${sectionDemandee}`);
   // Les talks : la vue COMPLÈTE (contrat de la lib pour l'espace perso). La
   // lecture publique excluait les propositions issues du backfill Tremplin : une
   // speakeuse dont les talks venaient de là lisait « Aucun talk sur ta fiche » et

@@ -46,21 +46,22 @@ describe("SpeakeusesFilter", () => {
     expect(screen.getByText("Occitanie")).toBeVisible();
   });
 
-  it("expose secteurs, sujets, régions et langues comme filtres", () => {
+  it("expose secteurs, thèmes (par catégorie), régions et langues comme filtres", () => {
     render(<SpeakeusesFilter profiles={mockProfiles} />);
     openFilters();
     const names = screen.getAllByRole("button").map((b) => b.textContent);
-    expect(names).toContain("IA / Machine Learning");
+    expect(names).toContain("Data et IA");
+    expect(names).not.toContain("IA / Machine Learning");
     expect(names).toContain("Fintech / Finance / Assurance");
     expect(names).toContain("Occitanie");
     expect(names).toContain("Île-de-France");
     expect(names).toContain("Anglais");
   });
 
-  it("filtre par sujet quand on active une puce", () => {
+  it("filtre par thème quand on active une puce", () => {
     render(<SpeakeusesFilter profiles={mockProfiles} />);
     openFilters();
-    fireEvent.click(chip("UX / UI"));
+    fireEvent.click(chip("Design"));
     expect(screen.getByText("Bob Test")).toBeInTheDocument();
     expect(screen.queryByText("Alice Test")).not.toBeInTheDocument();
     expect(screen.queryByText("Claire Test")).not.toBeInTheDocument();
@@ -200,14 +201,29 @@ describe("SpeakeusesFilter", () => {
   it("la puce active porte aria-pressed=true", () => {
     render(<SpeakeusesFilter profiles={mockProfiles} />);
     openFilters();
-    const ia = chip("IA / Machine Learning");
+    const ia = chip("Data et IA");
     expect(ia).toHaveAttribute("aria-pressed", "false");
     fireEvent.click(ia);
-    expect(chip("IA / Machine Learning")).toHaveAttribute("aria-pressed", "true");
+    expect(chip("Data et IA")).toHaveAttribute("aria-pressed", "true");
   });
 
   it("la section résultats a aria-live=polite", () => {
     const { container } = render(<SpeakeusesFilter profiles={mockProfiles} />);
     expect(container.querySelector('[aria-live="polite"]')).toBeInTheDocument();
+  });
+});
+
+describe("SpeakeusesFilter : thèmes par catégorie", () => {
+  afterEach(() => cleanup());
+  it("« Design » garde une fiche « Accessibilité » et écarte une fiche « Cloud »", () => {
+    const profils = [
+      profile({ id: 21, name: "Dana Access", sujets: ["Accessibilité"] }),
+      profile({ id: 22, name: "Eve Cloud", sujets: ["Cloud"] }),
+    ];
+    render(<SpeakeusesFilter profiles={profils} />);
+    fireEvent.click(screen.getByRole("button", { name: /filtrer/i }));
+    fireEvent.click(screen.getAllByRole("button").find((b) => b.textContent === "Design")!);
+    expect(screen.getByText("Dana Access")).toBeInTheDocument();
+    expect(screen.queryByText("Eve Cloud")).not.toBeInTheDocument();
   });
 });

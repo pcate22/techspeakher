@@ -7,10 +7,11 @@ import FilterChip from "@/components/FilterChip";
 import type { PublicSpeaker } from "@/lib/profiles";
 import type { PublicTalkPreview } from "@/lib/talks";
 import { createSpeakerMatcher, type SpeakerDoc } from "@/lib/speaker-search";
+import { categorieDuTheme } from "@/data/domaines";
 
 /**
  * Annuaire : recherche plein-texte locale + filtres multi-sélection par
- * secteur / sujet / zone / langue, puis liste de cartes cliquables vers la
+ * secteur / thème / zone / langue, puis liste de cartes cliquables vers la
  * fiche. Les données viennent de la base (profils publiés, projetés en
  * `PublicSpeaker` côté serveur).
  *
@@ -24,10 +25,17 @@ import { createSpeakerMatcher, type SpeakerDoc } from "@/lib/speaker-search";
 /** Catégories de filtres, affichées par groupes (pas une rangée à plat). */
 const FILTER_GROUPS: { label: string; get: (p: PublicSpeaker) => string[] }[] = [
   { label: "Secteurs", get: (p) => p.secteurs },
-  { label: "Sujets", get: (p) => p.sujets },
+  // On filtre par CATÉGORIE (« Design ») : vingt-huit sous-catégories en
+  // puces noieraient le volet, et la catégorie se déduit du thème stocké.
+  { label: "Thèmes", get: (p) => categoriesDesThemes(p.sujets) },
   { label: "Zones", get: (p) => p.regions },
   { label: "Langues", get: (p) => p.langues },
 ];
+
+/** Catégories distinctes des thèmes d'une fiche (un thème hors liste n'en a pas). */
+function categoriesDesThemes(sujets: string[]): string[] {
+  return [...new Set(sujets.map(categorieDuTheme).filter((c): c is string => c !== null))];
+}
 
 /** Clé de sélection : la catégorie préfixe le tag (un même libellé — « Autre »
  *  — peut vivre dans deux catégories sans se confondre). */
