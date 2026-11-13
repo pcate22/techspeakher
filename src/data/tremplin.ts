@@ -191,7 +191,7 @@ const CRITERE_PRIMO =
   "Ce sera ton premier talk dans une conférence publique avec appel à orateurs (CFP) et sélection. Tu peux candidater même si tu as déjà fait des présentations internes, des lightning talks en entreprise, des cours, des formations, des podcasts ou des webinaires.";
 
 const DEPLACEMENTS =
-  "Tu peux venir à Paris le soir du mardi 19\u00A0janvier 2027 pour la soirée Tremplin, et du 7 au 9\u00A0avril 2027 pour Devoxx France si tu gagnes. Le transport et le logement restent à ta charge\u00A0: nous cherchons des financements pour les prendre en charge.";
+  "Tu peux venir à Paris le soir du mardi 19\u00A0janvier 2027 pour la soirée Tremplin, et du 7 au 9\u00A0avril 2027 pour Devoxx France si tu gagnes. Le transport et le logement restent à ta charge\u00A0: nous cherchons des financements, mais à ce jour, nous ne pouvons pas les prendre en charge.";
 
 const grille = faq.find((f) => f.id === "grille");
 

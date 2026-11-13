@@ -51,8 +51,8 @@ describe("reprendreSujets", () => {
   });
 });
 
-describe("migration SQL 077", () => {
-  const sql = readFileSync("db/migrations/077_themes_categories.sql", "utf8");
+describe("migration SQL 078", () => {
+  const sql = readFileSync("db/migrations/078_themes_categories.sql", "utf8");
   const sync = readFileSync("db/sync-to-latest.sql", "utf8");
 
   const fichiers = { migration: sql, sync };

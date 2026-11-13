@@ -41,7 +41,7 @@ main fusionnée dedans le 2026-11-13) : deux écrans sur `/mon-espace/bienvenue`
 sept catégories), et la fiche paraît au clic sur « Publier ma fiche ». Un nom
 retapé part en relecture, le nom du compte publie tout de suite. Le talk se
 crée avec son titre seul (300 caractères). Les anciens sujets sont repris en
-thèmes par la migration 077 ; « Autre » est retiré. Mon espace propose ensuite
+thèmes par la migration 078 ; « Autre » est retiré. Mon espace propose ensuite
 « Pour aller plus loin ». L'annuaire filtre par catégorie. Parcours E2E :
 `e2e/parcours-inscription-express.spec.ts`.
 

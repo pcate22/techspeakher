@@ -2357,8 +2357,17 @@ ON CONFLICT (slug) DO NOTHING;
 INSERT INTO seeds_appliques (cle) VALUES ('076_tremplin_devoxx_2027')
 ON CONFLICT (cle) DO NOTHING;
 
--- ─── 077 — Anciens sujets vers les thèmes ───
--- Miroir de db/migrations/077_themes_categories.sql.
+-- ─── 077 — Tremplin 2027 : transport et logement ───
+-- Miroir de db/migrations/077_tremplin_2027_deplacements.sql.
+UPDATE contenus
+   SET corps = replace(corps,
+     'nous cherchons des financements pour les prendre en charge.',
+     'nous cherchons des financements, mais à ce jour, nous ne pouvons pas les prendre en charge.')
+ WHERE slug = 'tremplin-2027-devoxx-france'
+   AND corps LIKE '%nous cherchons des financements pour les prendre en charge.%';
+
+-- ─── 078 — Anciens sujets vers les thèmes ───
+-- Miroir de db/migrations/078_themes_categories.sql.
 UPDATE speaker_profiles
 SET sujets = ARRAY(
   SELECT u.t

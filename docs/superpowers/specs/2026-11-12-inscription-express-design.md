@@ -87,13 +87,13 @@ Routage : une connectée sans fiche qui arrive sur `/mon-espace` est envoyée ve
 
 ## Données
 
-- Migration `db/migrations/077_themes_categories.sql` (076 est pris par la branche `claude/tech-speakher-devoxx-669331`) : conversion des sujets selon la table ci-dessus. Même chose dans `sync-to-latest.sql` (idempotent) ; `schema.sql` ne change pas de forme.
+- Migration `db/migrations/078_themes_categories.sql` (076 et 077 sont pris par le Tremplin Devoxx) : conversion des sujets selon la table ci-dessus. Même chose dans `sync-to-latest.sql` (idempotent) ; `schema.sql` ne change pas de forme.
 - Aucune nouvelle colonne.
 
 ## Branche Tremplin Devoxx en parallèle
 
 `claude/tech-speakher-devoxx-669331` touche `db/sync-to-latest.sql`, `docs/dette-technique.md`, `docs/roadmap.md`, `src/__tests__/french-spelling.test.ts`, `src/data/search-index.ts`, `src/app/page.tsx`. Pour limiter les conflits :
-- migration numérotée 077 ;
+- migration numérotée 078 (077 prise entre-temps par `077_tremplin_2027_deplacements.sql`) ;
 - ne pas toucher `src/app/page.tsx` ni les fichiers Tremplin ;
 - se rebaser sur `main` après sa fusion, puis réunir item par item ce que contiennent les deux versions de la dette et de la roadmap (règle « l'union fait foi »).
 

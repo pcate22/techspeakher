@@ -2,7 +2,7 @@
 
 > **Session du 2026-11-12 — inscription express à l'annuaire**
 > (`docs/superpowers/specs/2026-11-12-inscription-express-design.md`, migration
-> 077). Aucun P0 touché ; le **3** n'a pas été relu ce jour. SOLDÉ dans le
+> 078). Aucun P0 touché ; le **3** n'a pas été relu ce jour. SOLDÉ dans le
 > geste : compteur du titre masqué par l'erreur ; titres de 300 caractères
 > dans les cartes (vérifiés à 375 px) ; libellé « Aucun sujet choisi. » déjà passé
 > à « Aucun thème choisi. » dans `src/lib/profil-sections.ts` (vérifié le
@@ -821,7 +821,7 @@ l'écran.
 - **Fiches héritées sans thème : « Soumettre » disparaît.**
   `raisonBlocageAnnuaire` (`src/lib/profiles.ts`) exige désormais au moins un
   thème. Un brouillon ancien dont le seul sujet était « Autre » (retiré par la
-  migration 077) perd le bouton jusqu'à ce qu'il choisisse un thème. Mon espace
+  migration 078) perd le bouton jusqu'à ce qu'il choisisse un thème. Mon espace
   propose « Choisis tes thèmes » en tête, mais l'écran de la fiche ne dit pas
   encore pourquoi le bouton manque. À vérifier sur une fiche réelle de ce cas.
   **Effort : XS.**

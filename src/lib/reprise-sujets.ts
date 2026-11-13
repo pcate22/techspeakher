@@ -1,6 +1,6 @@
 /**
  * Reprise des anciens sujets (11 libellés larges) vers les thèmes actuels.
- * Miroir exact de db/migrations/077_themes_categories.sql : le test de
+ * Miroir exact de db/migrations/078_themes_categories.sql : le test de
  * cohérence échoue si l'un des deux bouge sans l'autre. « Autre » n'a pas
  * d'équivalent : il est retiré, la fiche reste publiée sans thème.
  */

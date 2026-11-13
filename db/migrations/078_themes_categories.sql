@@ -1,4 +1,4 @@
--- 077 — Les anciens sujets deviennent des thèmes précis.
+-- 078 — Les anciens sujets deviennent des thèmes précis.
 --
 -- Les 11 sujets larges (« Cloud / DevOps / Infra »…) sont remplacés par des
 -- sous-catégories rangées en catégories (src/data/domaines.ts). Chaque fiche
