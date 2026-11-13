@@ -277,12 +277,12 @@ Le `noindex` plutôt qu'un `503` est une contrainte assumée : une page App Rout
 ne peut renvoyer que 404 ou 307/308. Il empêche un incident d'une heure de se
 graver dans l'index, sans priver la visiteuse d'une page lisible.
 
-### 4.2 Membre connectée — **23 pages, ~28 actions, 0 test E2E**
+### 4.2 Membre connectée — **23 pages, ~28 actions** (0 test E2E au moment de l'audit ; couverture actuelle dans le tableau)
 
 | # | Parcours | Statut |
 |---|---|---|
 | 11 | Se connecter (lien magique, Google, LinkedIn) + écran « déjà un compte » | ❌ |
-| 12 | Créer sa fiche par sections, suivre la complétude, la soumettre | ❌ |
+| 12 | Créer sa fiche par sections, suivre la complétude, la soumettre | 🟡 (inscription express ✅ `parcours-inscription-express.spec.ts` depuis le 2026-11-12 ; sections et soumission ❌) |
 | 13 | Publier / retirer sa fiche de l'annuaire | ❌ |
 | 14 | Gérer ses talks, rattacher une conférence, accepter une suggestion CFP | 🟡 (conférences ✅ `parcours-talks.spec.ts`, import ✅ `parcours-import.spec.ts`, suggestion CFP ❌) |
 | 15 | Écrire un article et le soumettre | ❌ |
@@ -681,6 +681,30 @@ les tests eux-mêmes, et sont écrites à côté des assertions concernées :
 Ces deux-là n'étaient pas des tests ratés mais des tests **instables**, c'est-à-
 dire pires : ils auraient rougi un jour sur deux sans que rien ne soit cassé, et
 `retries: 2` les aurait masqués (§6).
+
+### 5.10 L'inscription express (2026-11-12)
+
+`e2e/parcours-inscription-express.spec.ts`, deux comptes jetables créés sans
+fiche. Le premier garde le nom de son compte : deux thèmes dans deux catégories,
+« Publier ma fiche », retour sur Mon espace avec « Ta fiche est en ligne. » et
+la fiche `publie` en base ; puis « Ajoute un talk », le titre seul,
+« Enregistrer », et la page du talk. Le second retape son nom : « Ta fiche est
+envoyée… » et la fiche `en_attente`. Le statut se décide côté serveur à partir
+du nom lu en base, d'où les deux cas joués ici et pas seulement en unitaire.
+
+On juge sur le message et jamais sur `?ok=` : le bandeau de confirmation
+retire le paramètre de l'URL dès l'hydratation. Chaque test vérifie aussi que
+l'autre message est absent.
+
+**Cassé une fois** : `doitEtreRelue` forcée à `false`
+(`src/lib/relecture.ts`), le second test tombe sur « Ta fiche est envoyée. »
+introuvable.
+
+**Instrument** : les cases de thème sont contrôlées par React, et
+`locator.check()` relisait l'état avant le rendu qui la coche (« Clicking the
+checkbox did not change its state »), sur les quatre passages, sans qu'aucun
+code ne soit en cause : un humain coche en un clic. Le test clique, puis attend
+`toBeChecked()`.
 
 ## 6. Ce qu'il ne faut pas faire
 

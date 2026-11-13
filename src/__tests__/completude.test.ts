@@ -12,7 +12,7 @@ const fichePubliee = (over = {}) =>
     titreProfil: "Ingénieure",
     bio: "Salut",
     secteurs: ["MedTech / Santé"],
-    sujets: ["IA / Machine Learning / Data"],
+    sujets: ["IA / Machine Learning"],
     linkedin: "https://lk/x",
     isWoman: true,
     status: "publie",

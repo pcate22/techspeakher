@@ -119,10 +119,10 @@ export const SECTIONS_PROFIL: readonly SectionProfil[] = [
   },
   {
     cle: "sujets",
-    titre: "Tes sujets",
+    titre: "Tes thèmes",
     aide: "Ce dont tu parles ou aimerais parler en conférence.",
     champs: ["sujets"],
-    vide: "Aucun sujet choisi.",
+    vide: "Aucun thème choisi.",
     estVide: (p) => p.sujets.length === 0,
   },
   {

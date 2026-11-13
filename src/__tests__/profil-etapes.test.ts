@@ -43,3 +43,17 @@ describe("Étapes du profil speakeuse", () => {
     }
   });
 });
+
+describe("Anciens liens ?step= → page de section", () => {
+  it("chaque clé mène à une section existante", async () => {
+    const { sectionDeLEtape } = await import("@/app/mon-espace/profil-etapes");
+    const { CLES_SECTION } = await import("@/lib/profil-sections");
+    expect(sectionDeLEtape("contact")).toBe("contact");
+    expect(sectionDeLEtape("profil")).toBe("identite");
+    expect(sectionDeLEtape("domaines")).toBe("secteurs");
+    expect(sectionDeLEtape("localisation")).toBe("interventions");
+    for (const cle of CLES_ETAPE) expect(CLES_SECTION).toContain(sectionDeLEtape(cle));
+    expect(sectionDeLEtape("constructor")).toBeNull();
+    expect(sectionDeLEtape(undefined)).toBeNull();
+  });
+});

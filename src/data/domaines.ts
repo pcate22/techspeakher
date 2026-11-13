@@ -3,7 +3,7 @@
  * Source unique : sert aux cases à cocher du profil ET aux filtres de l'annuaire.
  * Deux axes :
  *   - SECTEURS : le domaine d'activité (santé, finance…)
- *   - SUJETS   : le métier / thème tech (IA, cloud…)
+ *   - THEMES   : le thème tech, en catégories et sous-catégories (IA, cloud…)
  * Les valeurs hors liste sont ignorées. Ajuste librement ces listes :
  * elles pilotent automatiquement le formulaire et les filtres.
  */
@@ -24,19 +24,55 @@ export const SECTEURS = [
   "Autre",
 ] as const;
 
-export const SUJETS = [
-  "IA / Machine Learning / Data",
-  "Développement web / Front-end",
-  "Mobile",
-  "Cloud / DevOps / Infra",
-  "Cybersécurité",
-  "UX / Design / Accessibilité",
-  "Produit / Agilité",
-  "Leadership / Soft skills",
-  "Recherche / Académique (PhD)",
-  "Innovation / R&D",
-  "Autre",
-] as const;
+/**
+ * Thèmes en deux niveaux : sept catégories, chacune avec ses sous-catégories.
+ * On stocke la sous-catégorie (colonne `sujets`) ; la catégorie se déduit, ce
+ * qui permet de filtrer « Design » sans une seconde colonne. Chaque
+ * sous-catégorie est unique dans toute la liste, sans quoi la catégorie
+ * déduite serait ambiguë.
+ */
+export const CATEGORIES_THEMES = [
+  {
+    categorie: "Développement",
+    themes: ["Web / Front-end", "Back-end", "Mobile", "Qualité / Tests", "Architecture"],
+  },
+  {
+    categorie: "Data et IA",
+    themes: ["IA / Machine Learning", "Data / BI", "IA générative", "Éthique de l'IA"],
+  },
+  {
+    categorie: "Infra et sécurité",
+    themes: ["Cloud", "DevOps", "Cybersécurité", "Green IT"],
+  },
+  {
+    categorie: "Design",
+    themes: ["UX / UI", "Accessibilité", "Design system", "Recherche utilisateur"],
+  },
+  {
+    categorie: "Produit",
+    themes: ["Product management", "Product marketing", "Agilité", "Growth"],
+  },
+  {
+    categorie: "Humain et carrière",
+    themes: ["Leadership", "Soft skills", "Reconversion", "Diversité et inclusion"],
+  },
+  {
+    categorie: "Recherche et innovation",
+    themes: ["Recherche / PhD", "R&D", "Open source"],
+  },
+] as const satisfies readonly { categorie: string; themes: readonly string[] }[];
+
+/** Toutes les sous-catégories, à plat : c'est la liste blanche des thèmes. */
+export const THEMES: readonly string[] = CATEGORIES_THEMES.flatMap((c) => c.themes);
+
+/** Catégorie d'un thème, ou null si le thème est hors liste. */
+export function categorieDuTheme(theme: string): string | null {
+  return (
+    CATEGORIES_THEMES.find((c) =>
+      (c.themes as readonly string[]).includes(theme),
+    )?.categorie ?? null
+  );
+}
 
 /**
  * Zones d'intervention : où la speakeuse se déplace pour parler.
@@ -83,7 +119,6 @@ export const LANGUES = [
 ] as const;
 
 export type Secteur = (typeof SECTEURS)[number];
-export type Sujet = (typeof SUJETS)[number];
 
 /** Ne garde que les valeurs présentes dans `list` (liste blanche), dédoublonnées. */
 function whitelist(list: readonly string[], values: string[]): string[] {
@@ -103,7 +138,7 @@ function whitelist(list: readonly string[], values: string[]): string[] {
 export const filterSecteurs = (values: string[]): string[] =>
   whitelist(SECTEURS, values);
 export const filterSujets = (values: string[]): string[] =>
-  whitelist(SUJETS, values);
+  whitelist(THEMES, values);
 export const filterRegions = (values: string[]): string[] =>
   whitelist(REGIONS, values);
 export const filterLangues = (values: string[]): string[] =>

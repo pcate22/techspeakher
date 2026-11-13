@@ -13,7 +13,11 @@ import {
   type CarteFil as Carte,
 } from "@/lib/fil-cartes";
 import { aujourdhuiParis } from "@/lib/tremplin-statut";
-import { getCompte } from "@/lib/users";
+import LienTexte from "@/components/LienTexte";
+import { getCompte, peutCreerFiche } from "@/lib/users";
+import { getTalksCountByProfileId } from "@/lib/talks";
+import ConfirmationBanner from "@/components/ConfirmationBanner";
+import { pourAllerPlusLoin } from "./pour-aller-plus-loin";
 import { getProfileByUserId } from "@/lib/profiles";
 import { getReactionsPourFil } from "@/lib/reactions";
 import Avatar from "@/components/Avatar";
@@ -30,22 +34,35 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
+/** Ce que dit Mon espace au retour de l'inscription express (`?ok=`). */
+const MESSAGE_OK: Record<string, string> = {
+  fiche_publiee: "Ta fiche est en ligne.",
+  fiche_envoyee: "Ta fiche est envoyée. L'équipe la relit, en général sous 48\u00a0h.",
+};
+
 /**
  * L'ACCUEIL CONNECTÉ = LE FIL, PUR (conception v2 §4, lot N2 — maquette
  * v5.1 validée le 2026-08-07) : ce qui se passe chez nous, et l'envie qui va
  * avec. L'incitation passe PAR L'EXEMPLE (« Léa · sur scène »), jamais par
- * des injonctions — ZÉRO carte personnelle : le perso vit sur « Mon profil »
+ * des injonctions — aucune carte personnelle : le perso vit sur « Mon profil »
  * (marche, accès) et sur « Ma fiche publique » (complétude, soumission) ;
  * la redistribution du hub est tracée dans conception-lot-n2-fil.md §4.
+ * Seule exception : « Pour aller plus loin », juste après une publication ou
+ * tant que la fiche n'a aucun thème (inscription express).
  *
  * Antichronologique, fin de fil « Tu es à jour ✓ » : on veut que les membres
  * passent PEU de temps ici et beaucoup sur scène (doctrine §0). Pas
  * d'archive : les listes complètes restent publiques, le fil pointe.
  */
-export default async function Accueil() {
+export default async function Accueil({
+  searchParams,
+}: {
+  searchParams: Promise<{ ok?: string }>;
+}) {
   const session = await auth();
   if (!session?.user?.id) redirect("/connexion");
   const uid = Number(session.user.id);
+  const { ok } = await searchParams;
 
   const aujourdhui = aujourdhuiParis();
   // L'invariant « limite par source » : chaque source livre jusqu'à FIL_MAX
@@ -61,6 +78,17 @@ export default async function Accueil() {
     // Ma fiche (lot N4) : le bouton Bravo s'efface sur MES cartes.
     getProfileByUserId(uid),
   ]);
+  // Sans fiche, l'accueil est l'inscription express. Seulement pour qui peut en
+  // créer une : Bienvenue renvoie ici les autres, la boucle est donc exclue.
+  if (!monProfil && peutCreerFiche(compte?.genre)) redirect("/mon-espace/bienvenue");
+  // Lookup par possession propre : `?ok=__proto__` atteindrait le prototype.
+  const messageOk = ok && Object.hasOwn(MESSAGE_OK, ok) ? MESSAGE_OK[ok] : null;
+  // « Pour aller plus loin » suit une publication, ou une fiche restée sans
+  // thème : le reste du temps, l'accueil reste le fil.
+  const complements =
+    monProfil && (messageOk || monProfil.sujets.length === 0)
+      ? pourAllerPlusLoin(monProfil, await getTalksCountByProfileId(monProfil.id))
+      : [];
   const fil: Carte[] = fusionnerFil([
     ...scenes.map(carteScene),
     ...venues.map(carteVenue),
@@ -94,6 +122,26 @@ export default async function Accueil() {
             <p className="text-sm text-gray-light">Quoi de neuf chez nous</p>
           </div>
         </header>
+
+        {messageOk && <ConfirmationBanner message={messageOk} />}
+
+        {complements.length > 0 && (
+          <section
+            aria-labelledby="plus-loin-titre"
+            className="bg-navy-light border border-navy-lighter rounded-2xl p-6"
+          >
+            <h2 id="plus-loin-titre" className="text-lg font-bold mb-3">
+              Pour aller plus loin
+            </h2>
+            <ul role="list" className="flex flex-col gap-2 list-none">
+              {complements.map((c) => (
+                <li key={c.cle}>
+                  <LienTexte href={c.href}>{c.label}</LienTexte>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         <section aria-labelledby="fil-titre" className="flex flex-col gap-3">
           <h2 id="fil-titre" className="sr-only">

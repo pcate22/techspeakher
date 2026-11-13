@@ -1,5 +1,19 @@
 # Dette technique — Tech Speak'Her
 
+> **Session du 2026-11-12 — inscription express à l'annuaire**
+> (`docs/superpowers/specs/2026-11-12-inscription-express-design.md`, migration
+> 078). Aucun P0 touché ; le **3** n'a pas été relu ce jour. SOLDÉ dans le
+> geste : compteur du titre masqué par l'erreur ; titres de 300 caractères
+> dans les cartes (vérifiés à 375 px) ; libellé « Aucun sujet choisi. » déjà passé
+> à « Aucun thème choisi. » dans `src/lib/profil-sections.ts` (vérifié le
+> 2026-11-12). NOUVEAU, en P1 (§ « Publication express :
+> le nom OAuth se lit dans `users.name` ») : la relecture express tient à un
+> invariant, une colonne dédiée la rendrait solide. NOUVEAU, en P2 (§ « Inscription
+> express : ce que les revues laissent ») : récapitulatif des thèmes relu en
+> entier à chaque clic, réécriture à vide de deux sujets par la synchro, titres de 300 caractères dans l'OG et les
+> e-mails, fiches héritées sans thème bloquées avant « Soumettre », et en P3
+> le tri des fiches express dans « Publiées ».
+>
 > **Session du 2026-11-12 — Tremplin Devoxx France 2027** (page d'édition,
 > vitrine `/tremplin`, accueil, `/partenaires`, migration 076). SOLDÉ : le P1
 > « [décision produit] « Inscriptions ouvertes » sans aucune action possible »
@@ -769,7 +783,72 @@ ci-dessous, listées ici pour la traçabilité :
   utilisé que 3 fois. Faire retourner `{ base, editionId }` et généraliser le
   helper. **Effort : S/M** (refactor sûr, les redirects sont testés).
 
+### Publication express : le nom OAuth se lit dans `users.name` (2026-11-12)
+
+- **La relecture express compare le nom tapé à un nom que la membre peut
+  écrire.** `publierFicheExpressAction` (`src/app/mon-espace/actions.ts`)
+  publie sans relecture quand le nom tapé égale `users.name`, censé venir de
+  Google ou LinkedIn. Or `saveProfile` et `saveProfileSection` écrivent aussi
+  `users.name`. Ce qui tient aujourd'hui : un invariant, écrire le nom du
+  compte va toujours avec une fiche (écriture placée après tout refus
+  possible), et l'express exige l'absence de fiche. Seule exception : les chemins
+  orga de `admin/tremplins` (`setUserNameIfEmpty`, `getOrCreateUserByEmail`)
+  posent un nom sans fiche, leur saisie étant de confiance. Un futur chemin qui
+  écrirait le nom sans fiche rouvrirait la publication directe d'un nom libre.
+  Correctif solide : garder le nom du fournisseur à part (par exemple
+  `users.oauth_name`, posé au callback d'authentification) et comparer à lui.
+  Demande une migration, donc hors de la PR de l'inscription express.
+  **Effort : S.**
+
 ## 🟡 P2 — nice-to-have
+
+### Inscription express : ce que les revues laissent (2026-11-12)
+
+Relevés par les revues des tâches du plan
+`docs/superpowers/plans/2026-11-12-inscription-express.md`, laissés hors de la
+PR parce qu'ils touchent un composant partagé ou demandent une vérification à
+l'écran.
+
+- **Titres de talk à 300 caractères : l'image OG et les e-mails restent à
+  voir.** `TITRE_MAX` est passé de 200 à 300 (`src/lib/talk-limits.ts`).
+  Vérifié à 375 px le 2026-11-12 avec un titre de 300 caractères dont un mot
+  collé de 60 : sur la fiche publique (`src/components/TalkCard.tsx`) et la
+  carte de l'annuaire (`src/components/SpeakeuseCard.tsx`), le mot débordait
+  la carte de 150 px ; `min-w-0 break-words` le coupe, rien ne déborde plus.
+  Le formulaire est une zone de texte, il passe à la ligne seul. Personne n'a
+  encore regardé l'image OG des pages talk ni les e-mails qui citent un titre.
+  **Effort : S.**
+- **Fiches héritées sans thème : « Soumettre » disparaît.**
+  `raisonBlocageAnnuaire` (`src/lib/profiles.ts`) exige désormais au moins un
+  thème. Un brouillon ancien dont le seul sujet était « Autre » (retiré par la
+  migration 078) perd le bouton jusqu'à ce qu'il choisisse un thème. Mon espace
+  propose « Choisis tes thèmes » en tête, mais l'écran de la fiche ne dit pas
+  encore pourquoi le bouton manque. À vérifier sur une fiche réelle de ce cas.
+  **Effort : XS.**
+- ~~**Le compteur du titre disparaît quand une erreur s'affiche.**~~ **SOLDÉ
+  le 2026-11-12** : `ChampTexte` (`src/components/ChampTexte.tsx`) garde
+  l'indice visible et le lit avec l'erreur (`aria-describedby` porte les
+  deux) ; le compteur dit « n / 300 caractères ».
+- **Le récapitulatif des thèmes est relu en entier à chaque case.**
+  `ChoixThemes` (`src/app/mon-espace/ChoixThemes.tsx`) porte
+  `aria-live="polite"` sur « Tes thèmes (n) : … » : à dix thèmes, chaque clic
+  fait relire la liste complète. N'annoncer que le thème ajouté ou retiré.
+  **Effort : S.**
+- **La reprise des sujets réécrit pour rien les fiches « Mobile » et
+  « Cybersécurité ».** Dans `db/sync-to-latest.sql`, ces deux libellés gardent
+  le même nom en thème, donc le `WHERE sujets && ARRAY[…]` les reprend à chaque
+  passage et l'`UPDATE` réécrit la ligne à l'identique. Sans effet visible
+  (aucun déclencheur sur `updated_at`), seulement des écritures inutiles. Les retirer de la liste du
+  `WHERE`. **Effort : XS.**
+- **P3, décision produit : une fiche publiée par l'inscription express trie
+  en dernier dans « Publiées ».** `publierFiche` (`src/lib/profiles.ts`) la
+  publie sans relecture, donc avec `validated_at` à NULL, et la liste
+  « Publiées » de l'admin trie sur cette colonne. À trancher : trier sur
+  `published_at`, ou montrer à part les fiches publiées sans relecture.
+  **Effort : XS** une fois tranché.
+- ~~**« Aucun sujet choisi. » sous le titre « Tes thèmes ».**~~ **SOLDÉ le 2026-11-12.**
+  Le libellé vide de la section (`src/lib/profil-sections.ts`, ligne 125) dit
+  déjà « Aucun thème choisi. ».
 
 ### CI : le job E2E épinglé sur `ubuntu-24.04` (2026-11-04)
 

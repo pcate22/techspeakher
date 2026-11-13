@@ -144,25 +144,25 @@ BEGIN
      'Léa conçoit des plateformes internes et adore expliquer la fiabilité sans jargon.',
      'https://lea.example.test', 'https://www.linkedin.com/in/lea-dubois-demo', 'Toulouse',
      ARRAY['Occitanie'], ARRAY['Français','Anglais'], ARRAY['Cloud','DevOps'],
-     ARRAY['Observabilité','Plateformes internes'], true, true,
+     ARRAY['DevOps','Cloud'], true, true,
      'publie', now(), now() - INTERVAL '400 days', u_orga, now() - INTERVAL '395 days'),
     (u_aicha, 'Data engineer', 'Data Engineer', 'Cartodonnées',
      'Aïcha construit des pipelines de données et milite pour des tableaux de bord lisibles.',
      NULL, 'https://www.linkedin.com/in/aicha-benali-demo', 'Blagnac',
      ARRAY['Occitanie'], ARRAY['Français'], ARRAY['Data'],
-     ARRAY['Qualité des données','Dataviz'], false, true,
+     ARRAY['Data / BI','IA / Machine Learning'], false, true,
      'publie', now(), now() - INTERVAL '390 days', u_orga, now() - INTERVAL '385 days'),
     (u_nadia, 'Développeuse back-end', 'Développeuse', 'Fabrique API',
      'Nadia parle d''architectures d''API sobres et testables.',
      NULL, 'https://www.linkedin.com/in/nadia-lopez-demo', 'Toulouse',
      ARRAY['Occitanie'], ARRAY['Français'], ARRAY['Back-end'],
-     ARRAY['API','Tests'], false, true,
+     ARRAY['Back-end','Qualité / Tests'], false, true,
      'publie', now(), now() - INTERVAL '380 days', u_orga, now() - INTERVAL '375 days'),
     (u_coach1, 'Accessibilité numérique', 'UX Engineer', 'Accessic',
      'Sofia accompagne les speakeuses et parle d''accessibilité concrète.',
      NULL, 'https://www.linkedin.com/in/sofia-nguyen-demo', 'Toulouse',
      ARRAY['Occitanie'], ARRAY['Français','Anglais'], ARRAY['Web','Accessibilité'],
-     ARRAY['RGAA','Design inclusif'], true, true,
+     ARRAY['Accessibilité','UX / UI'], true, true,
      'publie', now(), now() - INTERVAL '500 days', u_orga, now() - INTERVAL '495 days');
 
   -- En attente de validation → tâche orga « Valider la fiche de … ».
@@ -172,7 +172,7 @@ BEGIN
   VALUES
     (u_yasmine, 'Développeuse front', 'Développeuse', 'Studio Pixel',
      'Yasmine découvre la prise de parole et prépare son premier talk.', 'Toulouse',
-     ARRAY['Français'], ARRAY['Web'], ARRAY['Front-end'], true,
+     ARRAY['Français'], ARRAY['Web'], ARRAY['Web / Front-end'], true,
      'en_attente', now() - INTERVAL '2 days');
 
   -- Brouillon EN SOMMEIL → tâche orga « Relancer … » + page /admin/speakeuses/relances.

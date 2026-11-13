@@ -75,7 +75,10 @@ export default function ChampTexte({
    * l'autofill du navigateur restent muets — coûteux au clavier et sur mobile. */
   autoComplete?: string;
 }) {
-  const describedBy = error ? `err-${id}` : hint ? `hint-${id}` : undefined;
+  // L'indice reste lu avec l'erreur : un compteur sert justement quand le
+  // texte déborde. L'erreur passe en premier, c'est elle qui bloque.
+  const describedBy =
+    [error && `err-${id}`, hint && `hint-${id}`].filter(Boolean).join(" ") || undefined;
   // Une liste vide n'annonce rien d'utile : on ne câble `list` que s'il y a
   // vraiment des valeurs à proposer (sinon l'aide technique promet une
   // autocomplétion creuse).
@@ -181,14 +184,14 @@ export default function ChampTexte({
           ))}
         </datalist>
       )}
-      {hint && !error && (
-        <p id={`hint-${id}`} className="text-xs text-gray-light mt-1">
-          {hint}
-        </p>
-      )}
       {error && (
         <p id={`err-${id}`} role="alert" className={errorClass}>
           {error}
+        </p>
+      )}
+      {hint && (
+        <p id={`hint-${id}`} className="text-xs text-gray-light mt-1">
+          {hint}
         </p>
       )}
     </div>

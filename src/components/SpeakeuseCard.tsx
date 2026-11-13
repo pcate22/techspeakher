@@ -65,7 +65,9 @@ export default function SpeakeuseCard({
                 <p className="text-[11px] uppercase tracking-wide text-magenta-light">
                   {t.type}
                 </p>
-                <p className="text-[15px] font-medium text-white leading-snug">
+                {/* Titre libre jusqu'à 300 caractères : un mot collé y casse
+                    plutôt que d'élargir la carte. */}
+                <p className="min-w-0 break-words text-[15px] font-medium text-white leading-snug">
                   {t.titre}
                 </p>
               </li>
