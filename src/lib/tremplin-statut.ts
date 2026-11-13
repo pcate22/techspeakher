@@ -72,6 +72,21 @@ export function inscriptionsEtat(
 }
 
 /**
+ * L'édition recrute : statut actif ET fenêtre de dates ouverte aujourd'hui.
+ * L'accueil (bouton principal) et la page de l'édition (section « Candidater »)
+ * lisent cette même règle : le bouton mène toujours à une ancre qui existe.
+ */
+export function candidaturesOuvertes(
+  e: FenetreInscriptions & { statut: string },
+  todayStr: string,
+): boolean {
+  return (
+    (e.statut === "ouvert" || e.statut === "en_cours") &&
+    inscriptionsEtat(e, todayStr) === "ouvertes"
+  );
+}
+
+/**
  * Nom d'une édition prêt pour un RACCOURCI de navigation, où il faut dire de
  * quoi il s'agit : « Tremplin 2026 » tel quel, « TSH 2026 » préfixé.
  *

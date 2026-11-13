@@ -9,9 +9,9 @@ import DateFr from "@/components/DateFr";
 import VideoCard from "@/components/VideoCard";
 import Accompagnantes from "@/components/Accompagnantes";
 import { BASE_URL } from "@/constants/site";
-import { formatDateFr, nb, quandFr } from "@/lib/format";
+import { formatDateFr, nb, periodeFr, quandFr } from "@/lib/format";
 import { aujourdhuiParis, getEditionByConfAndYear, paramsEditionsPubliques } from "@/lib/tremplin-editions";
-import { estPasse } from "@/lib/tremplin-statut";
+import { estPasse, candidaturesOuvertes } from "@/lib/tremplin-statut";
 import {
   getPublicEdition,
   mentionTransfert,
@@ -27,15 +27,7 @@ import {
   aUnTremplinADecrire,
 } from "@/lib/recit-edition";
 import RecitConference from "@/components/RecitConference";
-// Blocs éditoriaux (constantes du programme, v1 — cf. docs/tremplin-edition-publique.md §3).
-import {
-  jury,
-  prix,
-  partenaires,
-  faq,
-  estEditionEditoriale,
-  retoursPourTous,
-} from "@/data/tremplin";
+import { editorialDe } from "@/data/tremplin";
 import { replayDe } from "@/data/videos";
 
 /** Format long « 28 avr. 2026 » pour les dates d'édition (UTC-safe). */
@@ -118,10 +110,15 @@ export default async function EditionPublique({ params }: { params: Promise<Para
 
   const todayStr = aujourdhuiParis();
   // L'éditorial de `src/data/tremplin.ts` (FAQ, jury nommé, lots, partenaires)
-  // décrit UNE édition : celle-là. Sur une autre année il répond à côté ; sur une
-  // autre conférence la même année, il annonce le DevFest à des gens venus pour
-  // autre chose.
-  const editorialDeCetteEdition = estEditionEditoriale(conf, ed.annee);
+  // décrit UNE édition : celle-là, ou aucune.
+  const editorial = editorialDe(conf, ed.annee);
+  const { faq = [], prix = [], jury = [], partenaires = [], retoursPourTous = [] } = editorial ?? {};
+  // Le bouton du formulaire vit tant que la fenêtre de candidature est ouverte,
+  // et seulement là : après la date limite, il mènerait à un formulaire fermé.
+  const candidature =
+    editorial?.candidature && candidaturesOuvertes(ed, todayStr)
+      ? editorial.candidature
+      : null;
   // CHAPITRE 1 — cette page raconte le Tremplin JUSQU'À la soirée finale.
   // L'accompagnement d'après (la montée sur scène vers la conférence) a sa
   // propre page : autre calendrier, autres coachs, autre cohorte. Tant que les
@@ -183,16 +180,15 @@ export default async function EditionPublique({ params }: { params: Promise<Para
   // et un objet JSON-LD jetés. C'est ICI, où l'on sait de quelle édition il
   // s'agit, que la question du replay reçoit la bonne vidéo (sans replay, le
   // lien vers la chaîne reste).
-  const replay = editorialDeCetteEdition ? replayDe(conf, ed.annee) : null;
-  const faqAffichee = !editorialDeCetteEdition
-    ? []
-    : replay
-      ? faq.map((f) =>
-          f.id === "replay"
-            ? { ...f, lien: { href: replay.url, label: "Revoir la soirée sur YouTube" } }
-            : f,
-        )
-      : faq;
+  const replay = editorial ? replayDe(conf, ed.annee) : null;
+  // Hors fenêtre, la question « Comment candidater » part avec le bouton : sa
+  // réponse renvoie à un formulaire fermé.
+  const faqAffichee = faq.map((f) => {
+    if (replay && f.id === "replay") {
+      return { ...f, lien: { href: replay.url, label: "Revoir la soirée sur YouTube" } };
+    }
+    return f;
+  }).filter((f) => candidature || f.id !== "candidater");
 
   const faqPageSchema = {
     "@context": "https://schema.org",
@@ -207,14 +203,15 @@ export default async function EditionPublique({ params }: { params: Promise<Para
   // Pas de « × » orphelin si la conf n'a pas de nom (lu littéralement par l'AT).
   const nomConf = nomConference(ed.confNom, ed.confLieu);
   const titre = nomConf ? `${ed.nom} × ${nomConf}` : ed.nom;
-  const confDate = dateLongue(ed.confDate);
+  const confDate =
+    periodeFr(ed.confDate, editorial?.confDateFin) ?? dateLongue(ed.confDate);
   const confHref = confHubHref(conf);
   // Section palmarès/prix : le titre rendu dépend de la présence de gagnantes.
   const palmaresHeadingId = ed.palmares.length > 0 ? "palmares-title" : "prix-title";
   // Le palmarès vient de la base, les lots aussi ; à défaut on montre les lots
   // éditoriaux, qui datent. Sans aucun des trois, la section n'aurait qu'un titre.
   const aQuelqueChoseAuPalmares =
-    ed.palmares.length > 0 || ed.recompenses.length > 0 || editorialDeCetteEdition;
+    ed.palmares.length > 0 || ed.recompenses.length > 0 || editorial;
   // Jury : la base fait foi dès qu'un juré y est saisi (accord recueilli) ;
   // sinon on garde la liste éditoriale (même logique que les prix). On ne
   // sérialise que nom + fonction/entreprise — l'e-mail n'existe pas dans le DTO.
@@ -223,7 +220,7 @@ export default async function EditionPublique({ params }: { params: Promise<Para
   const juryAffiche =
     ed.jury.length > 0
       ? ed.jury.map((j) => ({ name: juryLabel(j), role: juryRole(j) }))
-      : editorialDeCetteEdition
+      : editorial
         ? jury
         : [];
 
@@ -238,7 +235,7 @@ export default async function EditionPublique({ params }: { params: Promise<Para
         ]}
       />
       {/* Le JSON-LD ne publie la FAQ que sous l'adresse de SON édition. */}
-      {editorialDeCetteEdition && (
+      {editorial && (
         <script
           type="application/ld+json"
           // `<` échappé : un « </script> » dans une réponse fermerait la balise.
@@ -273,12 +270,54 @@ export default async function EditionPublique({ params }: { params: Promise<Para
             {titre}
           </h1>
           <div className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-gray-light text-sm sm:text-base">
-            {ed.finaleDate && <span><span aria-hidden="true">🎤 </span>Soirée finale&nbsp;: <DateFr iso={ed.finaleDate} weekday /></span>}
-            {ed.finaleLieu && <span><span aria-hidden="true">📍 </span>{ed.finaleLieu}</span>}
-            {confDate && <span><span aria-hidden="true">🏆 </span>{nomConf}&nbsp;: {confDate}</span>}
+            {/* Chaque repère tient sur sa ligne sans se couper ; le lieu a la
+                sienne, il compte autant que la date pour décider de venir. */}
+            {ed.finaleDate && <span className="whitespace-nowrap"><span aria-hidden="true">🎤 </span>Soirée finale&nbsp;: <DateFr iso={ed.finaleDate} weekday /></span>}
+            {confDate && <span className="whitespace-nowrap"><span aria-hidden="true">🏆 </span>{nomConf}&nbsp;: {confDate}</span>}
+            {ed.finaleLieu && <span className="basis-full"><span aria-hidden="true">📍 </span>{ed.finaleLieu}</span>}
           </div>
+          {/* Le CTA du héros mène d'abord aux conditions : on candidate en
+              sachant qu'il faut adhérer et venir à Paris. La date limite est
+              dite une fois, dans le surtitre. */}
+          {candidature && (
+            <div className="mt-8 flex justify-center">
+              <Button href="#candidater" variant="secondary" size="sm">
+                Candidater
+              </Button>
+            </div>
+          )}
         </div>
       </section>
+
+      {candidature && (
+        <section id="candidater" className="py-16 px-4 scroll-mt-bande-mois" aria-labelledby="candidater-title">
+          <div className="max-w-3xl mx-auto bg-navy-light border border-cyan/30 rounded-2xl p-6 sm:p-8">
+            <h2 id="candidater-title" className="text-2xl sm:text-3xl font-bold mb-6">Candidater</h2>
+            <p className="text-gray-light mb-4">Les conditions&nbsp;:</p>
+            <ul role="list" className="space-y-4 list-none mb-8">
+              {candidature.conditions.map((c) => (
+                <li key={c.texte} className="flex gap-3 text-gray-light leading-relaxed">
+                  <span className="text-cyan font-bold shrink-0" aria-hidden="true">&#10003;</span>
+                  <span>
+                    {c.texte}
+                    {c.lien && (
+                      <>
+                        {" "}
+                        <Link href={c.lien.href} className={LIEN_TEXTE}>
+                          {c.lien.label}
+                        </Link>
+                      </>
+                    )}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <Button href={candidature.formUrl} external>
+              Candidater au Tremplin
+            </Button>
+          </div>
+        </section>
+      )}
 
       {/* En chiffres — BDD. Trois zéros, ce n'est pas une information : c'est
           « ça a raté » écrit en grand, sous un titre invisible (sr-only). Une
@@ -390,7 +429,7 @@ export default async function EditionPublique({ params }: { params: Promise<Para
                   // Lot éditorial statique : SECOURS des éditions sans
                   // récompenses en base (la section ci-dessous prime sinon).
                   const lot =
-                    ed.recompenses.length > 0 || !editorialDeCetteEdition
+                    ed.recompenses.length > 0 || !editorial
                       ? undefined
                       : prix.find((x) => x.place === p.recompense);
                   return (
@@ -422,7 +461,7 @@ export default async function EditionPublique({ params }: { params: Promise<Para
             <>
               <p className="text-xs font-bold text-gold uppercase tracking-wider mb-3">Les prix</p>
               <h2 id="prix-title" className="text-2xl sm:text-3xl font-bold mb-6">Ce qu&apos;il y a à gagner</h2>
-              <ul role="list" className="grid grid-cols-1 sm:grid-cols-3 gap-6 list-none">
+              <ul role="list" className={`grid grid-cols-1 gap-6 list-none ${prix.length > 1 ? "sm:grid-cols-3" : "max-w-md mx-auto"}`}>
                 {prix.map((p) => (
                   <li key={p.place} className={`bg-navy border-2 ${p.color} rounded-xl p-6 text-center`}>
                     <h3 className="text-lg font-bold text-white mb-2">{p.place}</h3>
@@ -488,7 +527,7 @@ export default async function EditionPublique({ params }: { params: Promise<Para
           {/* Retours pour toutes — éditorial : le retour jury écrit et la vidéo
               sont des promesses de 2026, pas un dû de toute édition à venir.
               Le dernier bloc éditorial qui fuyait hors de son édition (P1). */}
-          {editorialDeCetteEdition && (
+          {editorial && (
           <div className="mt-8 bg-gradient-to-r from-cyan/10 to-magenta/10 rounded-xl p-6 sm:p-8 border border-navy-lighter">
             <h3 className="text-lg font-bold text-center mb-4">
               Pour <span className="text-magenta">toutes</span> les participantes
@@ -667,7 +706,7 @@ export default async function EditionPublique({ params }: { params: Promise<Para
       {/* Partenaires — éditoriaux, et datés : « nous accueille pour la soirée »,
           « co-animatrice de l'atelier CFP ». Ils remercient les partenaires d'UNE
           édition, pas d'une année où rien de tout ça n'a eu lieu. */}
-      {editorialDeCetteEdition && (
+      {editorial && (
       <section className="py-16 px-4 bg-navy-light" aria-labelledby="merci-title">
         <div className="max-w-3xl mx-auto">
           <h2 id="merci-title" className="text-xl font-bold text-center text-white mb-8">Merci à nos <span className="text-cyan">partenaires</span></h2>
@@ -688,7 +727,7 @@ export default async function EditionPublique({ params }: { params: Promise<Para
       )}
 
       {/* FAQ — éditoriale, et propre à l'édition qu'elle décrit */}
-      {editorialDeCetteEdition && (
+      {editorial && (
       <section className="py-16 px-4" id="faq" aria-labelledby="faq-title">
         <div className="max-w-3xl mx-auto">
           <h2 id="faq-title" className="text-2xl font-bold text-center mb-10"><span className="text-magenta">FAQ</span></h2>
@@ -701,12 +740,17 @@ export default async function EditionPublique({ params }: { params: Promise<Para
                   {item.lien && (
                     <>
                       {" "}
-                      <ExternalLink
-                        href={item.lien.href}
-                        className="text-cyan hover:text-cyan-light underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan rounded transition-colors"
-                      >
-                        {item.lien.label}
-                      </ExternalLink>
+                      {/* Un lien du site reste dans l'onglet ; un lien externe
+                          s'ouvre à part et le dit. */}
+                      {item.lien.href.startsWith("/") ? (
+                        <Link href={item.lien.href} className={LIEN_TEXTE}>
+                          {item.lien.label}
+                        </Link>
+                      ) : (
+                        <ExternalLink href={item.lien.href} className={LIEN_TEXTE}>
+                          {item.lien.label}
+                        </ExternalLink>
+                      )}
                     </>
                   )}
                 </dd>
@@ -737,6 +781,9 @@ export default async function EditionPublique({ params }: { params: Promise<Para
     </>
   );
 }
+
+const LIEN_TEXTE =
+  "text-cyan hover:text-cyan-light underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan rounded transition-colors";
 
 function StatCard({ n, label, tone }: { n: number; label: string; tone: "cyan" | "magenta" | "gold" }) {
   const color = tone === "cyan" ? "text-cyan" : tone === "magenta" ? "text-magenta" : "text-gold";

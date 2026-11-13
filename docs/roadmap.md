@@ -4,7 +4,8 @@
 > la dette technique : `docs/dette-technique.md`. Pour l'étude d'import des
 > talks : `docs/faisabilite-import-talks.md`.
 >
-> Dernière mise à jour : **2026-11-04** (section « Header Nous rejoindre,
+> Dernière mise à jour : **2026-11-12** (section « Tremplin Devoxx France
+> 2027 » seule, et la ligne Devoxx de « Landing partenaires ») ; **2026-11-04** (section « Header Nous rejoindre,
 > page bénévole » seule : conditions des coachs et du jury) ; **2026-10-16**
 > (section « Reprise humaine du code » seule) ; **2026-10-15** (sections « Navigation connectée »,
 > « Chantiers repris des PR fermées », « Adhésions HelloAsso », « Partenaires
@@ -25,6 +26,29 @@
 > déclenché. Aucune passation ne s'empile sur une autre : `CLAUDE.md` §Clore
 > une session. La **licence** est tranchée le 23/08 : voir la section dédiée
 > ci-dessous, qui ferme la piste « une autre communauté déploie la plateforme ».
+
+## Tremplin Devoxx France 2027 — en PR le 2026-11-12, candidatures jusqu'au 30/11
+
+Partenariat signé. Livré dans la PR : la page `/tremplin/devoxx-france/2027`
+(section « Candidater » avec conditions, adhésion obligatoire, déplacements à
+la charge des candidates, bouton vers le formulaire tant que la fenêtre est
+ouverte), sa FAQ, son lot et ses partenaires ; `/tremplin` qui met l'édition en
+avant ; le bloc Tremplin de l'accueil, remonté sous les verbatims ; Devoxx
+France sur `/partenaires` (« Ouvrir votre scène ») ; la migration 076 qui crée
+l'édition (ouverte du 9 au 30/11/2026, finale le 19/01/2027 à Paris, Devoxx du
+7 au 9/04/2027), ses cinq ateliers (thèmes 2026, le midi, à distance) et
+l'article « Le Tremplin repart, avec Devoxx France ».
+
+**À fournir (Cateline), puis à poser dans l'admin ou l'éditorial** : le lieu de
+la soirée du 19/01 (non cité tant qu'il n'est pas confirmé), l'heure et le lien
+des ateliers, le jury (la FAQ dit « annoncé bientôt »), les animatrices des
+ateliers, un logo Devoxx pour `/partenaires`, une image pour l'article.
+**À relire (Cateline)** : les textes de la FAQ 2027, des conditions et de
+l'article, écrits par Claude à partir du post LinkedIn et du formulaire.
+**Non vérifié** : le rendu à l'écran (la page d'édition a besoin d'une base ;
+machine trop chargée ce jour pour `npm run e2e:db`), à regarder sur la preview
+Vercel. **Après le 30/11** : le bouton disparaît seul ; passer l'édition en
+« en_cours » dans l'admin.
 
 ## Reprise humaine du code — porte d'entrée en PR le 2026-10-16, le reste reporté
 
@@ -233,7 +257,7 @@ pourquoi nous soutenir, qui sommes-nous, appel final, FAQ, bandeau mobile.
 qu'il n'y en a pas). **À relire** : tous les textes de la landing
 (`landingPartenaires`), écrits par Claude.
 Textes ouverts au-delà de Toulouse le 2026-10-15 (Toulouse reste l'ancrage). Partenariat
-Devoxx France en cours : à ajouter dans `src/data/partenaires.ts` **une fois signé**, pas avant.
+Devoxx France **signé** : ajouté le 2026-11-12 (section « Tremplin Devoxx France 2027 »).
 
 ## Textes après l'AGE du 29/09 — LIVRÉ le 2026-10-15 (PR #373), adhésions ouvertes, liens posés le même jour
 

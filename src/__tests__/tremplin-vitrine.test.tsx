@@ -10,11 +10,10 @@ import type { Edition } from "@/lib/tremplin-editions";
  *
  * Ce qui se juge ici :
  * - le CTA héros et le teaser suivent l'édition publique LA PLUS RÉCENTE ;
- * - la phrase-preuve (« 8 finalistes, 3 gagnantes… ») et le lien vers les
- *   finalistes restent réservés à l'édition ÉDITORIALE (ce sont des faits
- *   2026) ;
- * - base injoignable → repli complet sur l'édition éditoriale : la vitrine
- *   se dégrade vers ce qu'elle a toujours montré, jamais vers une erreur.
+ * - l'accroche et le lien vers les finalistes appartiennent à UNE édition
+ *   (« 8 finalistes, 3 gagnantes… » sont des faits 2026) ;
+ * - base injoignable → repli sur l'édition éditoriale en cours : la vitrine
+ *   se dégrade vers ce qu'elle sait, jamais vers une erreur.
  */
 
 const listEditionsPubliques = vi.fn();
@@ -118,12 +117,16 @@ describe("/tremplin — l'édition mise en avant vient de la base", () => {
       .mockResolvedValue([]);
     await rendu();
 
-    expect(screen.getByRole("link", { name: /voir l'édition 2026/i })).toHaveAttribute(
+    // Le repli est l'édition EN COURS (Devoxx France 2027), avec son accroche,
+    // sans rang inventé ni preuve empruntée à 2026.
+    expect(screen.getByRole("link", { name: /voir l'édition 2027/i })).toHaveAttribute(
       "href",
-      "/tremplin/devfest-toulouse/2026",
+      "/tremplin/devoxx-france/2027",
     );
-    expect(screen.getByText(/1ʳᵉ édition/)).toBeInTheDocument();
-    expect(screen.getByText(/8 finalistes/)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /tremplin.*devoxx france 2027/i })).toBeInTheDocument();
+    expect(screen.getByText(/édition en cours/i)).toBeInTheDocument();
+    expect(screen.getByText(/19 janvier 2027 à Paris/)).toBeInTheDocument();
+    expect(screen.queryByText(/8 finalistes/)).toBeNull();
   });
 
   it("une édition en préparation n'existe pas pour la vitrine (le sélecteur les exclut déjà)", async () => {
@@ -132,7 +135,7 @@ describe("/tremplin — l'édition mise en avant vient de la base", () => {
     // par son propre banc). Une liste vide = même repli que la base muette.
     listEditionsPubliques.mockResolvedValue([]);
     await rendu();
-    expect(screen.getByRole("link", { name: /voir l'édition 2026/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /voir l'édition 2027/i })).toBeInTheDocument();
   });
 });
 

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Button from "@/components/Button";
 import { BASE_URL } from "@/constants/site";
-import { tremplinSteps, editionEditoriale, estEditionEditoriale } from "@/data/tremplin";
+import { tremplinSteps, editionEditoriale, editorialDe } from "@/data/tremplin";
 import { verbatims } from "@/data/verbatims";
 import { listEditionsPubliques } from "@/lib/tremplin-editions";
 import { editionStatutAffiche, aujourdhuiParis } from "@/lib/tremplin-statut";
@@ -26,6 +26,7 @@ export const metadata: Metadata = {
     "coaching talk",
     "CFP conférence",
     "DevFest Toulouse",
+    "Devoxx France",
   ],
   alternates: { canonical: "/tremplin" },
   openGraph: {
@@ -49,22 +50,19 @@ export default async function TremplinConcept() {
   // phrase-preuve) découle de ce (conf, année)-là.
   const { confSlug, annee } = enAvant ?? editionEditoriale;
   const hrefEdition = `/tremplin/${confSlug}/${annee}`;
-  // La phrase-preuve (« 8 finalistes, 3 gagnantes… ») et le lien vers les
-  // finalistes racontent des FAITS 2026 : ils restent chez l'édition
-  // éditoriale, jamais prêtés à la suivante.
-  const estEditoriale = estEditionEditoriale(confSlug, annee);
+  // L'accroche (la preuve d'une édition passée, ou ce qui attend) et le lien
+  // vers les finalistes appartiennent à UNE édition : jamais prêtés à une autre.
+  const editorial = editorialDe(confSlug, annee);
   // La plus récente de N éditions publiques est la Nᵉ (liste triée récentes
-  // d'abord) ; sans base, l'éditoriale est la 1ʳᵉ — ce qu'elle est.
-  const ordinal = rangOrdinal(Math.max(editions.length, 1));
+  // d'abord) ; sans base, on ignore le rang : on dit seulement qu'elle est en cours.
+  const surtitre = enAvant ? `${rangOrdinal(editions.length)} édition` : "Édition en cours";
   // Quand le nom manque, le segment disparaît (même convention que le h1 de
   // la page cible : jamais de « × » orphelin, jamais un « Conférence » neutre
   // qui contredirait la page à l'arrivée).
-  const nomConf = enAvant ? nomConference(enAvant.confNom, enAvant.confLieu) : "DevFest Toulouse";
+  const nomConf = enAvant ? nomConference(enAvant.confNom, enAvant.confLieu) : editionEditoriale.confNom;
   // Hors éditorial, la carte garde UNE raison d'y aller, dérivée sans rien
   // inventer : l'état réel de l'édition (« Inscriptions ouvertes »…).
-  const contexte = !estEditoriale && enAvant
-    ? editionStatutAffiche(enAvant, aujourdhuiParis())
-    : null;
+  const contexte = enAvant ? editionStatutAffiche(enAvant, aujourdhuiParis()) : null;
 
   return (
     <>
@@ -85,7 +83,7 @@ export default async function TremplinConcept() {
             Tech Speak&apos;Her
           </h1>
           <p className="text-lg text-gray-light max-w-2xl mx-auto mb-8 leading-relaxed">
-            De la salle à la scène en six semaines&nbsp;: des ateliers de coaching, une
+            De la salle à la scène&nbsp;: des ateliers de coaching, une
             soirée finale devant un jury bienveillant, et une scène en conférence pour
             celles qu&apos;on accompagne jusqu&apos;au bout.
           </p>
@@ -166,25 +164,24 @@ export default async function TremplinConcept() {
         <div className="max-w-3xl mx-auto">
           <div className="bg-navy border border-gold/30 rounded-2xl p-6 sm:p-8">
             <p className="text-xs font-bold text-gold uppercase tracking-wider mb-2">
-              {ordinal} édition
+              {surtitre}
             </p>
             <h2 id="edition-title" className="text-xl sm:text-2xl font-bold mb-3">
               Tremplin <span className="text-gold">{nomConf ? `× ${nomConf} ${annee}` : annee}</span>
             </h2>
-            {estEditoriale && (
-              <p className="text-gray-light leading-relaxed mb-5">
-                8 finalistes, 3 gagnantes, un jury
-                100&nbsp;% féminin lors de la soirée du 4 juin à Toulouse.
-              </p>
-            )}
+            {/* L'état réel (« Inscriptions ouvertes ») quand il apprend quelque
+                chose, puis l'accroche de l'édition si elle en a une. */}
             {contexte && (
-              <p className="text-gray-light leading-relaxed mb-5">{contexte}.</p>
+              <p className="text-sm font-semibold text-cyan mb-2">{contexte}</p>
+            )}
+            {editorial && (
+              <p className="text-gray-light leading-relaxed mb-5">{editorial.accroche}</p>
             )}
             <div className="flex flex-col sm:flex-row gap-3">
               <Button href={hrefEdition} size="sm">
                 L&apos;édition {annee} en détail
               </Button>
-              {estEditoriale && (
+              {editorial?.lienFinalistes && (
                 <Button href={`${hrefEdition}#participantes`} variant="ghost" size="sm">
                   Les finalistes →
                 </Button>
