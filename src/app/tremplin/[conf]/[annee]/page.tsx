@@ -9,7 +9,7 @@ import DateFr from "@/components/DateFr";
 import VideoCard from "@/components/VideoCard";
 import Accompagnantes from "@/components/Accompagnantes";
 import { BASE_URL } from "@/constants/site";
-import { dateLongueFr, formatDateFr, nb, quandFr } from "@/lib/format";
+import { formatDateFr, nb, quandFr } from "@/lib/format";
 import { aujourdhuiParis, getEditionByConfAndYear, paramsEditionsPubliques } from "@/lib/tremplin-editions";
 import { estPasse, candidaturesOuvertes } from "@/lib/tremplin-statut";
 import {
@@ -119,9 +119,6 @@ export default async function EditionPublique({ params }: { params: Promise<Para
     editorial?.candidature && candidaturesOuvertes(ed, todayStr)
       ? editorial.candidature
       : null;
-  // La date limite vient de la base : prolonger la fenêtre dans l'admin la
-  // met à jour ici sans toucher l'éditorial.
-  const dateLimite = dateLongueFr(ed.inscriptionsFin);
   // CHAPITRE 1 — cette page raconte le Tremplin JUSQU'À la soirée finale.
   // L'accompagnement d'après (la montée sur scène vers la conférence) a sa
   // propre page : autre calendrier, autres coachs, autre cohorte. Tant que les
@@ -277,12 +274,10 @@ export default async function EditionPublique({ params }: { params: Promise<Para
             {confDate && <span><span aria-hidden="true">🏆 </span>{nomConf}&nbsp;: {confDate}</span>}
           </div>
           {/* Le CTA du héros mène d'abord aux conditions : on candidate en
-              sachant qu'il faut adhérer et venir à Paris. */}
+              sachant qu'il faut adhérer et venir à Paris. La date limite est
+              dite une fois, dans le surtitre. */}
           {candidature && (
-            <div className="mt-8 flex flex-col items-center gap-2">
-              <p className="text-base font-semibold text-cream">
-                {dateLimite ? <>Candidatures ouvertes jusqu&apos;au {dateLimite}</> : "Candidatures ouvertes"}
-              </p>
+            <div className="mt-8 flex justify-center">
               <Button href="#candidater" variant="secondary" size="sm">
                 Voir les conditions pour candidater
               </Button>

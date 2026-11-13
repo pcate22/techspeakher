@@ -195,9 +195,9 @@ describe("home — les boutons du héros suivent les candidatures", () => {
     getEditionByConfAndYear.mockResolvedValueOnce(edition({}));
     render(await Home());
     const liens = within(hero()).getAllByRole("link");
-    expect(liens[0]).toHaveTextContent(/candidater au tremplin devoxx france/i);
+    expect(liens[0]).toHaveTextContent(/^candidater au tremplin$/i);
     expect(liens[0]).toHaveAttribute("href", "/tremplin/devoxx-france/2027#candidater");
-    expect(liens[1]).toHaveTextContent(/rejoindre l.annuaire des speakeuses/i);
+    expect(liens[1]).toHaveTextContent(/^rejoindre l.annuaire$/i);
   });
 
   it("fenêtre close ou base muette : l'annuaire reprend la main", async () => {

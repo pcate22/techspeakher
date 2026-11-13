@@ -176,16 +176,16 @@ export default async function Home() {
             {tremplinRecrute ? (
               <>
                 <Button href={`${hrefEditionEnCours}#candidater`}>
-                  Candidater au Tremplin {editionEditoriale.confNom}
+                  Candidater au Tremplin
                 </Button>
                 <Button href="/mon-espace" variant="secondary">
-                  Rejoindre l&apos;annuaire des speakeuses
+                  Rejoindre l&apos;annuaire
                 </Button>
               </>
             ) : (
               <>
                 <Button href="/mon-espace">
-                  Rejoindre l&apos;annuaire des speakeuses
+                  Rejoindre l&apos;annuaire
                 </Button>
                 <Button href="/a-propos" variant="secondary">
                   Découvrir la communauté
