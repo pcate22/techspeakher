@@ -316,6 +316,8 @@ export const editionEditoriale = {
   confSlug: "devoxx-france",
   annee: 2027,
   confNom: "Devoxx France",
+  /** Nom court pour un bouton, où chaque mot compte. */
+  libelleCourt: "Devoxx 2027",
 } as const;
 
 /** L'éditorial de l'édition en cours, dérivé du repère : les deux bougent ensemble. */
