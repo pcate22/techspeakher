@@ -91,7 +91,7 @@ describe("Tremplin Devoxx France 2027 — candidater", () => {
   it("la date limite vient de la base : une fenêtre prolongée s'affiche telle quelle", async () => {
     await rendre({ ...devoxx, inscriptionsFin: "2099-12-07" });
     const hero = screen.getByRole("region", { name: /Tremplin 2027/ });
-    expect(hero.textContent).toMatch(/jusqu.au 7\s+décembre/);
+    expect(hero.textContent).toMatch(/jusqu.au\s7\s+décembre/);
   });
 
   it("fenêtre pas encore ouverte : pas de bouton", async () => {

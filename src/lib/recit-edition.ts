@@ -163,8 +163,9 @@ export interface Recit {
 }
 
 /** Jour + mois, sans année : le récit vit dans l'année de son titre. */
+// Jour et mois insécables : « 30 » seul en fin de ligne se lit mal.
 function jourMois(d: string): string {
-  return formatDateFr(d, { day: "numeric", month: "long" }) ?? d;
+  return (formatDateFr(d, { day: "numeric", month: "long" }) ?? d).replace(/ /g, "\u00a0");
 }
 
 const JOUR_MS = 86_400_000;
@@ -252,7 +253,7 @@ export function recitEdition(e: RecitEntrees): Recit {
         // Le seul état où la page a quelque chose à demander au visiteur.
         return [
           e.inscriptionsFin
-            ? `Candidatures ouvertes jusqu'au ${jourMois(e.inscriptionsFin)}`
+            ? `Candidatures ouvertes jusqu'au\u00a0${jourMois(e.inscriptionsFin)}`
             : "Candidatures ouvertes",
           e.finaleDate && `finale le ${jourMois(e.finaleDate)}`,
           scene,
@@ -281,7 +282,14 @@ export function recitEdition(e: RecitEntrees): Recit {
     }
   })();
   // Repli : une aventure bouclée dont on n'a aucun chiffre se dit quand même.
-  const kicker = morceaux.filter(Boolean).join(", ") || resumeEdition(e);
+  // Le surtitre ne se coupe qu'aux virgules : chaque morceau suivant le
+  // premier est un groupe de mots insécable (« finale le 19 janvier »). Le
+  // premier, plus long, garde ses espaces pour tenir sur un petit écran.
+  const kicker =
+    morceaux
+      .filter((m): m is string => Boolean(m))
+      .map((m, i) => (i === 0 ? m : m.replace(/ /g, "\u00a0")))
+      .join(", ") || resumeEdition(e);
 
   const parcoursCommence = premierAtelier !== null && premierAtelier <= e.aujourdhui;
   return {

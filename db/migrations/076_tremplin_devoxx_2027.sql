@@ -11,6 +11,13 @@
 -- article retouché ou supprimé ensuite depuis l'admin n'est jamais recréé au
 -- déploiement suivant. Rien de personnel : ni inscrite, ni jury, ni adresse.
 
+DO $seed076$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+                 WHERE table_name = 'tremplin_editions' AND column_name = 'statut') THEN
+    RETURN;
+  END IF;
+
 INSERT INTO tremplin_editions
   (nom, annee, conf_slug, statut, description,
    conf_nom, conf_lieu, conf_date, conf_lien,
@@ -44,6 +51,8 @@ SELECT e.id, a.ordre, a.titre, a.jour::date, a.description, 'toutes', TRUE, TRUE
  WHERE e.conf_slug = 'devoxx-france' AND e.annee = 2027 AND e.deleted_at IS NULL
    AND NOT EXISTS (SELECT 1 FROM seeds_appliques WHERE cle = '076_tremplin_devoxx_2027')
    AND NOT EXISTS (SELECT 1 FROM tremplin_ateliers t WHERE t.edition_id = e.id AND t.ordre = a.ordre);
+END
+$seed076$;
 
 INSERT INTO contenus (type, slug, titre, chapo, corps, categorie, tag, lien, statut, publie_le, au_flux)
 SELECT

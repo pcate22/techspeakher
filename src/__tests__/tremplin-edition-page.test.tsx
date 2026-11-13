@@ -163,7 +163,7 @@ describe("page d'édition — le hero RACONTE (lot G), il n'affiche plus un stat
     });
     const kicker = screen.getByText(/^2026 · /);
     expect(kicker.textContent).toMatch(/8 speakeuses accompagnées/);
-    expect(kicker.textContent).toMatch(/3 gagnantes/);
+    expect(kicker.textContent).toMatch(/3\sgagnantes/);
     // Fini le vocabulaire administratif de la liste d'admin.
     expect(kicker.textContent).not.toMatch(/Édition passée|En cours/);
   });
@@ -196,7 +196,7 @@ describe("page d'édition — le hero RACONTE (lot G), il n'affiche plus un stat
     });
     const kicker = screen.getByText(/^2026 · /);
     expect(kicker.textContent).toMatch(/8 speakeuses en préparation/);
-    expect(kicker.textContent).toMatch(/finale le 4 juin/);
+    expect(kicker.textContent).toMatch(/finale\sle\s4\sjuin/);
     expect(kicker.textContent).not.toMatch(/Édition passée|En cours/);
     expect(screen.queryByText(/Inscriptions ouvertes/)).toBeNull();
   });

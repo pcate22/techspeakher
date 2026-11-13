@@ -269,9 +269,11 @@ export default async function EditionPublique({ params }: { params: Promise<Para
             {titre}
           </h1>
           <div className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-gray-light text-sm sm:text-base">
-            {ed.finaleDate && <span><span aria-hidden="true">🎤 </span>Soirée finale&nbsp;: <DateFr iso={ed.finaleDate} weekday /></span>}
-            {ed.finaleLieu && <span><span aria-hidden="true">📍 </span>{ed.finaleLieu}</span>}
-            {confDate && <span><span aria-hidden="true">🏆 </span>{nomConf}&nbsp;: {confDate}</span>}
+            {/* Chaque repère tient sur sa ligne sans se couper ; le lieu a la
+                sienne, il compte autant que la date pour décider de venir. */}
+            {ed.finaleDate && <span className="whitespace-nowrap"><span aria-hidden="true">🎤 </span>Soirée finale&nbsp;: <DateFr iso={ed.finaleDate} weekday /></span>}
+            {confDate && <span className="whitespace-nowrap"><span aria-hidden="true">🏆 </span>{nomConf}&nbsp;: {confDate}</span>}
+            {ed.finaleLieu && <span className="basis-full"><span aria-hidden="true">📍 </span>{ed.finaleLieu}</span>}
           </div>
           {/* Le CTA du héros mène d'abord aux conditions : on candidate en
               sachant qu'il faut adhérer et venir à Paris. La date limite est

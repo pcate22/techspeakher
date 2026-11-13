@@ -38,6 +38,9 @@ const base = (o: Partial<RecitEntrees> = {}): RecitEntrees => ({
   ...o,
 });
 
+// Les espaces insécables du surtitre ne changent rien au sens lu.
+const lisible = (s: string) => s.replace(/\u00a0/g, " ");
+
 describe("etapeEdition — UNE décision, cinq récits", () => {
   it("candidatures ouvertes : elles passent avant tout le reste", () => {
     expect(etapeEdition(base({ aujourdhui: "2026-04-01" }))).toBe("candidature");
@@ -104,39 +107,47 @@ describe("etapeEdition — UNE décision, cinq récits", () => {
 });
 
 describe("recitEdition — le kicker raconte l'étape en cours", () => {
+  it("ne se coupe qu'aux virgules : aucun mot seul en fin de ligne", () => {
+    const { kicker } = recitEdition(base({ aujourdhui: "2026-04-01" }));
+    expect(kicker).toContain("jusqu'au\u00a017\u00a0avril");
+    const [, ...suite] = kicker.split(", ");
+    expect(suite.length).toBeGreaterThan(0);
+    for (const m of suite) expect(m).not.toContain(" ");
+  });
+
   it("après la finale, en préparation de la conférence : les gagnantes ET la suite", () => {
     const r = recitEdition(base());
-    expect(r.kicker).toMatch(/3 gagnantes/);
-    expect(r.kicker).toMatch(/19 novembre/);
+    expect(lisible(r.kicker)).toMatch(/3 gagnantes/);
+    expect(lisible(r.kicker)).toMatch(/19 novembre/);
     // Jamais le vocabulaire administratif de la liste d'admin.
-    expect(r.kicker).not.toMatch(/passée|en cours/i);
+    expect(lisible(r.kicker)).not.toMatch(/passée|en cours/i);
   });
 
   it("candidatures ouvertes : la date de clôture, la seule info convertissante", () => {
     const r = recitEdition(base({ aujourdhui: "2026-04-01" }));
-    expect(r.kicker).toMatch(/candidatures ouvertes/i);
-    expect(r.kicker).toMatch(/17 avril/);
-    expect(r.kicker).toMatch(/4 juin/);
+    expect(lisible(r.kicker)).toMatch(/candidatures ouvertes/i);
+    expect(lisible(r.kicker)).toMatch(/17 avril/);
+    expect(lisible(r.kicker)).toMatch(/4 juin/);
   });
 
   it("avant la finale, candidatures closes : la date de finale et le nombre d'inscrites", () => {
     const r = recitEdition(base({ aujourdhui: "2026-05-01", nbGagnantes: 0 }));
-    expect(r.kicker).toMatch(/8 speakeuses/);
-    expect(r.kicker).toMatch(/finale/i);
-    expect(r.kicker).toMatch(/4 juin/);
+    expect(lisible(r.kicker)).toMatch(/8 speakeuses/);
+    expect(lisible(r.kicker)).toMatch(/finale/i);
+    expect(lisible(r.kicker)).toMatch(/4 juin/);
   });
 
   it("édition terminée : le récit se met au passé, chiffres compris", () => {
     const r = recitEdition(base({ aujourdhui: "2026-12-01", statut: "archive" }));
-    expect(r.kicker).toMatch(/8 speakeuses/);
-    expect(r.kicker).toMatch(/3 gagnantes/);
-    expect(r.kicker).toMatch(/DevFest Toulouse/);
+    expect(lisible(r.kicker)).toMatch(/8 speakeuses/);
+    expect(lisible(r.kicker)).toMatch(/3 gagnantes/);
+    expect(lisible(r.kicker)).toMatch(/DevFest Toulouse/);
   });
 
   it("finale tenue sans palmarès saisi : une phrase, jamais l'étiquette « Finale passée »", () => {
     const r = recitEdition(base({ nbGagnantes: 0, confDate: null }));
-    expect(r.kicker).not.toMatch(/finale passée/i);
-    expect(r.kicker).toMatch(/finale tenue le 4 juin/i);
+    expect(lisible(r.kicker)).not.toMatch(/finale passée/i);
+    expect(lisible(r.kicker)).toMatch(/finale tenue le 4 juin/i);
   });
 
   it("édition en préparation : une invitation, et JAMAIS l'année (la page l'affiche déjà)", () => {
@@ -152,14 +163,14 @@ describe("recitEdition — le kicker raconte l'étape en cours", () => {
         nbGagnantes: 0,
       }),
     );
-    expect(r.kicker).toMatch(/en préparation/i);
-    expect(r.kicker).not.toMatch(/2026/);
+    expect(lisible(r.kicker)).toMatch(/en préparation/i);
+    expect(lisible(r.kicker)).not.toMatch(/2026/);
   });
 
   it("aucun article devant un nom de conférence (« du UX Days » ne se dit pas)", () => {
     const r = recitEdition(base({ aujourdhui: "2026-04-01", confNom: "UX Days" }));
-    expect(r.kicker).toMatch(/scène\s?: UX Days/);
-    expect(r.kicker).not.toMatch(/du UX Days|le UX Days/);
+    expect(lisible(r.kicker)).toMatch(/scène\s?: UX Days/);
+    expect(lisible(r.kicker)).not.toMatch(/du UX Days|le UX Days/);
   });
 
   it("les membres se joignent par une virgule (un point médian ne se dit pas)", () => {
@@ -170,7 +181,7 @@ describe("recitEdition — le kicker raconte l'étape en cours", () => {
     const r = recitEdition(
       base({ aujourdhui: "2026-12-01", nbInscrites: 0, nbGagnantes: 0, confNom: "" }),
     );
-    expect(r.kicker).not.toMatch(/\b0\b/);
+    expect(lisible(r.kicker)).not.toMatch(/\b0\b/);
     expect(r.kicker.length).toBeGreaterThan(0);
   });
 });
@@ -259,8 +270,8 @@ describe("derniereSeance — le repli quand aucune date de fin n'est connue", ()
     const seule = [{ date: "2026-04-28", dateFin: null }];
     // Le KICKER : « accompagnées » se mérite, sinon on dit « participantes ».
     const r = recitEdition(base({ confDate: "2020-11-19", ateliers: seule }));
-    expect(r.kicker).toMatch(/participante/);
-    expect(r.kicker).not.toMatch(/accompagnées/);
+    expect(lisible(r.kicker)).toMatch(/participante/);
+    expect(lisible(r.kicker)).not.toMatch(/accompagnées/);
     // Et la DURÉE se tait pareillement : les deux phrases se contredisaient.
     expect(semainesParcours(seule, "2026-11-19")).toBeNull();
   });
@@ -325,8 +336,8 @@ describe("recitEdition — « accompagnées » se mérite", () => {
 
   it("sans parcours, on dit ce qui est vrai : elles ont participé", () => {
     const r = bouclee({ ateliers: [{ date: "2026-04-28", dateFin: null }] });
-    expect(r.kicker).not.toMatch(/accompagnées/);
-    expect(r.kicker).toMatch(/8 participantes/);
+    expect(lisible(r.kicker)).not.toMatch(/accompagnées/);
+    expect(lisible(r.kicker)).toMatch(/8 participantes/);
   });
 
   it("sans aucun atelier non plus", () => {
