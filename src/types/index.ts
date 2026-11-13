@@ -64,7 +64,7 @@ export interface FAQ {
    * page d'une édition remplace le lien du replay par la vidéo de CETTE
    * édition). Sans identifiant, l'entrée s'affiche telle quelle.
    */
-  id?: "replay";
+  id?: "replay" | "grille" | "candidater";
   q: string;
   a: string;
   /** Lien optionnel affiché après la réponse (ex. inscription à la soirée). */
@@ -119,6 +119,42 @@ export interface Partenaire {
   description: string;
   url?: string;
   pending?: boolean;
+}
+
+/** Une condition pour candidater, avec son lien interne éventuel. */
+export interface ConditionCandidature {
+  texte: string;
+  lien?: { href: string; label: string };
+}
+
+/** Ce qu'il faut pour candidater à une édition : le formulaire et les règles. */
+export interface Candidature {
+  formUrl: string;
+  conditions: ConditionCandidature[];
+}
+
+/**
+ * Le texte éditorial d'UNE édition du Tremplin : ce que la base ne porte pas
+ * (FAQ, lots à gagner, jury nommé, partenaires remerciés, promesses faites à
+ * toutes). Il est daté : il ne s'affiche que sur la page de son édition.
+ */
+export interface EditorialEdition {
+  faq: FAQ[];
+  prix: Prix[];
+  jury: Jure[];
+  partenaires: Partenaire[];
+  retoursPourTous: string[];
+  /**
+   * Dernier jour de la conférence quand elle dure plusieurs jours : la base ne
+   * porte que le premier (`conf_date`), le héros affiche alors la période.
+   */
+  confDateFin?: string;
+  /** Une phrase pour la vitrine `/tremplin` : la preuve, ou ce qui attend. */
+  accroche: string;
+  /** La vitrine renvoie vers la galerie des finalistes (édition passée). */
+  lienFinalistes?: boolean;
+  /** Présente tant que l'édition recrute. */
+  candidature?: Candidature;
 }
 
 /** Une structure partenaire : qui elle est. CE QU'ELLE FAIT pour nous vit

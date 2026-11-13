@@ -14,6 +14,13 @@
 > e-mails, fiches héritées sans thème bloquées avant « Soumettre », et en P3
 > le tri des fiches express dans « Publiées ».
 >
+> **Session du 2026-11-12 — Tremplin Devoxx France 2027** (page d'édition,
+> vitrine `/tremplin`, accueil, `/partenaires`, migration 076). SOLDÉ : le P1
+> « [décision produit] « Inscriptions ouvertes » sans aucune action possible »
+> (§ P1 « détonation connue »), et la constante morte `TREMPLIN_FORM_URL`.
+> NOUVEAU, en P2 dans ce même § : l'éditorial par édition vit encore dans le
+> code. Rien d'autre relu ce jour.
+>
 > **Session du 2026-11-04 — conditions des coachs et du jury bénévoles**
 > (`/benevole`, FAQ `/partenaires`). Aucun P0 touché ; le **3** n'a pas été
 > relu ce jour. SOLDÉ en partie dans le geste : le P2 « `french-spelling.test.ts`
@@ -577,11 +584,22 @@ ci-dessous, listées ici pour la traçabilité :
   le prédicat (`estEditionEditoriale`, `src/data/tremplin.ts`) entre la page
   et la vitrine. La **cible (M)** — contenus par édition en base — reste une
   évolution possible, non nécessaire à la détonation.
-- **[décision produit] « Inscriptions ouvertes » sans aucune action
-  possible.** Aucun CTA d'inscription sur la page publique d'édition (flux
-  100 % orga). Décider AVANT la prochaine ouverture : formulaire externe ?
-  lien contact ? auto-inscription connectée ? **Effort : S-M** selon la
-  réponse. **Le seul item encore ouvert du bloc — attend l'orga.**
+- ~~**[décision produit] « Inscriptions ouvertes » sans aucune action
+  possible.**~~ **RÉSOLU le 2026-11-12** (Tremplin Devoxx France 2027) :
+  formulaire externe (Google Forms), porté par l'éditorial de l'édition
+  (`candidature` dans `src/data/tremplin.ts`). La page d'édition affiche une
+  section « Candidater » (conditions, adhésion, déplacements) et son bouton
+  **tant que** `inscriptionsEtat` vaut « ouvertes » ; hors fenêtre, le bouton
+  et le lien de la FAQ partent. Banc : `tremplin-devoxx-2027.test.tsx`.
+  L'ancienne constante `TREMPLIN_FORM_URL` (formulaire 2026, importée nulle
+  part) est retirée.
+- **L'éditorial reste dans le code, une entrée par édition** (2026-11-12,
+  **P2**). `estEditionEditoriale` est remplacé par un registre
+  (`editorialDe(conf, annee)`, `src/data/tremplin.ts`) : DevFest 2026 et
+  Devoxx France 2027 y ont chacun leur FAQ, lots, partenaires et accroche, et
+  `editionEditoriale` désigne l'édition EN COURS (repli de la vitrine, FAQ de
+  la recherche, bloc de l'accueil). Ouvrir une édition demande donc encore
+  une PR. La cible (M), contenus par édition en base, reste possible.
 - ~~**Dates d'inscriptions jamais affichées au public.**~~ **RÉSOLU** (déjà
   soldé par le récit d'édition, constaté le 21/08) : `recitEdition` affiche
   « Candidatures ouvertes jusqu'au … » (`src/lib/recit-edition.ts`).

@@ -9,8 +9,8 @@ export const CONTACT_EMAIL = "techspeakher@gmail.com";
  * Surchargeable via AUTH_EMAIL_FROM.
  */
 export const EMAIL_SENDER = "contact@techspeakher.fr";
-export const TREMPLIN_FORM_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLScvlFLuHY23OR_AVWGxEXJusWxWdoWd9VPwLS4AmFJAfgwQaw/viewform";
+/** Formulaire de candidature du Tremplin Devoxx France 2027 (Google Forms). */
+export const TREMPLIN_DEVOXX_2027_FORM_URL = "https://forms.gle/nbLo4cL4ygoZ4AE36";
 export const SOIREE_TREMPLIN_URL =
   "https://the-playground.fr/m/soiree-tremplin-tech-speak-her-x-devfest-toulouse";
 export const LINKEDIN_URL = "https://www.linkedin.com/company/tech-speak-her/";

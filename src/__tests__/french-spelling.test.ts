@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { textesAffichables } from "./copie-affichee";
 import { describe, it, expect } from "vitest";
 import { allActualites, behindTheScenes } from "@/data/actualites";
-import { prix, faq } from "@/data/tremplin";
+import { tousLesEditoriaux } from "@/data/tremplin";
 import { landingPartenaires, pourquoi, typesSoutien } from "@/data/partenaires";
 import { landingBenevole, missionsBenevoles } from "@/data/benevole";
 import { codeDeConduite } from "@/data/charte";
@@ -112,13 +112,23 @@ function collectAllTexts(): { source: string; text: string }[] {
     texts.push({ source: `verbatim: ${v.auteur}`, text: v.citation });
     texts.push({ source: `verbatim: ${v.auteur}`, text: v.qualite });
   }
-  for (const p of prix) {
-    texts.push({ source: `prix: ${p.place}`, text: p.reward });
-    if (p.detail) texts.push({ source: `prix: ${p.place}`, text: p.detail });
-  }
-  for (const f of faq) {
-    texts.push({ source: `FAQ: ${f.q}`, text: f.q });
-    texts.push({ source: `FAQ: ${f.q}`, text: f.a });
+  // Chaque édition qui a un éditorial, pas seulement la première.
+  for (const ed of tousLesEditoriaux) {
+    texts.push({ source: `accroche`, text: ed.accroche });
+    for (const p of ed.prix) {
+      texts.push({ source: `prix: ${p.place}`, text: p.reward });
+      if (p.detail) texts.push({ source: `prix: ${p.place}`, text: p.detail });
+    }
+    for (const f of ed.faq) {
+      texts.push({ source: `FAQ: ${f.q}`, text: f.q });
+      texts.push({ source: `FAQ: ${f.q}`, text: f.a });
+      if (f.lien) texts.push({ source: `FAQ: ${f.q}`, text: f.lien.label });
+    }
+    for (const p of ed.partenaires) texts.push({ source: `merci: ${p.name}`, text: p.description });
+    for (const c of ed.candidature?.conditions ?? []) {
+      texts.push({ source: `condition`, text: c.texte });
+      if (c.lien) texts.push({ source: `condition`, text: c.lien.label });
+    }
   }
   for (const p of pourquoi) {
     texts.push({ source: `partenaires: ${p.title}`, text: p.title });

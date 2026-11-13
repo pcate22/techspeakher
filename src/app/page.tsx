@@ -18,17 +18,20 @@ import {
 } from "@/lib/agenda-public";
 import { getNouvellesVenues, type NouvelleVenue } from "@/lib/fil-communaute";
 import CarteNouvelleVenue from "@/components/CarteNouvelleVenue";
-import { aujourdhuiParis } from "@/lib/tremplin-statut";
+import { aujourdhuiParis, candidaturesOuvertes } from "@/lib/tremplin-statut";
+import { getEditionByConfAndYear } from "@/lib/tremplin-editions";
+import { editorialEnCours, editionEditoriale } from "@/data/tremplin";
 
 export const metadata: Metadata = {
   title: "Tech Speak'Her | Une communauté de femmes de la tech pour oser passer de la salle à la scène",
   description:
-    "Tech Speak'Her est une communauté toulousaine de femmes dans la tech. Meetups, conférences, talks, Tremplin DevFest Toulouse 2026. Rejoignez-nous pour oser prendre la parole\u00A0!",
+    "Tech Speak'Her est une communauté toulousaine de femmes dans la tech. Meetups, conférences, talks, et le Tremplin avec Devoxx France. Rejoignez-nous pour oser prendre la parole\u00A0!",
   keywords: [
     "Tech Speak'Her",
     "femmes tech Toulouse",
     "speakeuses conférences",
     "DevFest Toulouse",
+    "Devoxx France",
     "GDG Toulouse",
     "women in tech",
     "meetup tech Toulouse",
@@ -41,7 +44,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Tech Speak'Her | De la salle à la scène",
     description:
-      "Une communauté de femmes de la tech pour oser passer de la salle à la scène. Meetups, conférences, talks et Tremplin DevFest Toulouse.",
+      "Une communauté de femmes de la tech pour oser passer de la salle à la scène. Meetups, conférences, talks et le Tremplin avec Devoxx France.",
     type: "website",
   },
 };
@@ -67,7 +70,7 @@ export default async function Home() {
   // base indisponible → le chiffre disparaît (jamais un nombre faux), l'agenda
   // disparaît (jamais une date inventée), les actualités disparaissent (jamais
   // un contenu périmé), la home reste.
-  const [speakerCount, scenes, venues, publications] = await Promise.all([
+  const [speakerCount, scenes, venues, publications, editionEnCours] = await Promise.all([
     countPublishedProfiles().catch((err) => {
       console.error("Compte des speakeuses indisponible", err);
       return null;
@@ -84,6 +87,10 @@ export default async function Home() {
       console.error("Actualités indisponibles", err);
       return [] as Contenu[];
     }),
+    getEditionByConfAndYear(editionEditoriale.confSlug, editionEditoriale.annee).catch((err) => {
+      console.error("Édition Tremplin indisponible", err);
+      return null;
+    }),
   ]);
   // Les actualités de l'accueil viennent de la MÊME table que `/actualites` et
   // passent par le MÊME mapping : une carte mène au même endroit sur les deux
@@ -96,6 +103,14 @@ export default async function Home() {
   // sans ça, le départage alphabétique de `separerScenes` figerait toujours
   // les mêmes noms en tête d'un extrait tronqué.
   const aujourdhui = aujourdhuiParis();
+  // Pendant les candidatures, le Tremplin prend le bouton principal du héros.
+  // La fenêtre vient de la base : base muette ou fenêtre close, le héros
+  // revient à l'annuaire.
+  const tremplinRecrute =
+    editorialEnCours.candidature !== undefined &&
+    editionEnCours !== null &&
+    candidaturesOuvertes(editionEnCours, aujourdhui);
+  const hrefEditionEnCours = `/tremplin/${editionEditoriale.confSlug}/${editionEditoriale.annee}`;
   const prochainesScenes = prochainesScenesExtrait(
     separerScenes(scenes, aujourdhui).aVenir,
     aujourdhui,
@@ -158,12 +173,25 @@ export default async function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button href="/mon-espace">
-              Rejoindre l&apos;annuaire des speakeuses
-            </Button>
-            <Button href="/a-propos" variant="secondary">
-              Découvrir la communauté
-            </Button>
+            {tremplinRecrute ? (
+              <>
+                <Button href={`${hrefEditionEnCours}#candidater`}>
+                  Candidater au Tremplin {editionEditoriale.libelleCourt}
+                </Button>
+                <Button href="/mon-espace" variant="secondary">
+                  Rejoindre l&apos;annuaire
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button href="/mon-espace">
+                  Rejoindre l&apos;annuaire
+                </Button>
+                <Button href="/a-propos" variant="secondary">
+                  Découvrir la communauté
+                </Button>
+              </>
+            )}
           </div>
         </div>
 
@@ -241,6 +269,21 @@ export default async function Home() {
           />
         </div>
       </section>
+
+      {/* Le Tremplin en cours, juste après celles qui l'ont vécu : la preuve,
+          puis l'invitation. Le bloc suit l'édition éditoriale en cours. */}
+      <section className="py-16 px-4 bg-navy-light" aria-labelledby="tremplin-cta-title">
+          <div className="max-w-4xl mx-auto bg-gradient-to-r from-magenta/10 to-cyan/10 border border-navy-lighter rounded-2xl p-8 sm:p-12 text-center">
+            <p className="text-sm font-bold text-gold mb-3">Le Tremplin</p>
+            <h2 id="tremplin-cta-title" className="text-2xl sm:text-3xl font-bold mb-4">
+              Ton premier talk au {editionEditoriale.confNom} {editionEditoriale.annee}&nbsp;?
+            </h2>
+            <p className="text-gray-light mb-6 max-w-2xl mx-auto">{editorialEnCours.accroche}</p>
+            <Button href={hrefEditionEnCours}>
+              Découvrir le Tremplin {editionEditoriale.annee}
+            </Button>
+          </div>
+        </section>
 
       {/* Bientôt en scène — un bloc VIVANT de la home : il vient des fiches
           des speakeuses, pas d'un contenu rédigé. Placé juste après les chiffres,
@@ -357,26 +400,6 @@ export default async function Home() {
           </div>
         </section>
       )}
-      <section className="py-16 px-4 bg-navy-light" aria-labelledby="tremplin-cta-title">
-        <div className="max-w-4xl mx-auto bg-gradient-to-r from-magenta/10 to-cyan/10 border border-navy-lighter rounded-2xl p-8 sm:p-12 text-center">
-          <h2 id="tremplin-cta-title" className="text-2xl sm:text-3xl font-bold mb-4">
-            Tremplin Tech Speak&apos;Her x DevFest Toulouse 2026
-          </h2>
-          <p className="text-gray-light mb-6 max-w-2xl mx-auto">
-            Vous rêvez de donner votre premier talk en conférence&nbsp;? Le Tremplin
-            vous accompagne du pitch à la scène du DevFest Toulouse&nbsp;!
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button href="/tremplin">
-              Découvrir le Tremplin
-            </Button>
-            <Button href="/devfest-toulouse" variant="secondary">
-              C&apos;est quoi le DevFest Toulouse&nbsp;?
-            </Button>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Organisateurs */}
       <section className="py-16 px-4 bg-navy-light" aria-labelledby="orga-title">
         <div className="max-w-4xl mx-auto text-center">

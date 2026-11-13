@@ -22,6 +22,11 @@ vi.mock("@/lib/fil-communaute", async (importOriginal) => ({
   ...(await importOriginal<object>()),
   getNouvellesVenues: vi.fn(async () => []),
 }));
+const getEditionByConfAndYear = vi.fn(async () => null as unknown);
+vi.mock("@/lib/tremplin-editions", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  getEditionByConfAndYear: (...a: unknown[]) => getEditionByConfAndYear(...(a as [])),
+}));
 vi.mock("@/lib/contenus", async (importOriginal) => ({
   ...(await importOriginal<object>()),
   listPublicationsRecentes: vi.fn(),
@@ -159,5 +164,51 @@ describe("Home — plus d'encart Behind the Scenes codé en dur", () => {
     render(await Home());
     expect(screen.queryByText(/BEHIND THE SCENES/i)).toBeNull();
     expect(screen.queryByRole("link", { name: /lire l'interview complète/i })).toBeNull();
+  });
+});
+
+describe("home — le Tremplin en cours", () => {
+  it("annonce l'édition éditoriale en cours et mène à sa page, sans le DevFest 2026", async () => {
+    vi.mocked(listPublicationsRecentes).mockResolvedValue([]);
+    render(await Home());
+    const bloc = screen.getByRole("region", { name: /premier talk au Devoxx France 2027/i });
+    expect(within(bloc).getByRole("link", { name: /découvrir le tremplin 2027/i })).toHaveAttribute(
+      "href",
+      "/tremplin/devoxx-france/2027",
+    );
+    expect(bloc.textContent).toMatch(/19 janvier 2027/);
+    expect(screen.queryByText(/DevFest Toulouse 2026/)).toBeNull();
+  });
+});
+
+describe("home — les boutons du héros suivent les candidatures", () => {
+  const edition = (o: object) => ({
+    statut: "ouvert",
+    inscriptionsDebut: "2020-01-01",
+    inscriptionsFin: "2099-12-31",
+    ...o,
+  });
+  const hero = () => screen.getByRole("region", { name: /speak/i });
+
+  it("candidatures ouvertes : Tremplin en principal, annuaire en secondaire", async () => {
+    vi.mocked(listPublicationsRecentes).mockResolvedValue([]);
+    getEditionByConfAndYear.mockResolvedValueOnce(edition({}));
+    render(await Home());
+    const liens = within(hero()).getAllByRole("link");
+    expect(liens[0]).toHaveTextContent(/^candidater au tremplin devoxx 2027$/i);
+    expect(liens[0]).toHaveAttribute("href", "/tremplin/devoxx-france/2027#candidater");
+    expect(liens[1]).toHaveTextContent(/^rejoindre l.annuaire$/i);
+  });
+
+  it("fenêtre close ou base muette : l'annuaire reprend la main", async () => {
+    vi.mocked(listPublicationsRecentes).mockResolvedValue([]);
+    getEditionByConfAndYear.mockResolvedValueOnce(edition({ inscriptionsFin: "2020-02-01" }));
+    render(await Home());
+    expect(within(hero()).queryByRole("link", { name: /candidater/i })).toBeNull();
+    expect(within(hero()).getAllByRole("link")[0]).toHaveTextContent(/rejoindre l.annuaire/i);
+    cleanup();
+    getEditionByConfAndYear.mockRejectedValueOnce(new Error("Neon dort"));
+    render(await Home());
+    expect(within(hero()).queryByRole("link", { name: /candidater/i })).toBeNull();
   });
 });

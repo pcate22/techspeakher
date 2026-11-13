@@ -4,8 +4,9 @@
 > la dette technique : `docs/dette-technique.md`. Pour l'étude d'import des
 > talks : `docs/faisabilite-import-talks.md`.
 >
-> Dernière mise à jour : **2026-11-12** (section « Inscription express à
-> l'annuaire » seule) ; **2026-11-04** (section « Header Nous rejoindre,
+> Dernière mise à jour : **2026-11-13** (section « Inscription express à
+> l'annuaire » seule) ; **2026-11-12** (section « Tremplin Devoxx France
+> 2027 » seule, et la ligne Devoxx de « Landing partenaires ») ; **2026-11-04** (section « Header Nous rejoindre,
 > page bénévole » seule : conditions des coachs et du jury) ; **2026-10-16**
 > (section « Reprise humaine du code » seule) ; **2026-10-15** (sections « Navigation connectée »,
 > « Chantiers repris des PR fermées », « Adhésions HelloAsso », « Partenaires
@@ -18,7 +19,7 @@
 >
 > **Chantiers ouverts, chacun avec son état daté ci-dessous** (décompte à
 > vérifier au 2026-10-16 : les sections du 15/10 n'y figurent pas) :
-> l'inscription express à l'annuaire (en revue avant PR le 12/11), la reprise
+> l'inscription express à l'annuaire (en PR le 13/11), la reprise
 > humaine du code (porte d'entrée en PR le 16/10, le reste reporté),
 > l'import et l'annuaire (le détecteur d'id Sessionize est livré depuis le 21/08 ; restent la
 > ligne de dette `.invalid` et l'écoute d'un profil Notist), l'agenda public
@@ -28,15 +29,15 @@
 > une session. La **licence** est tranchée le 23/08 : voir la section dédiée
 > ci-dessous, qui ferme la piste « une autre communauté déploie la plateforme ».
 
-## Inscription express à l'annuaire — en revue avant PR le 2026-11-12
+## Inscription express à l'annuaire — en PR le 2026-11-13 (#13)
 
 Des speakeuses trouvaient la fiche trop longue à remplir : six étapes, dont une
 qui demandait à elle seule titre, poste, entreprise, présentation, ville et cinq
 liens. Conception : `docs/superpowers/specs/2026-11-12-inscription-express-design.md` ;
 plan : `docs/superpowers/plans/2026-11-12-inscription-express.md`.
 
-**Fait sur la branche `claude/simplify-speaker-directory-328845`** (pas encore
-en PR) : deux écrans sur `/mon-espace/bienvenue` (le nom, puis les thèmes en
+**Fait sur la branche `claude/simplify-speaker-directory-328845`** (PR #13,
+main fusionnée dedans le 2026-11-13) : deux écrans sur `/mon-espace/bienvenue` (le nom, puis les thèmes en
 sept catégories), et la fiche paraît au clic sur « Publier ma fiche ». Un nom
 retapé part en relecture, le nom du compte publie tout de suite. Le talk se
 crée avec son titre seul (300 caractères). Les anciens sujets sont repris en
@@ -51,15 +52,34 @@ visible, comme avant.
 
 **Où reprendre** :
 
-- finir la revue avant PR (quatre passes), puis ouvrir la PR ;
-- **rebase en attente** : si la branche Tremplin Devoxx
-  (`claude/tech-speakher-devoxx-669331`) est fusionnée avant, se rebaser sur
-  `main` et refaire l'union de `docs/dette-technique.md`, `docs/roadmap.md` et
-  `src/__tests__/french-spelling.test.ts` item par item (sa migration porte le
-  numéro 076, la nôtre 077) ;
+- après la fusion, lancer `db/sync-to-latest.sql` tout de suite : jusque-là,
+  les fiches aux anciens sujets s'affichent sans thème ;
 - après la fusion, regarder en vrai un titre de talk de 300 caractères dans
   les cartes et l'image OG, et une fiche héritée sans thème (dette P2,
   § « Inscription express »).
+
+## Tremplin Devoxx France 2027 — fusionné le 2026-11-13 (#12), candidatures jusqu'au 30/11
+
+Partenariat signé. Livré dans la PR : la page `/tremplin/devoxx-france/2027`
+(section « Candidater » avec conditions, adhésion obligatoire, déplacements à
+la charge des candidates, bouton vers le formulaire tant que la fenêtre est
+ouverte), sa FAQ, son lot et ses partenaires ; `/tremplin` qui met l'édition en
+avant ; le bloc Tremplin de l'accueil, remonté sous les verbatims ; Devoxx
+France sur `/partenaires` (« Ouvrir votre scène ») ; la migration 076 qui crée
+l'édition (ouverte du 9 au 30/11/2026, finale le 19/01/2027 à Paris, Devoxx du
+7 au 9/04/2027), ses cinq ateliers (thèmes 2026, le midi, à distance) et
+l'article « Le Tremplin repart, avec Devoxx France ».
+
+**À fournir (Cateline), puis à poser dans l'admin ou l'éditorial** : le lieu de
+la soirée du 19/01 (non cité tant qu'il n'est pas confirmé), l'heure et le lien
+des ateliers, le jury (la FAQ dit « annoncé bientôt »), les animatrices des
+ateliers, un logo Devoxx pour `/partenaires`, une image pour l'article.
+**À relire (Cateline)** : les textes de la FAQ 2027, des conditions et de
+l'article, écrits par Claude à partir du post LinkedIn et du formulaire.
+**Non vérifié** : le rendu à l'écran (la page d'édition a besoin d'une base ;
+machine trop chargée ce jour pour `npm run e2e:db`), à regarder sur la preview
+Vercel. **Après le 30/11** : le bouton disparaît seul ; passer l'édition en
+« en_cours » dans l'admin.
 
 ## Reprise humaine du code — porte d'entrée en PR le 2026-10-16, le reste reporté
 
@@ -268,7 +288,7 @@ pourquoi nous soutenir, qui sommes-nous, appel final, FAQ, bandeau mobile.
 qu'il n'y en a pas). **À relire** : tous les textes de la landing
 (`landingPartenaires`), écrits par Claude.
 Textes ouverts au-delà de Toulouse le 2026-10-15 (Toulouse reste l'ancrage). Partenariat
-Devoxx France en cours : à ajouter dans `src/data/partenaires.ts` **une fois signé**, pas avant.
+Devoxx France **signé** : ajouté le 2026-11-12 (section « Tremplin Devoxx France 2027 »).
 
 ## Textes après l'AGE du 29/09 — LIVRÉ le 2026-10-15 (PR #373), adhésions ouvertes, liens posés le même jour
 

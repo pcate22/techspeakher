@@ -1,4 +1,4 @@
-import { faq, editionEditoriale } from "@/data/tremplin";
+import { editorialEnCours, editionEditoriale } from "@/data/tremplin";
 import { CATEGORIES } from "@/data/categories-contenus";
 import { foldRecherche } from "@/lib/normalise-recherche";
 
@@ -69,7 +69,8 @@ export const searchIndex: SearchItem[] = dedupeSearchItems([
   // Pages statiques
   { title: "Accueil", description: "Tech Speak'Her, communauté de femmes de la tech toulousaine", url: "/", category: "Page" },
   { title: "À propos", description: "Notre mission, nos valeurs, qui on est", url: "/a-propos", category: "Page" },
-  { title: "Tremplin DevFest 2026", description: "Programme, inscriptions, prix, FAQ du Tremplin", url: "/tremplin", category: "Page" },
+  { title: "Le Tremplin", description: "Le programme qui mène les femmes de la tech à leur premier talk en conférence, du DevFest Toulouse 2026 au Devoxx France 2027", url: "/tremplin", category: "Page" },
+  { title: "Tremplin Devoxx France 2027", description: "Candidatures, ateliers, soirée finale à Paris et conférence au Devoxx France pour la gagnante", url: "/tremplin/devoxx-france/2027", category: "Page" },
   {
     title: "Montée sur scène 2026",
     description:
@@ -92,11 +93,9 @@ export const searchIndex: SearchItem[] = dedupeSearchItems([
   // /api/search/contenus, fusionnés côté client (cf. SearchBar). L'index
   // statique ne couvre que ce qui vit dans le code : les pages et la FAQ.
 
-  // FAQ — ses réponses sont l'éditorial d'UNE édition, et l'ancre #faq ne vit
-  // que sur la page de celle-ci (le lien pointait /tremplin#faq, une ancre
-  // absente ; dette P1). Dérivée d'`editionEditoriale` : le jour où
-  // l'éditorial déménage, ce lien suit tout seul.
-  ...faq.map((f) => ({
+  // FAQ : l'éditorial de l'édition en cours, dont l'ancre #faq ne vit que
+  // sur la page de cette édition.
+  ...editorialEnCours.faq.map((f) => ({
     title: f.q,
     description: f.a,
     url: `/tremplin/${editionEditoriale.confSlug}/${editionEditoriale.annee}#faq`,

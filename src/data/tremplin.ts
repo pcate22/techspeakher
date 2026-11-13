@@ -1,5 +1,13 @@
-import type { Prix, FAQ, AccompagnementTheme, Jure, Partenaire, TremplinStep } from "@/types";
-import { SOIREE_TREMPLIN_URL, YOUTUBE_URL } from "@/constants/site";
+import type {
+  Prix,
+  FAQ,
+  AccompagnementTheme,
+  Jure,
+  Partenaire,
+  TremplinStep,
+  EditorialEdition,
+} from "@/types";
+import { SOIREE_TREMPLIN_URL, TREMPLIN_DEVOXX_2027_FORM_URL, YOUTUBE_URL } from "@/constants/site";
 
 /** Les 5 thèmes travaillés pendant le parcours d'accompagnement. */
 export const accompagnement: AccompagnementTheme[] = [
@@ -44,7 +52,7 @@ export const accompagnement: AccompagnementTheme[] = [
   },
 ];
 
-/** Le jury 100% féminin de la soirée Tremplin du 4 juin 2026. */
+/** Le jury 100% féminin de la soirée Tremplin du 4 juin 2026 (DevFest Toulouse). */
 export const jury: Jure[] = [
   { name: "Aline Paponaud", role: "DSI Sud-Ouest, Inovie" },
   { name: "Aurélie Vache", role: "Developer Advocate, OVHcloud" },
@@ -119,36 +127,14 @@ export const partenaires: Partenaire[] = [
   },
 ];
 
+/** Promis à toutes les participantes, en 2026 comme en 2027. */
 export const retoursPourTous: string[] = [
   "Feedback écrit du jury",
   "Vidéo de ton pitch",
   "Un post sur nos réseaux (si tu veux)",
 ];
 
-/**
- * L'ÉDITION que décrit l'éditorial de ce fichier : la FAQ (« la soirée du 4 juin
- * 2026 », candidatures closes le 17 avril), le jury nommé, les lots (« une
- * présentation au DevFest Toulouse 2026 ») et les partenaires (« nous accueille
- * pour la soirée », « co-animatrice de l'atelier CFP »).
- *
- * Deux axes, pas un : l'année ET la conférence. Sur la page d'une autre année,
- * ces blocs répondent à côté ; sur la page d'une autre conférence la même année,
- * ils annoncent le DevFest à des gens venus pour autre chose — et le JSON-LD
- * `FAQPage` publierait ces réponses aux moteurs sous cette autre adresse.
- *
- * Écrire l'éditorial d'une nouvelle édition, c'est déplacer ce repère avec lui.
- */
-export const editionEditoriale = { confSlug: "devfest-toulouse", annee: 2026 } as const;
-
-/**
- * CE (conf, année) est-il l'édition que l'éditorial de ce fichier décrit ?
- * Le même invariant garde la page d'édition (FAQ, jury, partenaires, JSON-LD)
- * et la vitrine (phrase-preuve, lien finalistes) : une seule copie.
- */
-export function estEditionEditoriale(confSlug: string, annee: number): boolean {
-  return confSlug === editionEditoriale.confSlug && annee === editionEditoriale.annee;
-}
-
+/** La FAQ de l'édition DevFest Toulouse 2026. */
 export const faq: FAQ[] = [
   {
     q: "Je n'ai jamais donné de talk, c'est grave\u00A0?",
@@ -174,6 +160,7 @@ export const faq: FAQ[] = [
     lien: { href: YOUTUBE_URL, label: "Voir notre chaîne YouTube" },
   },
   {
+    id: "grille",
     q: "Sur quoi le jury évalue les pitchs\u00A0?",
     a: "Sur 5 critères notés /28, répartis en deux axes. Axe Sujet\u00A0: clarté et pertinence (×2), apport pour l'audience, angle distinctif. Axe Personne\u00A0: légitimité sur ce sujet, capacité à porter le sujet (×2). On évalue le potentiel d'un super talk avec accompagnement, pas le pitch fini. L'objectif est de donner à chacune un retour bienveillant et exploitable, gagnante ou pas.",
   },
@@ -194,6 +181,151 @@ export const faq: FAQ[] = [
     a: "Le Tremplin est organisé par les bénévoles de Tech Speak'Her, association loi 1901. La soirée du 4 juin a été rendue possible grâce à BPCE Solutions informatiques, qui nous accueille dans ses locaux toulousains, et aux partenaires qui prennent en charge l'apéro dînatoire. L'atelier 3 (CFP) a été co-animé avec Lucile Briotet, conceptrice-rédactrice.",
   },
 ];
+
+// ─── Édition Devoxx France 2027 ────────────────────────────────────────────
+
+const DEVOXX_URL = "https://www.devoxx.fr/";
+
+/** Le critère « primo-speakeuse », tel qu'il se lit sur la page et dans la FAQ. */
+const CRITERE_PRIMO =
+  "Ce sera ton premier talk dans une conférence publique avec appel à orateurs (CFP) et sélection. Tu peux candidater même si tu as déjà fait des présentations internes, des lightning talks en entreprise, des cours, des formations, des podcasts ou des webinaires.";
+
+const DEPLACEMENTS =
+  "Tu peux venir à Paris le soir du mardi 19\u00A0janvier 2027 pour la soirée Tremplin, et du 7 au 9\u00A0avril 2027 pour Devoxx France si tu gagnes. Le transport et le logement restent à ta charge\u00A0: nous cherchons des financements pour les prendre en charge.";
+
+const grille = faq.find((f) => f.id === "grille");
+
+const faqDevoxx2027: FAQ[] = [
+  {
+    q: "Qui peut candidater\u00A0?",
+    a: `Les femmes de la tech, ou les personnes qui se reconnaissent comme telles, tous métiers et tous niveaux. ${CRITERE_PRIMO}`,
+    lien: { href: "/contact", label: "Un doute\u00A0? Écris-nous" },
+  },
+  {
+    q: "Faut-il être membre de Tech\u00A0Speak'Her\u00A0?",
+    a: "Oui\u00A0: le Tremplin est réservé aux adhérentes de l'association. L'adhésion se fait en ligne, sur HelloAsso.",
+    lien: { href: "/adherer", label: "Adhérer à Tech\u00A0Speak'Her" },
+  },
+  {
+    q: "Je dois déjà avoir un sujet prêt\u00A0?",
+    a: "Pas du tout\u00A0! Si tu as une idée, même vague, c'est super. Sinon, on t'aidera à trouver ton sujet à partir de ton parcours et de tes expériences.",
+  },
+  {
+    q: "Comment se passent les ateliers\u00A0?",
+    a: "Cinq ateliers en groupe, à distance, sur le temps de midi\u00A0: les 1er, 8 et 15\u00A0décembre 2026, puis les 5 et 12\u00A0janvier 2027. On y trouve son sujet, on construit son plan, on rédige sa proposition de talk (le CFP), on travaille le pitch et la prise de parole.",
+  },
+  {
+    q: "C'est quoi la soirée Tremplin\u00A0?",
+    a: "C'est la finale, le mardi 19\u00A0janvier 2027 au soir, à Paris. Chaque finaliste présente son talk en 3\u00A0min, puis échange 5\u00A0min avec le jury, qui s'appuie sur une grille de critères pour départager et faire un retour à chacune. Le lieu sera annoncé sur cette page.",
+  },
+  {
+    q: "Qu'est-ce qu'on gagne\u00A0?",
+    a: "La gagnante donne une conférence de 30\u00A0minutes au Devoxx France 2027, du 7 au 9\u00A0avril au Palais des Congrès de Paris, et on l'accompagne pour la préparer jusqu'au jour J. Toutes les participantes repartent avec le retour écrit du jury, la vidéo de leur pitch et, si elles le veulent, un post sur nos réseaux.",
+  },
+  {
+    q: "Je dois habiter à Paris\u00A0?",
+    a: `Non, les ateliers se font à distance. ${DEPLACEMENTS}`,
+  },
+  ...(grille ? [grille] : []), // présente : un test garde la FAQ 2027 entière
+  {
+    q: "Qui compose le jury\u00A0?",
+    a: "Le jury sera annoncé sur cette page.",
+  },
+  {
+    id: "candidater",
+    q: "Comment candidater\u00A0?",
+    a: "Adhère à Tech\u00A0Speak'Her, puis remplis le formulaire de candidature avant la date limite indiquée en haut de cette page.",
+    lien: { href: TREMPLIN_DEVOXX_2027_FORM_URL, label: "Ouvrir le formulaire de candidature" },
+  },
+  {
+    q: "Qui organise le Tremplin\u00A0?",
+    a: "Le Tremplin est organisé par les bénévoles de Tech\u00A0Speak'Her, association loi 1901, en partenariat avec Devoxx France.",
+  },
+];
+
+const editorialDevoxx2027: EditorialEdition = {
+  faq: faqDevoxx2027,
+  prix: [
+    {
+      place: "Pour la gagnante",
+      reward: "Une conférence de 30\u00A0minutes au Devoxx France 2027",
+      detail: "Du 7 au 9\u00A0avril, Palais des Congrès de Paris, avec un accompagnement jusqu'au jour J",
+      color: "border-gold",
+      ariaLabel: "Prix de la gagnante",
+    },
+  ],
+  // Annoncé plus tard : sans nom, la page ne titre pas une liste vide.
+  jury: [],
+  partenaires: [
+    {
+      name: "Devoxx France",
+      description: "Ouvre sa scène à la gagnante du Tremplin pour une conférence au Devoxx France 2027.",
+      url: DEVOXX_URL,
+    },
+  ],
+  retoursPourTous,
+  confDateFin: "2027-04-09",
+  accroche:
+    "Cinq ateliers à distance, une soirée finale le 19\u00A0janvier 2027 à Paris, et une conférence de 30\u00A0minutes au Devoxx France 2027 pour la gagnante.",
+  candidature: {
+    formUrl: TREMPLIN_DEVOXX_2027_FORM_URL,
+    conditions: [
+      { texte: "Tu es une femme, ou tu te reconnais comme telle." },
+      { texte: CRITERE_PRIMO, lien: { href: "/contact", label: "Un doute\u00A0? Écris-nous" } },
+      { texte: "Tu es adhérente de Tech\u00A0Speak'Her.", lien: { href: "/adherer", label: "Adhérer à l'association" } },
+      { texte: DEPLACEMENTS },
+    ],
+  },
+};
+
+// ─── Registre des éditions qui ont un éditorial ────────────────────────────
+
+const editorialDevfest2026: EditorialEdition = {
+  faq,
+  prix,
+  jury,
+  partenaires,
+  retoursPourTous,
+  accroche: "8 finalistes, 3 gagnantes, un jury 100\u00A0% féminin lors de la soirée du 4\u00A0juin à Toulouse.",
+  lienFinalistes: true,
+};
+
+const editoriaux: Record<string, EditorialEdition> = {
+  "devfest-toulouse/2026": editorialDevfest2026,
+  "devoxx-france/2027": editorialDevoxx2027,
+};
+
+/** Tous les éditoriaux, pour que les relectures automatiques n'en oublient aucun. */
+export const tousLesEditoriaux: readonly EditorialEdition[] = Object.values(editoriaux);
+
+/**
+ * L'éditorial de CETTE édition, ou `null`. Deux axes, pas un : l'année ET la
+ * conférence. Ailleurs, ces blocs répondraient à côté, et le JSON-LD `FAQPage`
+ * publierait leurs réponses aux moteurs sous une autre adresse.
+ */
+export function editorialDe(confSlug: string, annee: number): EditorialEdition | null {
+  return editoriaux[`${confSlug}/${annee}`] ?? null;
+}
+
+/**
+ * L'édition EN COURS côté éditorial : le repli de la vitrine quand la base est
+ * injoignable, et la cible de la FAQ dans la recherche du site. Ouvrir une
+ * nouvelle édition, c'est l'ajouter à `editoriaux` et déplacer ce repère.
+ */
+export const editionEditoriale = {
+  confSlug: "devoxx-france",
+  annee: 2027,
+  confNom: "Devoxx France",
+  /** Nom court pour un bouton, où chaque mot compte. */
+  libelleCourt: "Devoxx 2027",
+} as const;
+
+/** L'éditorial de l'édition en cours, dérivé du repère : les deux bougent ensemble. */
+export const editorialEnCours: EditorialEdition = (() => {
+  const e = editorialDe(editionEditoriale.confSlug, editionEditoriale.annee);
+  if (!e) throw new Error("editionEditoriale désigne une édition sans éditorial");
+  return e;
+})();
 
 export const tremplinSteps: TremplinStep[] = [
   {
