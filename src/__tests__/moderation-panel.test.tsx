@@ -180,4 +180,39 @@ describe("ModerationPanel — relance d'un brouillon", () => {
     );
     expect(screen.getByRole("button", { name: /relancer/i })).toBeInTheDocument();
   });
+
+  // Un doublon non publié se range sans e-mail : « Refuser » écrirait à la
+  // speakeuse, la mise en retrait reste silencieuse quel que soit le statut.
+  it.each(["brouillon", "en_attente", "refuse", "en_pause"] as const)(
+    "une fiche %s peut être mise en retrait (doublon)",
+    (status) => {
+      const { container } = render(
+        <ModerationPanel
+          profileId={3}
+          status={status}
+          submittedAt={null}
+          refusMotif={null}
+          relancable={false}
+          rappelRefuse={false}
+        />,
+      );
+      expect(screen.getByRole("button", { name: /mettre en retrait/i })).toBeInTheDocument();
+      expect(container.querySelector('input[name="decision"][value="masque"]')).not.toBeNull();
+    },
+  );
+
+  it("une fiche déjà en retrait n'a plus ce bouton, seulement « Republier »", () => {
+    render(
+      <ModerationPanel
+        profileId={3}
+        status="masque"
+        submittedAt={null}
+        refusMotif={null}
+        relancable={false}
+        rappelRefuse={false}
+      />,
+    );
+    expect(screen.queryByRole("button", { name: /mettre en retrait/i })).toBeNull();
+    expect(screen.getByRole("button", { name: /republier/i })).toBeInTheDocument();
+  });
 });
