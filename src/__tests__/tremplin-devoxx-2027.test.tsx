@@ -78,7 +78,13 @@ describe("Tremplin Devoxx France 2027 — candidater", () => {
   it("le héros mène aux conditions avant le formulaire", async () => {
     await rendre(devoxx);
     const hero = screen.getByRole("region", { name: /Tremplin 2027/ });
-    expect(within(hero).getByRole("link", { name: /conditions pour candidater/i })).toHaveAttribute("href", "#candidater");
+    expect(within(hero).getByRole("link", { name: /^candidater$/i })).toHaveAttribute("href", "#candidater");
+  });
+
+  it("le Devoxx dure trois jours : le héros dit la période, pas le seul premier jour", async () => {
+    await rendre(devoxx);
+    const hero = screen.getByRole("region", { name: /Tremplin 2027/ });
+    expect(hero.textContent).toMatch(/Devoxx France\s:\s+du 7 au 9 avr\. 2027/);
   });
 
   it("fenêtre fermée : plus de bouton vers le formulaire", async () => {
@@ -107,7 +113,7 @@ describe("Tremplin Devoxx France 2027 — candidater", () => {
 
   it("son éditorial : lot Devoxx, FAQ 2027, merci à Devoxx France, rien du DevFest", async () => {
     await rendre(devoxx);
-    expect(screen.getByText(/Une conférence au Devoxx France 2027/)).toBeInTheDocument();
+    expect(screen.getByText(/Une conférence de 30\sminutes au Devoxx France 2027/)).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "FAQ" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /Merci à nos partenaires/i })).toBeInTheDocument();
     expect(screen.queryByText(/DevFest Toulouse 2026/)).toBeNull();

@@ -220,7 +220,7 @@ const faqDevoxx2027: FAQ[] = [
   },
   {
     q: "Qu'est-ce qu'on gagne\u00A0?",
-    a: "La gagnante donne sa conférence au Devoxx France 2027, du 7 au 9\u00A0avril au Palais des Congrès de Paris, et on l'accompagne pour la préparer jusqu'au jour J. Toutes les participantes repartent avec le retour écrit du jury, la vidéo de leur pitch et, si elles le veulent, un post sur nos réseaux.",
+    a: "La gagnante donne une conférence de 30\u00A0minutes au Devoxx France 2027, du 7 au 9\u00A0avril au Palais des Congrès de Paris, et on l'accompagne pour la préparer jusqu'au jour J. Toutes les participantes repartent avec le retour écrit du jury, la vidéo de leur pitch et, si elles le veulent, un post sur nos réseaux.",
   },
   {
     q: "Je dois habiter à Paris\u00A0?",
@@ -248,7 +248,7 @@ const editorialDevoxx2027: EditorialEdition = {
   prix: [
     {
       place: "Pour la gagnante",
-      reward: "Une conférence au Devoxx France 2027",
+      reward: "Une conférence de 30\u00A0minutes au Devoxx France 2027",
       detail: "Du 7 au 9\u00A0avril, Palais des Congrès de Paris, avec un accompagnement jusqu'au jour J",
       color: "border-gold",
       ariaLabel: "Prix de la gagnante",
@@ -264,8 +264,9 @@ const editorialDevoxx2027: EditorialEdition = {
     },
   ],
   retoursPourTous,
+  confDateFin: "2027-04-09",
   accroche:
-    "Cinq ateliers à distance, une soirée finale le 19\u00A0janvier 2027 à Paris, et une conférence au Devoxx France 2027 pour la gagnante.",
+    "Cinq ateliers à distance, une soirée finale le 19\u00A0janvier 2027 à Paris, et une conférence de 30\u00A0minutes au Devoxx France 2027 pour la gagnante.",
   candidature: {
     formUrl: TREMPLIN_DEVOXX_2027_FORM_URL,
     conditions: [

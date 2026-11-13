@@ -9,7 +9,7 @@ import DateFr from "@/components/DateFr";
 import VideoCard from "@/components/VideoCard";
 import Accompagnantes from "@/components/Accompagnantes";
 import { BASE_URL } from "@/constants/site";
-import { formatDateFr, nb, quandFr } from "@/lib/format";
+import { formatDateFr, nb, periodeFr, quandFr } from "@/lib/format";
 import { aujourdhuiParis, getEditionByConfAndYear, paramsEditionsPubliques } from "@/lib/tremplin-editions";
 import { estPasse, candidaturesOuvertes } from "@/lib/tremplin-statut";
 import {
@@ -203,7 +203,8 @@ export default async function EditionPublique({ params }: { params: Promise<Para
   // Pas de « × » orphelin si la conf n'a pas de nom (lu littéralement par l'AT).
   const nomConf = nomConference(ed.confNom, ed.confLieu);
   const titre = nomConf ? `${ed.nom} × ${nomConf}` : ed.nom;
-  const confDate = dateLongue(ed.confDate);
+  const confDate =
+    periodeFr(ed.confDate, editorial?.confDateFin) ?? dateLongue(ed.confDate);
   const confHref = confHubHref(conf);
   // Section palmarès/prix : le titre rendu dépend de la présence de gagnantes.
   const palmaresHeadingId = ed.palmares.length > 0 ? "palmares-title" : "prix-title";
@@ -281,7 +282,7 @@ export default async function EditionPublique({ params }: { params: Promise<Para
           {candidature && (
             <div className="mt-8 flex justify-center">
               <Button href="#candidater" variant="secondary" size="sm">
-                Voir les conditions pour candidater
+                Candidater
               </Button>
             </div>
           )}

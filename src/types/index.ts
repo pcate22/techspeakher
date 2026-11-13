@@ -144,6 +144,11 @@ export interface EditorialEdition {
   jury: Jure[];
   partenaires: Partenaire[];
   retoursPourTous: string[];
+  /**
+   * Dernier jour de la conférence quand elle dure plusieurs jours : la base ne
+   * porte que le premier (`conf_date`), le héros affiche alors la période.
+   */
+  confDateFin?: string;
   /** Une phrase pour la vitrine `/tremplin` : la preuve, ou ce qui attend. */
   accroche: string;
   /** La vitrine renvoie vers la galerie des finalistes (édition passée). */

@@ -24,7 +24,7 @@ INSERT INTO tremplin_editions
    finale_date, finale_lieu, inscriptions_debut, inscriptions_fin)
 SELECT
   'Tremplin 2027', 2027, 'devoxx-france', 'ouvert',
-  $d$Le Tremplin Tech Speak'Her avec Devoxx France : cinq ateliers à distance, une soirée finale le 19 janvier 2027 à Paris, et une conférence au Devoxx France 2027 pour la gagnante.$d$,
+  $d$Le Tremplin Tech Speak'Her avec Devoxx France : cinq ateliers à distance, une soirée finale le 19 janvier 2027 à Paris, et une conférence de 30 minutes au Devoxx France 2027 pour la gagnante.$d$,
   'Devoxx France', NULL, DATE '2027-04-07', 'https://www.devoxx.fr/',
   DATE '2027-01-19', 'Paris', DATE '2026-11-09', DATE '2026-11-30'
  WHERE NOT EXISTS (SELECT 1 FROM seeds_appliques WHERE cle = '076_tremplin_devoxx_2027')
@@ -75,7 +75,7 @@ La première édition s'est faite avec le DevFest Toulouse : 8 finalistes, 3 ga
 
 ## Ce que tu y gagnes
 
-La gagnante donne sa conférence au Devoxx France 2027, et on l'accompagne jusqu'au jour J. Toutes les participantes repartent avec le retour écrit du jury, la vidéo de leur pitch et, si elles le veulent, un post sur nos réseaux.
+La gagnante donne une conférence de 30 minutes au Devoxx France 2027, et on l'accompagne jusqu'au jour J. Toutes les participantes repartent avec le retour écrit du jury, la vidéo de leur pitch et, si elles le veulent, un post sur nos réseaux.
 
 ## Qui peut candidater ?
 
