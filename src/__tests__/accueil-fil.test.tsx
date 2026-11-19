@@ -24,7 +24,11 @@ vi.mock("@/lib/fil-communaute", () => ({ getNouvellesVenues: vi.fn(async () => [
 vi.mock("@/lib/contenus", () => ({ listPublicationsRecentes: vi.fn(async () => []) }));
 vi.mock("@/lib/users", () => ({
   getCompte: vi.fn(async () => ({ name: "Ada Lovelace", genre: null })),
+  // Le fil se lit ici sans fiche : un compte qui peut en créer une part vers
+  // l'inscription express (mon-espace-bienvenue.test.tsx).
+  peutCreerFiche: () => false,
 }));
+vi.mock("@/lib/talks", () => ({ getTalksCountByProfileId: vi.fn(async () => 0) }));
 vi.mock("@/lib/profiles", () => ({ getProfileByUserId: vi.fn(async () => null) }));
 vi.mock("@/lib/reactions", () => ({ getReactionsPourFil: vi.fn(async () => new Map()) }));
 vi.mock("@/app/mon-espace/actions", () => ({ reactionAction: vi.fn() }));
@@ -39,7 +43,7 @@ import Accueil from "@/app/mon-espace/page";
 
 afterEach(cleanup);
 
-const rendu = async () => render(await Accueil());
+const rendu = async () => render(await Accueil({ searchParams: Promise.resolve({}) }));
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -228,7 +232,7 @@ describe("Accueil — le fil, pur", () => {
 
   it("SA carte : le compteur (canal de réception), AUCUN bouton", async () => {
     vi.mocked(getNouvellesVenues).mockResolvedValue([uneVenue]);
-    vi.mocked(getProfileByUserId).mockResolvedValue({ id: 7 } as never);
+    vi.mocked(getProfileByUserId).mockResolvedValue({ id: 7, sujets: ["Cloud"] } as never);
     vi.mocked(getReactionsPourFil).mockResolvedValue(
       new Map([["venue-7", { nb: 1, premiere: "Ada L.", moi: false }]]),
     );

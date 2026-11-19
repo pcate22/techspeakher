@@ -236,3 +236,22 @@ describe("parseOccurrenceForm — conférence proposée hors registre", () => {
     });
   });
 });
+
+describe("parseTalkIdentityForm : longueur du titre", () => {
+  it("accepte un titre de 300 caractères", () => {
+    const res = parseTalkIdentityForm(fd({ titre: "a".repeat(300) }));
+    expect(res.ok).toBe(true);
+  });
+
+  it("refuse un titre de 301 caractères", () => {
+    const res = parseTalkIdentityForm(fd({ titre: "a".repeat(301) }));
+    expect(res.ok).toBe(false);
+    if (!res.ok) expect(res.errors.titre).toBeTruthy();
+  });
+
+  it("accepte un FormData réduit au titre (création express)", () => {
+    const res = parseTalkIdentityForm(fd({ titre: "Mon talk" }));
+    expect(res.ok).toBe(true);
+  });
+});
+

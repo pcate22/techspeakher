@@ -66,8 +66,8 @@ export const marqueur = () => `jetable-${process.pid}-${++compteur}`;
  *
  * `fiche: "prete"` pose TOUT ce que la complétude exige pour que le bouton
  * « Soumettre à l'annuaire » apparaisse — c'est-à-dire plus que les seules
- * règles de `raisonBlocageAnnuaire` : un nom, un profil rempli, **un talk**,
- * une joignabilité et l'attestation (cf. `espaceChecklist`, src/lib/espace.ts).
+ * règles de `raisonBlocageAnnuaire` : un nom, un profil rempli, **un thème**,
+ * **un talk**, une joignabilité et l'attestation (cf. `espaceChecklist`, src/lib/espace.ts).
  *
  * La distinction a coûté un aller-retour : une fiche qui satisfait les règles
  * de SOUMISSION peut très bien n'afficher aucun bouton, parce que l'écran, lui,
@@ -92,8 +92,8 @@ export async function creerMembre(opts: {
     const prete = fiche === "prete";
     const { rows: p } = await db().query(
       `INSERT INTO speaker_profiles
-         ("userId", titre_profil, bio, ville, contact_email_ok, is_woman, status)
-       VALUES ($1, $2, $3, 'Toulouse', $4, $5, 'brouillon')
+         ("userId", titre_profil, bio, ville, contact_email_ok, is_woman, sujets, status)
+       VALUES ($1, $2, $3, 'Toulouse', $4, $5, $6, 'brouillon')
        RETURNING id`,
       [
         userId,
@@ -101,6 +101,7 @@ export async function creerMembre(opts: {
         "Bio de test, écrite par la suite E2E.",
         prete, // joignabilité : condition de `raisonBlocageAnnuaire`
         prete, // attestation
+        prete ? ["Accessibilité"] : [], // un thème : condition de `raisonBlocageAnnuaire`
       ],
     );
     profileId = Number((p[0] as { id: number }).id);

@@ -25,7 +25,10 @@ import {
   isSlugAvailable,
   deriveAvailableSlug,
   profilVersInput,
+  publierFiche,
 } from "@/lib/profiles";
+import { parseFicheExpress } from "@/lib/fiche-express-form";
+import { doitEtreRelue } from "@/lib/relecture";
 import { supprimerCompte } from "@/lib/suppression-compte";
 import { isUniqueViolation } from "@/lib/pg-errors";
 import {
@@ -42,7 +45,7 @@ import {
   type OccurrenceInput,
   type TalkOccurrence,
 } from "@/lib/talks";
-import { setUserName, getUserById } from "@/lib/users";
+import { setUserName, getUserById, getCompte, peutCreerFiche } from "@/lib/users";
 import { reprendrePhotoLinkedIn } from "@/lib/linkedin-photo";
 import type { ActionState } from "@/lib/action-state";
 // `estIdValide` vit dans `@/lib/id-url` depuis le 2026-08-21 : la copie locale
@@ -132,19 +135,15 @@ export async function saveProfile(
   const result = parseProfileForm(formData);
   if (!result.ok) return { ok: false, errors: result.errors };
 
-  // Le nom vit sur le COMPTE (users.name) : affiché sur la fiche et dans
-  // l'annuaire. Saisi ici pour la cohorte lien-magique (aucun nom OAuth) ;
-  // vide = inchangé (on n'efface jamais un nom).
-  // Le nom vit sur le COMPTE, pas sur la fiche : normalisation et borne sont
-  // tenues par `users.ts` (bord de la colonne), et un nom vide n'écrase jamais
-  // celui qui existe. On le normalise ici seulement pour dériver l'adresse.
+  // Le nom vit sur le COMPTE (users.name), saisi ici pour la cohorte lien
+  // magique (aucun nom OAuth). Normalisation, borne et « vide = inchangé » sont
+  // tenues par `users.ts` ; on le normalise ici seulement pour dériver l'adresse.
   const nomComplet = normaliserNomCompte(formString(formData, "nomComplet"));
 
   // Profil existant (nom + slug actuels) lu AVANT l'écriture : le nom sert de
   // repli pour dériver l'adresse, et un slug existant est préservé si le champ
   // reste vide (on ne casse jamais une URL déjà partagée en silence).
   const existant = await getProfileByUserId(id);
-  if (nomComplet) await setUserName(id, nomComplet);
   const nomEffectif = nomComplet || existant?.name || "";
 
   // Adresse (slug) définitive : saisie explicite → contrôle d'unicité (message
@@ -169,6 +168,13 @@ export async function saveProfile(
     }
     throw err;
   }
+  // Invariant : écrire le nom du compte va toujours avec une fiche. La
+  // publication express compare le nom tapé à users.name pour sauter la
+  // relecture ; un nom écrit ici par un enregistrement refusé lui ouvrirait la
+  // publication directe d'un nom libre. D'où l'écriture APRÈS tout refus possible.
+  // Exception : les chemins orga de `admin/tremplins` posent un nom sans fiche,
+  // la saisie venant d'une organisatrice, donc de confiance.
+  if (nomComplet) await setUserName(id, nomComplet);
   revalidateEspacePerso();
   // Revalider aussi la fiche + l'annuaire : sans ça, « Prévisualiser ma fiche »
   // (navigation client) ressert la version en cache (Router Cache) avec les
@@ -234,14 +240,6 @@ export async function saveProfileSection(
     }
   }
 
-  // Le nom vit sur le COMPTE (users.name), pas sur la fiche : seule la section
-  // qui l'affiche a le droit de l'écrire, et un nom vide n'écrase jamais celui
-  // qui existe.
-  if (section.champs.includes("nomComplet")) {
-    const nomComplet = normaliserNomCompte(formString(formData, "nomComplet"));
-    if (nomComplet) await setUserName(id, nomComplet);
-  }
-
   // La section repose SES colonnes sur celles déjà en base, puis les règles de
   // cohérence du profil entier s'appliquent (elles traversent les sections).
   const fusion = normaliserProfil({
@@ -255,6 +253,13 @@ export async function saveProfileSection(
   } catch (err) {
     if (isUniqueViolation(err)) return refuser({ slug: SLUG_PRIS });
     throw err;
+  }
+  // Le nom vit sur le COMPTE (users.name), pas sur la fiche : seule la section
+  // qui l'affiche a le droit de l'écrire, et seulement une fois l'enregistrement
+  // acquis (même invariant que `saveProfile`).
+  if (section.champs.includes("nomComplet")) {
+    const nomComplet = normaliserNomCompte(formString(formData, "nomComplet"));
+    if (nomComplet) await setUserName(id, nomComplet);
   }
   revalidateEspacePerso();
   revalidatePublicProfile();
@@ -290,6 +295,68 @@ export async function submitProfileAction(): Promise<void> {
   revalidatePublicProfile();
   revalidateEspacePerso();
   redirect("/mon-espace/fiche");
+}
+
+/**
+ * Publication express (`/mon-espace/bienvenue`) : nom et thèmes, puis la fiche
+ * paraît, ou part en relecture si le nom a été écrit à la main.
+ *
+ * Ce parcours ne sert qu'à CRÉER une fiche : une fiche existante renvoie vers
+ * Mon espace sans rien écrire (le SQL de `publierFiche` le garantit aussi). Le
+ * statut se décide ici, à partir du nom du compte lu en base ; le formulaire
+ * n'en transmet aucun.
+ */
+export async function publierFicheExpressAction(
+  _prev: SaveState,
+  formData: FormData,
+): Promise<SaveState> {
+  const id = await requireUserId();
+
+  // Même règle que la page (« jamais de CTA impossible ») : un POST direct
+  // d'un compte « homme » ne crée rien.
+  const compte = await getCompte(id);
+  if (!peutCreerFiche(compte?.genre)) redirect("/mon-espace");
+  if (await getProfileByUserId(id)) redirect("/mon-espace");
+
+  const result = parseFicheExpress(formData);
+  if (!result.ok) {
+    return {
+      ok: false,
+      errors: result.errors,
+      valeurs: {
+        nom: [(formData.get("nom") ?? "").toString()],
+        sujets: formData.getAll("sujets").map(String),
+      },
+    };
+  }
+  const { nom, sujets } = result.data;
+
+  const statut = doitEtreRelue(nom, compte?.name ?? null) ? "en_attente" : "publie";
+
+  // Le slug est vérifié libre puis écrit : une autre fiche peut le prendre
+  // entre les deux. Un second essai avec un slug recalculé suffit ; au-delà,
+  // un message plutôt qu'une erreur serveur.
+  let creee = false;
+  for (let essai = 0; ; essai++) {
+    const slug = await deriveAvailableSlug(nom, id);
+    try {
+      creee = await publierFiche(id, statut, { nom, sujets, slug });
+      break;
+    } catch (e) {
+      if (!isUniqueViolation(e)) throw e;
+      if (essai >= 1)
+        return {
+          ok: false,
+          errors: { form: "La publication a échoué, réessaie dans un instant." },
+          valeurs: { nom: [nom], sujets },
+        };
+    }
+  }
+  if (!creee) redirect("/mon-espace");
+
+  if (statut === "publie") revalidatePublicProfile();
+  revalidateEspacePerso();
+  redirect(`/mon-espace?ok=${statut === "publie" ? "fiche_publiee" : "fiche_envoyee"}`);
 }
 
 /**

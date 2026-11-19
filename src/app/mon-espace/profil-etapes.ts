@@ -1,3 +1,5 @@
+import type { CleSection } from "@/lib/profil-sections";
+
 /**
  * Étapes de l'assistant de profil speakeuse — SOURCE UNIQUE.
  *
@@ -50,3 +52,25 @@ export function indexEtape(cle: string | undefined): number {
 
 /** Clés reconnues, pour les tests et la documentation des deep-links. */
 export const CLES_ETAPE = Object.keys(INDEX_ETAPE);
+
+/**
+ * Clé d'URL (`?step=…`) → section de la fiche. Une fiche existante s'édite
+ * section par section : les anciens liens (e-mails, complétude) y mènent
+ * directement plutôt que de rouvrir l'assistant de création.
+ */
+const SECTION_DE_LETAPE: Record<string, CleSection> = {
+  profil: "identite",
+  secteurs: "secteurs",
+  sujets: "sujets",
+  domaines: "secteurs",
+  interventions: "interventions",
+  localisation: "interventions",
+  contact: "contact",
+  attestation: "attestation",
+};
+
+/** Section d'une clé d'URL, ou `null` si la clé est inconnue (prototype compris). */
+export function sectionDeLEtape(cle: string | undefined): CleSection | null {
+  if (!cle || !Object.hasOwn(SECTION_DE_LETAPE, cle)) return null;
+  return SECTION_DE_LETAPE[cle];
+}

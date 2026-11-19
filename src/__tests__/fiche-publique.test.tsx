@@ -156,3 +156,16 @@ describe("Ma fiche publique — la soumission vit ici (lot N2)", () => {
     await expect(rendu()).rejects.toThrow("REDIRECT:/mon-espace/profil");
   });
 });
+
+describe("Ma fiche publique : anciens liens ?step=", () => {
+  it("avec une fiche, ?step=contact mène à la section contact", async () => {
+    vi.mocked(getProfileByUserId).mockResolvedValue(makeProfile({ id: 5, status: "publie" }));
+    await expect(rendu({ step: "contact" })).rejects.toThrow("REDIRECT:/mon-espace/fiche/contact");
+  });
+
+  it("une clé inconnue garde la fiche à l'écran", async () => {
+    vi.mocked(getProfileByUserId).mockResolvedValue(makeProfile({ id: 5, status: "publie" }));
+    await rendu({ step: "constructor" });
+    expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
+  });
+});

@@ -20,6 +20,7 @@ import {
   upsertProfile,
   canSubmitToDirectory,
   raisonBlocageAnnuaire,
+  publierFiche,
   toPublicSpeaker,
   effacerCompteEnBase,
   type SpeakerProfile,
@@ -30,7 +31,7 @@ import { makeProfile } from "./test-helpers";
 
 beforeEach(() => query.mockReset());
 
-const baseProfile: SpeakerProfile = makeProfile({ titreProfil: "Spécialiste IA" });
+const baseProfile: SpeakerProfile = makeProfile({ titreProfil: "Spécialiste IA", sujets: ["Cloud"] });
 
 describe("canSubmitToDirectory", () => {
   it("refuse un profil null", () => {
@@ -85,6 +86,10 @@ describe("raisonBlocageAnnuaire", () => {
     for (const name of [null, "", "   "]) {
       expect(raisonBlocageAnnuaire({ ...complet, name })).toBe("nom");
     }
+  });
+
+  it("nomme les thèmes manquants juste après le nom", () => {
+    expect(raisonBlocageAnnuaire({ ...complet, sujets: [], isWoman: false })).toBe("themes");
   });
 
   it("nomme le moyen de contact manquant", () => {
@@ -164,7 +169,7 @@ describe("getProfileByUserId", () => {
           linkedin: "https://lk/x",
           instagram: null,
           secteurs: ["MedTech / Santé"],
-          sujets: ["IA / Machine Learning / Data"],
+          sujets: ["IA / Machine Learning"],
           status: "publie",
           published_at: null,
         },
@@ -181,7 +186,7 @@ describe("getProfileByUserId", () => {
     expect(p).not.toBeNull();
     expect(p?.bio).toBe("Salut");
     expect(p?.secteurs).toEqual(["MedTech / Santé"]);
-    expect(p?.sujets).toEqual(["IA / Machine Learning / Data"]);
+    expect(p?.sujets).toEqual(["IA / Machine Learning"]);
   });
 
   it("retourne null si aucune ligne", async () => {
@@ -225,7 +230,7 @@ describe("upsertProfile", () => {
       sessionizeUrl: "https://sessionize.com/moi",
       conferenceHallUrl: null,
       secteurs: ["MedTech / Santé"],
-      sujets: ["IA / Machine Learning / Data"],
+      sujets: ["IA / Machine Learning"],
       contactEmailOk: false,
       isWoman: true,
       cfpSyncMode: "suggestions",
@@ -246,7 +251,7 @@ describe("upsertProfile", () => {
     expect(params).toContain("Spécialiste IA");
     expect(params).toContain("Dev");
     expect(params).toContainEqual(["MedTech / Santé"]);
-    expect(params).toContainEqual(["IA / Machine Learning / Data"]);
+    expect(params).toContainEqual(["IA / Machine Learning"]);
     expect(String(sql)).toMatch(/is_woman/i);
     expect(params[11]).toBe(true);
     // Liens CFP et consentement ajoutés après isWoman (isWoman reste en 11).
@@ -423,5 +428,36 @@ describe("mapRow — le nom affiché se calcule AU BORD", () => {
       status: "publie",
     } as never);
     expect(p.nomAffiche).toBe("Dev & mentor");
+  });
+});
+
+/**
+ * Fiche express : attestation et contact posés en dur, statut paramétré, et
+ * écriture bornée à la création (une fiche existante reste intacte).
+ */
+describe("publierFiche", () => {
+  it("crée la fiche avec attestation, contact et le statut demandé", async () => {
+    query.mockResolvedValue({ rowCount: 1 });
+    expect(
+      await publierFiche(7, "publie", { nom: "Léa Martin", sujets: ["Cloud"], slug: "lea" }),
+    ).toBe(true);
+    const [sql, params] = query.mock.calls[0];
+    expect(sql).toMatch(/contact_email_ok, is_woman, status/);
+    expect(sql).toMatch(/\$3, true, true, \$4::text/);
+    expect(sql).toMatch(/ON CONFLICT \("userId"\) DO NOTHING/);
+    expect(params).toEqual([7, ["Cloud"], "lea", "publie"]);
+    expect(query.mock.calls[1]).toEqual([
+      "UPDATE users SET name = $2 WHERE id = $1",
+      [7, "Léa Martin"],
+    ]);
+  });
+
+  it("fiche déjà là → false, rien de réécrit", async () => {
+    query.mockResolvedValue({ rowCount: 0 });
+    expect(
+      await publierFiche(7, "en_attente", { nom: "Autre", sujets: ["Cloud"], slug: null }),
+    ).toBe(false);
+    // Fiche déjà là : le nom du compte reste inchangé.
+    expect(query).toHaveBeenCalledTimes(1);
   });
 });

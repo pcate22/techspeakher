@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { parseProfileForm, normalizeProfileSlug } from "@/lib/profile-form";
-import { SECTEURS, SUJETS } from "@/data/domaines";
+import { SECTEURS, THEMES } from "@/data/domaines";
 
 function fd(
   fields: Record<string, string>,
@@ -26,7 +26,7 @@ describe("parseProfileForm", () => {
           linkedin: "https://www.linkedin.com/in/moi",
           instagram: "",
         },
-        { secteurs: [SECTEURS[0]], sujets: [SUJETS[0], SUJETS[3]] },
+        { secteurs: [SECTEURS[0]], sujets: [THEMES[0], THEMES[3]] },
       ),
     );
     expect(res.ok).toBe(true);
@@ -35,7 +35,7 @@ describe("parseProfileForm", () => {
       expect(res.data.poste).toBe("Dev");
       expect(res.data.instagram).toBeNull();
       expect(res.data.secteurs).toEqual([SECTEURS[0]]);
-      expect(res.data.sujets).toEqual([SUJETS[0], SUJETS[3]]);
+      expect(res.data.sujets).toEqual([THEMES[0], THEMES[3]]);
     }
   });
 
@@ -78,6 +78,15 @@ describe("parseProfileForm", () => {
     const res = parseProfileForm(fd({ bio: "Premier paragraphe.\n\nSecond." }));
     expect(res.ok).toBe(true);
     if (res.ok) expect(res.data.bio).toBe("Premier paragraphe.\n\nSecond.");
+  });
+
+  // La liste blanche borne déjà les thèmes : un plafond en couperait sans un
+  // mot (une fiche migrée en porte jusqu'à 19).
+  it("garde tous les thèmes choisis, sans plafond", () => {
+    const douze = THEMES.slice(0, 12);
+    const res = parseProfileForm(fd({}, { sujets: douze }));
+    expect(res.ok).toBe(true);
+    if (res.ok) expect(res.data.sujets).toEqual(douze);
   });
 
   it("ignore secteurs/sujets hors des listes cadrées (liste blanche)", () => {

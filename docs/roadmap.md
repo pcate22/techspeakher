@@ -4,7 +4,8 @@
 > la dette technique : `docs/dette-technique.md`. Pour l'étude d'import des
 > talks : `docs/faisabilite-import-talks.md`.
 >
-> Dernière mise à jour : **2026-11-12** (section « Tremplin Devoxx France
+> Dernière mise à jour : **2026-11-13** (section « Inscription express à
+> l'annuaire » seule) ; **2026-11-12** (section « Tremplin Devoxx France
 > 2027 » seule, et la ligne Devoxx de « Landing partenaires ») ; **2026-11-04** (section « Header Nous rejoindre,
 > page bénévole » seule : conditions des coachs et du jury) ; **2026-10-16**
 > (section « Reprise humaine du code » seule) ; **2026-10-15** (sections « Navigation connectée »,
@@ -17,7 +18,8 @@
 > ce fichier est la première chose que lit la session suivante.
 >
 > **Chantiers ouverts, chacun avec son état daté ci-dessous** (décompte à
-> vérifier au 2026-10-16 : les sections du 15/10 n'y figurent pas) : la reprise
+> vérifier au 2026-10-16 : les sections du 15/10 n'y figurent pas) :
+> l'inscription express à l'annuaire (en PR le 13/11), la reprise
 > humaine du code (porte d'entrée en PR le 16/10, le reste reporté),
 > l'import et l'annuaire (le détecteur d'id Sessionize est livré depuis le 21/08 ; restent la
 > ligne de dette `.invalid` et l'écoute d'un profil Notist), l'agenda public
@@ -27,7 +29,36 @@
 > une session. La **licence** est tranchée le 23/08 : voir la section dédiée
 > ci-dessous, qui ferme la piste « une autre communauté déploie la plateforme ».
 
-## Tremplin Devoxx France 2027 — en PR le 2026-11-12, candidatures jusqu'au 30/11
+## Inscription express à l'annuaire — en PR le 2026-11-13 (#13)
+
+Des speakeuses trouvaient la fiche trop longue à remplir : six étapes, dont une
+qui demandait à elle seule titre, poste, entreprise, présentation, ville et cinq
+liens. Conception : `docs/superpowers/specs/2026-11-12-inscription-express-design.md` ;
+plan : `docs/superpowers/plans/2026-11-12-inscription-express.md`.
+
+**Fait sur la branche `claude/simplify-speaker-directory-328845`** (PR #13,
+main fusionnée dedans le 2026-11-13) : deux écrans sur `/mon-espace/bienvenue` (le nom, puis les thèmes en
+sept catégories), et la fiche paraît au clic sur « Publier ma fiche ». Un nom
+retapé part en relecture, le nom du compte publie tout de suite. Le talk se
+crée avec son titre seul (300 caractères). Les anciens sujets sont repris en
+thèmes par la migration 078 ; « Autre » est retiré. Mon espace propose ensuite
+« Pour aller plus loin ». L'annuaire filtre par catégorie. Parcours E2E :
+`e2e/parcours-inscription-express.spec.ts`.
+
+**Tranché le 2026-11-12 par Cateline** : le clic vaut accord pour être
+contactée par le site (e-mail caché). **Tranché dans le plan** : la relecture
+ne juge que la première publication ; une fiche en ligne qui change reste
+visible, comme avant.
+
+**Où reprendre** :
+
+- après la fusion, lancer `db/sync-to-latest.sql` tout de suite : jusque-là,
+  les fiches aux anciens sujets s'affichent sans thème ;
+- après la fusion, regarder en vrai un titre de talk de 300 caractères dans
+  les cartes et l'image OG, et une fiche héritée sans thème (dette P2,
+  § « Inscription express »).
+
+## Tremplin Devoxx France 2027 — fusionné le 2026-11-13 (#12), candidatures jusqu'au 30/11
 
 Partenariat signé. Livré dans la PR : la page `/tremplin/devoxx-france/2027`
 (section « Candidater » avec conditions, adhésion obligatoire, déplacements à

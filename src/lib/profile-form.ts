@@ -240,7 +240,9 @@ export function parseProfilChamps(
     data.secteurs = filterSecteurs(formData.getAll("secteurs").map(String)).slice(0, MAX_TAGS);
   }
   if (veut("sujets")) {
-    data.sujets = filterSujets(formData.getAll("sujets").map(String)).slice(0, MAX_TAGS);
+    // Pas de plafond sur les thèmes : la liste blanche les borne déjà, et un
+    // plafond couperait sans un mot ceux d'une fiche migrée qui en porte plus.
+    data.sujets = filterSujets(formData.getAll("sujets").map(String));
   }
   // Régions/langues : bornées par la liste blanche (dédoublonnée), pas besoin
   // d'autre plafond.
