@@ -72,9 +72,12 @@ describe("/tremplin — l'édition mise en avant vient de la base", () => {
       "href",
       "/tremplin/sunny-tech/2027",
     );
-    // Les faits 2026 restent chez 2026 : aucune phrase-preuve, aucun lien finalistes.
-    expect(screen.queryByText(/8 finalistes/)).toBeNull();
-    expect(screen.queryByRole("link", { name: /finalistes/i })).toBeNull();
+    // Les faits 2026 restent chez 2026 : sa carte porte la phrase-preuve et les
+    // finalistes, jamais celle de 2027.
+    const [carte2026, carte2027] = within(screen.getByRole("region", { name: /les éditions/i })).getAllByRole("listitem");
+    expect(within(carte2026).getByText(/8 finalistes/)).toBeInTheDocument();
+    expect(within(carte2027).queryByText(/8 finalistes/)).toBeNull();
+    expect(within(carte2027).queryByRole("link", { name: /finalistes/i })).toBeNull();
     // À la place : une ligne DÉRIVÉE donne une raison d'y aller (édition
     // « ouvert » sans fenêtre datée → « Inscriptions ouvertes »).
     expect(screen.getByText(/inscriptions ouvertes/i)).toBeInTheDocument();
@@ -146,5 +149,43 @@ describe("/tremplin — ce que la dérivation laisse intact", () => {
     const bloc = screen.getByRole("region", { name: /pour qui, et pourquoi/i });
     expect(within(bloc).getByText(/2025/)).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /féminiser votre conférence/i })).toBeInTheDocument();
+  });
+});
+
+describe("/tremplin — toutes les éditions, et la candidature quand elle est ouverte", () => {
+  it("liste les éditions dans l'ordre : 1ʳᵉ DevFest Toulouse, 2ᵉ Devoxx France", async () => {
+    listEditionsPubliques.mockResolvedValue([
+      edition({ annee: 2027, confSlug: "devoxx-france", confNom: "Devoxx France", statut: "ouvert" }),
+      edition({ annee: 2026, statut: "archive" }),
+    ]);
+    await rendu();
+    const section = screen.getByRole("region", { name: /les éditions/i });
+    const items = within(section).getAllByRole("listitem");
+    expect(items).toHaveLength(2);
+    expect(items[0].textContent).toMatch(/1ʳᵉ édition.*DevFest Toulouse 2026/);
+    expect(items[1].textContent).toMatch(/2ᵉ édition.*Devoxx France 2027/);
+    expect(within(items[0]).getByRole("link", { name: /l'édition 2026 en détail/i })).toHaveAttribute(
+      "href",
+      "/tremplin/devfest-toulouse/2026",
+    );
+  });
+
+  it("candidatures ouvertes : le bouton du héros mène au formulaire de l'édition", async () => {
+    listEditionsPubliques.mockResolvedValue([
+      edition({
+        annee: 2027,
+        confSlug: "devoxx-france",
+        confNom: "Devoxx France",
+        statut: "ouvert",
+        inscriptionsDebut: "2000-01-01",
+        inscriptionsFin: "2999-12-31",
+      }),
+      edition({ annee: 2026, statut: "archive" }),
+    ]);
+    await rendu();
+    expect(screen.getByRole("link", { name: /^candidater au tremplin devoxx 2027$/i })).toHaveAttribute(
+      "href",
+      "/tremplin/devoxx-france/2027#candidater",
+    );
   });
 });

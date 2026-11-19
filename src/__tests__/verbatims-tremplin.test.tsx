@@ -13,7 +13,6 @@ vi.mock("@/lib/tremplin-editions", async (importActual) => {
 
 import TremplinConcept from "@/app/tremplin/page";
 import { verbatims } from "@/data/verbatims";
-import { editionEditoriale } from "@/data/tremplin";
 
 /**
  * Les verbatims sur la page concept du Tremplin (`/tremplin`, la vitrine du
@@ -41,12 +40,12 @@ describe("/tremplin — les verbatims", () => {
     }
   });
 
-  it("vient après le teaser de l'édition, avant « Pour qui, et pourquoi »", async () => {
+  it("vient après la liste des éditions, avant « Pour qui, et pourquoi »", async () => {
     const { container } = render(await TremplinConcept());
     const sections = Array.from(container.querySelectorAll("section"));
     const rang = (nom: RegExp) =>
       sections.findIndex((s) => nom.test(s.querySelector("h2")?.textContent ?? ""));
-    const edition = rang(new RegExp(`${editionEditoriale.confNom} ${editionEditoriale.annee}`));
+    const edition = rang(/^les éditions$/i);
     const paroles = rang(/ce qu'elles en disent/i);
     const pourQui = rang(/pour qui, et/i);
     expect(edition).toBeGreaterThanOrEqual(0);

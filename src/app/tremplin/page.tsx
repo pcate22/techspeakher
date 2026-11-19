@@ -6,7 +6,7 @@ import { BASE_URL } from "@/constants/site";
 import { tremplinSteps, editionEditoriale, editorialDe } from "@/data/tremplin";
 import { verbatims } from "@/data/verbatims";
 import { listEditionsPubliques } from "@/lib/tremplin-editions";
-import { editionStatutAffiche, aujourdhuiParis } from "@/lib/tremplin-statut";
+import { editionStatutAffiche, aujourdhuiParis, candidaturesOuvertes } from "@/lib/tremplin-statut";
 import { rangOrdinal } from "@/lib/tremplin-registrations";
 import { nomConference } from "@/lib/tremplin-conf";
 import CarrouselVerbatims from "@/components/CarrouselVerbatims";
@@ -53,16 +53,34 @@ export default async function TremplinConcept() {
   // L'accroche (la preuve d'une édition passée, ou ce qui attend) et le lien
   // vers les finalistes appartiennent à UNE édition : jamais prêtés à une autre.
   const editorial = editorialDe(confSlug, annee);
-  // La plus récente de N éditions publiques est la Nᵉ (liste triée récentes
-  // d'abord) ; sans base, on ignore le rang : on dit seulement qu'elle est en cours.
-  const surtitre = enAvant ? `${rangOrdinal(editions.length)} édition` : "Édition en cours";
-  // Quand le nom manque, le segment disparaît (même convention que le h1 de
-  // la page cible : jamais de « × » orphelin, jamais un « Conférence » neutre
-  // qui contredirait la page à l'arrivée).
-  const nomConf = enAvant ? nomConference(enAvant.confNom, enAvant.confLieu) : editionEditoriale.confNom;
-  // Hors éditorial, la carte garde UNE raison d'y aller, dérivée sans rien
-  // inventer : l'état réel de l'édition (« Inscriptions ouvertes »…).
-  const contexte = enAvant ? editionStatutAffiche(enAvant, aujourdhuiParis()) : null;
+  const aujourdhui = aujourdhuiParis();
+  // Même règle que l'accueil : le bouton ne mène au formulaire que si la page
+  // de l'édition affiche la section « Candidater ».
+  const recrute =
+    enAvant !== null && editorial?.candidature !== undefined && candidaturesOuvertes(enAvant, aujourdhui);
+  const nomCourt =
+    confSlug === editionEditoriale.confSlug && annee === editionEditoriale.annee
+      ? editionEditoriale.libelleCourt
+      : String(annee);
+
+  // Toutes les éditions, la première en tête : la liste raconte l'histoire du
+  // Tremplin. Sans base, l'édition éditoriale seule, sans rang inventé.
+  const liste = editions.length > 0
+    ? [...editions].reverse().map((e, i) => ({
+        confSlug: e.confSlug,
+        annee: e.annee,
+        surtitre: `${rangOrdinal(i + 1)} édition`,
+        // Quand le nom manque, le segment disparaît : jamais de « × » orphelin.
+        nomConf: nomConference(e.confNom, e.confLieu),
+        contexte: editionStatutAffiche(e, aujourdhui),
+      }))
+    : [{
+        confSlug,
+        annee,
+        surtitre: "Édition en cours",
+        nomConf: editionEditoriale.confNom as string | null,
+        contexte: null as string | null,
+      }];
 
   return (
     <>
@@ -88,7 +106,11 @@ export default async function TremplinConcept() {
             celles qu&apos;on accompagne jusqu&apos;au bout.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button href={hrefEdition}>Voir l&apos;édition {annee}</Button>
+            {recrute ? (
+              <Button href={`${hrefEdition}#candidater`}>Candidater au Tremplin {nomCourt}</Button>
+            ) : (
+              <Button href={hrefEdition}>Voir l&apos;édition {annee}</Button>
+            )}
             <Button href="/contact" variant="secondary">
               Nous contacter
             </Button>
@@ -157,37 +179,40 @@ export default async function TremplinConcept() {
         </div>
       </section>
 
-      {/* Édition mise en avant : teaser compact (le détail vit sur la page
-          d'édition). La phrase-preuve et les finalistes sont des faits 2026 :
-          ils restent chez l'édition éditoriale. */}
-      <section className="py-16 px-4 bg-navy-light" aria-labelledby="edition-title">
+      {/* Les éditions : chacune a sa carte, son état et son lien ; le détail
+          vit sur la page d'édition. Accroche et finalistes restent chez leur
+          édition. */}
+      <section className="py-16 px-4 bg-navy-light" aria-labelledby="editions-title">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-navy border border-gold/30 rounded-2xl p-6 sm:p-8">
-            <p className="text-xs font-bold text-gold uppercase tracking-wider mb-2">
-              {surtitre}
-            </p>
-            <h2 id="edition-title" className="text-xl sm:text-2xl font-bold mb-3">
-              Tremplin <span className="text-gold">{nomConf ? `× ${nomConf} ${annee}` : annee}</span>
-            </h2>
-            {/* L'état réel (« Inscriptions ouvertes ») quand il apprend quelque
-                chose, puis l'accroche de l'édition si elle en a une. */}
-            {contexte && (
-              <p className="text-sm font-semibold text-cyan mb-2">{contexte}</p>
-            )}
-            {editorial && (
-              <p className="text-gray-light leading-relaxed mb-5">{editorial.accroche}</p>
-            )}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button href={hrefEdition} size="sm">
-                L&apos;édition {annee} en détail
-              </Button>
-              {editorial?.lienFinalistes && (
-                <Button href={`${hrefEdition}#participantes`} variant="ghost" size="sm">
-                  Les finalistes →
-                </Button>
-              )}
-            </div>
-          </div>
+          <h2 id="editions-title" className="text-2xl sm:text-3xl font-bold mb-8 text-center">
+            Les éditions
+          </h2>
+          <ol className="flex flex-col gap-6">
+            {liste.map((e) => {
+              const href = `/tremplin/${e.confSlug}/${e.annee}`;
+              const ed = editorialDe(e.confSlug, e.annee);
+              return (
+                <li key={href} className="bg-navy border border-gold/30 rounded-2xl p-6 sm:p-8">
+                  <p className="text-sm font-bold text-gold mb-2">{e.surtitre}</p>
+                  <h3 className="text-xl sm:text-2xl font-bold mb-3">
+                    Tremplin <span className="text-gold">{e.nomConf ? `× ${e.nomConf} ${e.annee}` : e.annee}</span>
+                  </h3>
+                  {e.contexte && <p className="text-sm font-semibold text-cyan mb-2">{e.contexte}</p>}
+                  {ed && <p className="text-gray-light leading-relaxed mb-5">{ed.accroche}</p>}
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Button href={href} size="sm" variant="secondary">
+                      L&apos;édition {e.annee} en détail
+                    </Button>
+                    {ed?.lienFinalistes && (
+                      <Button href={`${href}#participantes`} variant="ghost" size="sm">
+                        Les finalistes →
+                      </Button>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
         </div>
       </section>
 
