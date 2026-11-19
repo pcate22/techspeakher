@@ -98,8 +98,9 @@ export default function ModerationPanel({
             </Button>
           </form>
         )}
-        {/* Mettre en retrait : retire une fiche publiée de l'annuaire. */}
-        {status === "publie" && (
+        {/* Mettre en retrait : retire une fiche de l'annuaire, ou range un
+            doublon non publié, sans e-mail (« Refuser » écrit à la speakeuse). */}
+        {status !== "masque" && (
           <form action={moderateProfileAction}>
             <input type="hidden" name="profileId" value={profileId} />
             <input type="hidden" name="decision" value="masque" />
